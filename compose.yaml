@@ -1,0 +1,7 @@
+﻿services:
+  spendtrackapi:
+    image: spendtrackapi
+    build:
+      context: .
+      dockerfile: Dockerfile
+

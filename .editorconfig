@@ -1,0 +1,50 @@
+# Top-level EditorConfig file for C# projects
+root = true
+
+# Applies to all files
+[*]
+charset = utf-8-bom                     # Use UTF-8 with BOM (recommended on Windows)
+end_of_line = crlf                      # Use CRLF line endings (standard for Windows dev)
+indent_style = space                    # Use spaces, not tabs
+indent_size = 4                         # Use 4 spaces per indentation level
+insert_final_newline = true             # Add newline at end of file (clean Git diffs)
+trim_trailing_whitespace = true         # Remove any trailing whitespace
+max_line_length = 120                   # Limit lines to 120 characters (readability)
+
+# Applies to C# files only
+[*.cs]
+# Using directives
+dotnet_sort_system_directives_first = true            # 'using System.*' comes before others
+dotnet_separate_import_directive_groups = true        # Separate 'System' and other usings with blank line
+
+# 'this.' usage preferences
+dotnet_style_qualification_for_field = false          # No 'this.' for fields unless needed
+dotnet_style_qualification_for_property = false       # No 'this.' for properties
+dotnet_style_qualification_for_method = false         # No 'this.' for methods
+dotnet_style_qualification_for_event = false          # No 'this.' for events
+
+# Expression and code style preferences
+dotnet_style_prefer_inferred_tuple_names = true:suggestion        # Use inferred tuple names
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion  # Use inferred property names in anonymous types
+dotnet_style_prefer_auto_properties = true:suggestion             # Prefer auto-properties when possible
+dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion   # Use ternary instead of if-else for assignments
+dotnet_style_prefer_conditional_expression_over_return = true:suggestion       # Use ternary instead of if-else for return
+
+# C# code style formatting
+csharp_new_line_before_open_brace = all              # Place open braces on new lines (Microsoft standard)
+csharp_indent_case_contents = true                   # Indent inside switch-case blocks
+csharp_indent_switch_labels = true                   # Indent labels inside switch
+csharp_prefer_braces = true:suggestion               # Use braces for all control blocks (if, while, etc.)
+csharp_prefer_simple_using_statement = true:suggestion    # Use 'using' declaration instead of statement (C# 8+)
+
+# Naming conventions (optional, but common in large teams)
+dotnet_naming_rule.private_fields_should_be_camel_case.severity = suggestion
+dotnet_naming_rule.private_fields_should_be_camel_case.symbols = private_fields
+dotnet_naming_rule.private_fields_should_be_camel_case.style = camel_case_style
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers = readonly
+
+dotnet_naming_style.camel_case_style.capitalization = camel_case
+dotnet_naming_style.camel_case_style.required_prefix = _
