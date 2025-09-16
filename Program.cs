@@ -1,13 +1,17 @@
+using System.Reflection;
+
+using FluentValidation;
+
 using Microsoft.EntityFrameworkCore;
 
 using Scalar.AspNetCore;
 
 using SpendTrackApi.Data;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Add services to the container.
-
 builder.Services.AddControllers();
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrWhiteSpace(connectionString))
@@ -15,16 +19,16 @@ if (string.IsNullOrWhiteSpace(connectionString))
     throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 }
 
-
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlite(connectionString);
 });
 
-
-
-
-
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -41,18 +45,13 @@ builder.Services.AddRouting(options =>
     options.LowercaseQueryStrings = true;    // Forces lowercase query strings
 });
 
-WebApplication app = builder.Build();
-
-
-
-
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
-
 }
 
 app.UseHttpsRedirection();
