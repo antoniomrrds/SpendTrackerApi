@@ -2,33 +2,40 @@ using System.Reflection;
 
 using FluentValidation;
 
+using Mapster;
+
+using MapsterMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 using Scalar.AspNetCore;
 
 using SpendTrackApi.Data;
+using SpendTrackApi.Mapping;
+using SpendTrackApi.Mapping.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Add services to the container.
 builder.Services.AddControllers();
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (string.IsNullOrWhiteSpace(connectionString))
-{
-    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-}
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                          ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlite(connectionString);
-});
+var config = TypeAdapterConfig.GlobalSettings;
+
+config.RegisterMappings();
+
+new MapsterConfig().Register(config);
+
+builder.Services.AddSingleton(config);
+
+builder.Services.AddScoped<IMapper, Mapper>();
+
+builder.Services.AddDbContext<AppDbContext>(options => { options.UseSqlite(connectionString); });
 
 builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options =>
-    {
-        options.SuppressModelStateInvalidFilter = true;
-    });
+    .ConfigureApiBehaviorOptions(options => { options.SuppressModelStateInvalidFilter = true; });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -41,8 +48,8 @@ builder.Services.AddOpenApi();
 // and follows REST API best practices by using clean, predicatable URLs.
 builder.Services.AddRouting(options =>
 {
-    options.LowercaseUrls = true;            // Forces lowercase URls
-    options.LowercaseQueryStrings = true;    // Forces lowercase query strings
+    options.LowercaseUrls = true; // Forces lowercase URls
+    options.LowercaseQueryStrings = true; // Forces lowercase query strings
 });
 
 var app = builder.Build();
