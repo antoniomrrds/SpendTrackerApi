@@ -1,10 +1,31 @@
+using Microsoft.EntityFrameworkCore;
+
 using Scalar.AspNetCore;
+
+using SpendTrackApi.Data;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+}
+
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlite(connectionString);
+});
+
+
+
+
+
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 // Configures routing to generate lowercase URLs and query strings.

@@ -1,6 +1,0 @@
-@SpendTrackApi_HostAddress = http://localhost:5125
-
-GET {{SpendTrackApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

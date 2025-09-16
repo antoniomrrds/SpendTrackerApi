@@ -1,4 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+using SpendTrackApi.Data;
+using SpendTrackApi.Models;
 
 namespace SpendTrackApi.Controllers;
 
@@ -6,10 +10,20 @@ namespace SpendTrackApi.Controllers;
 [Route("api/[controller]")]
 public class Expense : ControllerBase
 {
+    private readonly AppDbContext _context;
+
+
+    public Expense(AppDbContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> GetAll()
     {
-        return Ok("test");
+        List<Category> results = await _context.Categories
+            .AsNoTracking()
+            .ToListAsync();
+        return Ok(results);
     }
 }
