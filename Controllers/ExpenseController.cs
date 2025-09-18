@@ -25,9 +25,9 @@ public class ExpenseController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ExpenseRequest expenseRequest)
     {
-        var result  = await _validator.ValidateAsync(expenseRequest);
+        var result = await _validator.ValidateAsync(expenseRequest);
 
-        if (!result .IsValid)
+        if (!result.IsValid)
         {
             result.AddToModelState(ModelState);
             return ValidationProblem(ModelState);
@@ -47,12 +47,23 @@ public class ExpenseController : ControllerBase
         return Ok(expenseModel);
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById([FromRoute]int id)
+    {
+     var categoryResponse = await _context
+            .Expenses
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x  => x.Id == id);
+        return Ok(categoryResponse);
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        List<Category> results = await _context.Categories
+        List<Expense> results = await _context.Expenses
             .AsNoTracking()
             .ToListAsync();
+
         return Ok(results);
     }
 }
@@ -79,7 +90,6 @@ public class ExpenseValidator : AbstractValidator<ExpenseRequest>
             .NotNull().WithMessage("Date cannot be empty.")
             .LessThanOrEqualTo(DateTime.Today).WithMessage("Date cannot be in the future.")
             .When(e => e.Date.HasValue);
-        ;
 
         RuleFor(e => e.CategoryId)
             .MustAsync(CategoryExists)
