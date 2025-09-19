@@ -1,4 +1,6 @@
-﻿using Mapster;
+﻿using FluentValidation;
+
+using Mapster;
 
 using MapsterMapper;
 
@@ -6,6 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using SpendTrackApi.Data;
+using SpendTrackApi.Extensions;
+using SpendTrackApi.Models;
+
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace SpendTrackApi.Controllers;
 
@@ -15,11 +21,24 @@ public class CategoryController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IValidator<CategoryRequest> _validate;
 
-    public CategoryController(AppDbContext context, IMapper mapper)
+    public CategoryController(AppDbContext context, IMapper mapper, IValidator<CategoryRequest> validate)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _validate = validate ?? throw new ArgumentNullException(nameof(validate));
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
+    {
+        CategoryResponse? category = await _context.Categories
+            .AsNoTracking()
+            .ProjectToType<CategoryResponse>(_mapper.Config)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        return Ok(category);
     }
 
     [HttpGet]
@@ -33,7 +52,46 @@ public class CategoryController : ControllerBase
 
         return Ok(categoryResponse);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CategoryRequest categoryRequest)
+    {
+        ValidationResult result = await _validate.ValidateAsync(categoryRequest);
+        if (!result.IsValid)
+        {
+            result.AddToModelState(ModelState);
+            return ValidationProblem(ModelState);
+        }
+
+        Category category = _mapper.Map<Category>(categoryRequest);
+        _context.Categories.Add(category);
+        await _context.SaveChangesAsync();
+        CategoryResponse response = _mapper.Map<CategoryResponse>(category);
+        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+    }
 }
+
+public class CategoryValidator : AbstractValidator<CategoryRequest>
+{
+    public CategoryValidator()
+    {
+        RuleFor(x => x.Name)
+            .NotEmpty().WithMessage("Name is required")
+            .Length(4, 150)
+            .WithMessage("The name must be between 4 and 150 characters.");
+
+        RuleFor(x => x.Description)
+            .Cascade(CascadeMode.Stop)
+            .MaximumLength(200).WithMessage("The description cannot exceed 200 characters.")
+            .Must(x => string.IsNullOrEmpty(x) || x.Trim().Length > 0)
+            .WithMessage("Description cannot be only whitespace.");
+    }
+}
+
+public record CategoryRequest(
+    string Name,
+    string Description
+);
 
 public record CategoryResponse
 {

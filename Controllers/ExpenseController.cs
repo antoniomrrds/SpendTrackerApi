@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.Results;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ public class ExpenseController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ExpenseRequest expenseRequest)
     {
-        var result = await _validator.ValidateAsync(expenseRequest);
+        ValidationResult? result = await _validator.ValidateAsync(expenseRequest);
 
         if (!result.IsValid)
         {
@@ -50,11 +51,11 @@ public class ExpenseController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute]int id)
     {
-     var categoryResponse = await _context
+     Expense? expenseResponse = await _context
             .Expenses
             .AsNoTracking()
             .FirstOrDefaultAsync(x  => x.Id == id);
-        return Ok(categoryResponse);
+        return Ok(expenseResponse);
     }
 
     [HttpGet]

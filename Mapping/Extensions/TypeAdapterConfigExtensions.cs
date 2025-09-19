@@ -13,7 +13,7 @@ namespace SpendTrackApi.Mapping.Extensions
                 .Select(Activator.CreateInstance)
                 .Cast<IRegister>();
 
-            foreach (var register in registers)
+            foreach (IRegister register in registers)
             {
                 register.Register(config);
             }

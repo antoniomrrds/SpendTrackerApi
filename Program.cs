@@ -14,7 +14,7 @@ using SpendTrackApi.Data;
 using SpendTrackApi.Mapping;
 using SpendTrackApi.Mapping.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Add services to the container.
@@ -22,11 +22,9 @@ builder.Services.AddControllers();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                           ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-var config = TypeAdapterConfig.GlobalSettings;
+TypeAdapterConfig config = TypeAdapterConfig.GlobalSettings;
 
 config.RegisterMappings();
-
-new MapsterConfig().Register(config);
 
 builder.Services.AddSingleton(config);
 
@@ -52,7 +50,7 @@ builder.Services.AddRouting(options =>
     options.LowercaseQueryStrings = true; // Forces lowercase query strings
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -67,4 +65,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
