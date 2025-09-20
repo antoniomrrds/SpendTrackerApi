@@ -45,7 +45,7 @@ public class CategoryController : ControllerBase
             .ProjectToType<CategoryResponse>(_mapper.Config)
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        return category is null ? NotFound() :Ok(category);
+        return category is null ? NotFound() : Ok(category);
     }
 
     [HttpGet]
@@ -73,8 +73,8 @@ public class CategoryController : ControllerBase
         Category category = _mapper.Map<Category>(request);
         _context.Categories.Add(category);
         await _context.SaveChangesAsync();
-        CategoryResponse categoryResponse  = _mapper.Map<CategoryResponse>(category);
-        return CreatedAtAction(nameof(GetById), new { id = categoryResponse .Id }, categoryResponse );
+        CategoryResponse categoryResponse = _mapper.Map<CategoryResponse>(category);
+        return CreatedAtAction(nameof(GetById), new { id = categoryResponse.Id }, categoryResponse);
     }
 
     [HttpPut("{id:int}")]
@@ -93,7 +93,7 @@ public class CategoryController : ControllerBase
             return NotFound("Category not found");
         }
 
-        ValidationResult validationResult  = await _validate.ValidateAsync(request);
+        ValidationResult validationResult = await _validate.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
@@ -103,10 +103,29 @@ public class CategoryController : ControllerBase
         _mapper.Map(request, existingCategory);
 
         await _context.SaveChangesAsync();
-        CategoryResponse categoryResponse  = _mapper.Map<CategoryResponse>(existingCategory);
-        return Ok(categoryResponse );
+        CategoryResponse categoryResponse = _mapper.Map<CategoryResponse>(existingCategory);
+        return Ok(categoryResponse);
     }
 
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest("Id must be greater than 0.");
+        }
+
+        Category? existingCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+        if (existingCategory == null)
+        {
+            return NotFound("Category not found");
+        }
+
+        _context.Categories.Remove(existingCategory);
+
+        await _context.SaveChangesAsync();
+        return Ok("Category deleted successfully");
+    }
 }
 
 public class CategoryValidator : AbstractValidator<CategoryRequest>
