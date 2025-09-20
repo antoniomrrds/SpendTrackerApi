@@ -8,8 +8,7 @@ public class CategoryMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<Models.Category, CategoryResponse>();
-        config.NewConfig<CategoryRequest, Models.Category>();
-        config.NewConfig<Models.Category, CategoryResponse>();
+        config.NewConfig<Models.Category, CategoryResponse>().TwoWays();
+        config.NewConfig<CategoryRequest, Models.Category>().TwoWays();
     }
 }

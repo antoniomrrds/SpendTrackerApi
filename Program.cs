@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 using SpendTrackApi.Data;
-using SpendTrackApi.Mapping;
 using SpendTrackApi.Mapping.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -24,11 +23,12 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 TypeAdapterConfig config = TypeAdapterConfig.GlobalSettings;
 
-config.RegisterMappings();
+config.Scan(typeof(Program).Assembly);
+// config.RegisterMappings();
 
 builder.Services.AddSingleton(config);
 
-builder.Services.AddScoped<IMapper, Mapper>();
+builder.Services.AddScoped<IMapper, ServiceMapper>();
 
 builder.Services.AddDbContext<AppDbContext>(options => { options.UseSqlite(connectionString); });
 

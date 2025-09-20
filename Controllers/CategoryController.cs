@@ -23,7 +23,9 @@ public class CategoryController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IValidator<CategoryRequest> _validate;
 
-    public CategoryController(AppDbContext context, IMapper mapper, IValidator<CategoryRequest> validate)
+    public CategoryController(AppDbContext context,
+        IMapper mapper,
+        IValidator<CategoryRequest> validate)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -33,12 +35,17 @@ public class CategoryController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest("Id must be greater than zero.");
+        }
+
         CategoryResponse? category = await _context.Categories
             .AsNoTracking()
             .ProjectToType<CategoryResponse>(_mapper.Config)
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        return Ok(category);
+        return category is null ? NotFound() :Ok(category);
     }
 
     [HttpGet]
@@ -54,21 +61,52 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CategoryRequest categoryRequest)
+    public async Task<IActionResult> Create([FromBody] CategoryRequest request)
     {
-        ValidationResult result = await _validate.ValidateAsync(categoryRequest);
+        ValidationResult result = await _validate.ValidateAsync(request);
         if (!result.IsValid)
         {
             result.AddToModelState(ModelState);
             return ValidationProblem(ModelState);
         }
 
-        Category category = _mapper.Map<Category>(categoryRequest);
+        Category category = _mapper.Map<Category>(request);
         _context.Categories.Add(category);
         await _context.SaveChangesAsync();
-        CategoryResponse response = _mapper.Map<CategoryResponse>(category);
-        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+        CategoryResponse categoryResponse  = _mapper.Map<CategoryResponse>(category);
+        return CreatedAtAction(nameof(GetById), new { id = categoryResponse .Id }, categoryResponse );
     }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(
+        [FromBody] CategoryRequest request,
+        [FromRoute] int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest("Id must be greater than zero.");
+        }
+
+        Category? existingCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+        if (existingCategory == null)
+        {
+            return NotFound("Category not found");
+        }
+
+        ValidationResult validationResult  = await _validate.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            validationResult.AddToModelState(ModelState);
+            return ValidationProblem(ModelState);
+        }
+
+        _mapper.Map(request, existingCategory);
+
+        await _context.SaveChangesAsync();
+        CategoryResponse categoryResponse  = _mapper.Map<CategoryResponse>(existingCategory);
+        return Ok(categoryResponse );
+    }
+
 }
 
 public class CategoryValidator : AbstractValidator<CategoryRequest>
