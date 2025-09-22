@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SpendTrackApi.Extensions;
 
-public static class ValidationResultExtensions
+internal static class ValidationResultExtensions
 {
     public static void AddToModelState(this ValidationResult validationResult, ModelStateDictionary modelState)
     {

@@ -1,6 +1,6 @@
 ﻿namespace SpendTrackApi.Models;
 
-public class Category
+public sealed class Category
 {
     public int Id { get; set; }
     private string _name = string.Empty;

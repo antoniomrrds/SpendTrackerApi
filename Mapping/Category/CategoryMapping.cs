@@ -1,10 +1,11 @@
 ﻿using Mapster;
 
 using SpendTrackApi.Controllers;
+using SpendTrackApi.Controllers.Category;
 
 namespace SpendTrackApi.Mapping.Category;
 
-public class CategoryMapping : IRegister
+internal sealed class CategoryMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {

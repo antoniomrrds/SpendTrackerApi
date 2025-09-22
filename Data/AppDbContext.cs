@@ -2,6 +2,7 @@
 
 using SpendTrackApi.Models;
 
+
 namespace SpendTrackApi.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options):DbContext(options)

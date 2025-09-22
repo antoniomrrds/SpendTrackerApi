@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using FluentValidation;
 
 using Mapster;
 
@@ -9,15 +11,15 @@ using Microsoft.EntityFrameworkCore;
 
 using SpendTrackApi.Data;
 using SpendTrackApi.Extensions;
-using SpendTrackApi.Models;
 
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
-namespace SpendTrackApi.Controllers;
+namespace SpendTrackApi.Controllers.Category;
 
 [ApiController]
+[SuppressMessage("Design", "CA1515:Make types internal", Justification = "Controllers must be public")]
 [Route("api/[controller]")]
-public class CategoryController : ControllerBase
+public sealed class CategoryController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
@@ -70,7 +72,7 @@ public class CategoryController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        Category category = _mapper.Map<Category>(request);
+        Models.Category category = _mapper.Map<Models.Category>(request);
         _context.Categories.Add(category);
         await _context.SaveChangesAsync();
         CategoryResponse categoryResponse = _mapper.Map<CategoryResponse>(category);
@@ -87,7 +89,7 @@ public class CategoryController : ControllerBase
             return BadRequest("Id must be greater than zero.");
         }
 
-        Category? existingCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+        Models.Category? existingCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
         if (existingCategory == null)
         {
             return NotFound("Category not found");
@@ -115,7 +117,7 @@ public class CategoryController : ControllerBase
             return BadRequest("Id must be greater than 0.");
         }
 
-        Category? existingCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+        Models.Category? existingCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
         if (existingCategory == null)
         {
             return NotFound("Category not found");
@@ -126,33 +128,4 @@ public class CategoryController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok("Category deleted successfully");
     }
-}
-
-public class CategoryValidator : AbstractValidator<CategoryRequest>
-{
-    public CategoryValidator()
-    {
-        RuleFor(x => x.Name)
-            .NotEmpty().WithMessage("Name is required")
-            .Length(4, 150)
-            .WithMessage("The name must be between 4 and 150 characters.");
-
-        RuleFor(x => x.Description)
-            .Cascade(CascadeMode.Stop)
-            .MaximumLength(200).WithMessage("The description cannot exceed 200 characters.")
-            .Must(x => string.IsNullOrEmpty(x) || x.Trim().Length > 0)
-            .WithMessage("Description cannot be only whitespace.");
-    }
-}
-
-public record CategoryRequest(
-    string Name,
-    string Description
-);
-
-public record CategoryResponse
-{
-    public int Id { get; init; }
-    public string Name { get; init; } = string.Empty;
-    public string Description { get; init; } = string.Empty;
 }
