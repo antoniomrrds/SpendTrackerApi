@@ -1,11 +1,6 @@
-
-using System.Diagnostics.CodeAnalysis;
-
 using FluentValidation;
 using FluentValidation.Results;
-
 using MapsterMapper;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpendTrackApi.Data;
@@ -15,7 +10,6 @@ namespace SpendTrackApi.Controllers.Expense;
 
 [ApiController]
 [Route("api/[controller]")]
-[SuppressMessage("Design", "CA1515:Make types internal", Justification = "Controllers must be public")]
 public sealed class ExpenseController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -32,7 +26,6 @@ public sealed class ExpenseController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ExpenseRequest request)
     {
-
         ValidationResult? result = await _validator.ValidateAsync(request);
 
         if (!result.IsValid)
@@ -55,9 +48,9 @@ public sealed class ExpenseController : ControllerBase
         }
 
 
-        ExpenseResponse expenseResponse =  _mapper.Map<ExpenseResponse>(expenseWithCategory);
+        ExpenseResponse expenseResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
         return CreatedAtAction(nameof(GetById),
-            new{ id = expense.Id}, expenseResponse);
+            new { id = expense.Id }, expenseResponse);
     }
 
     [HttpGet("{id:int}")]
@@ -78,19 +71,63 @@ public sealed class ExpenseController : ControllerBase
             return NotFound("Expense not found.");
         }
 
-        ExpenseResponse expenseWithCategoryResponse =  _mapper.Map<ExpenseResponse>(expenseWithCategory);
+        ExpenseResponse expenseWithCategoryResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
 
         return Ok(expenseWithCategoryResponse);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(
+        [FromRoute] int id,
+        ExpenseRequest request)
+    {
+        if (id <= 0)
+        {
+            return BadRequest("Id must be greater than 0.");
+        }
+
+        Models.Expense? existingExpense = await _context.Expenses.FirstOrDefaultAsync(e => e.Id == id);
+        if (existingExpense is null)
+        {
+            return NotFound("Expense not found.");
+        }
+
+        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            validationResult.AddToModelState(ModelState);
+            return ValidationProblem(ModelState);
+        }
+
+        _mapper.Map(request, existingExpense);
+        await _context.SaveChangesAsync();
+
+        Models.Expense? expenseWithCategory = await _context.Expenses
+            .Include(e => e.Category)
+            .AsNoTracking()
+            .SingleOrDefaultAsync(e => e.Id == id);
+
+        if (expenseWithCategory == null)
+        {
+            return NotFound("Expense not found after creation.");
+        }
+
+        ExpenseResponse expenseResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
+
+        return Ok(expenseResponse);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        List<Models.Expense> results = await _context.Expenses
+        List<Models.Expense> expenseWithCategories = await _context.Expenses
             .AsNoTracking()
-            .ToListAsync();
+            .Include(e => e.Category)
+            .ToListAsync(); 
+        
+        IEnumerable<ExpenseResponse> expenseResponse = _mapper.Map<IEnumerable<ExpenseResponse>>(expenseWithCategories);
 
-        return Ok(results);
+        return Ok(expenseResponse);
     }
 
     [HttpDelete("{id:int}")]

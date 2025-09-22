@@ -1,29 +1,21 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using FluentValidation;
-
+﻿using FluentValidation;
 using Mapster;
-
 using MapsterMapper;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 using SpendTrackApi.Data;
 using SpendTrackApi.Extensions;
-
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace SpendTrackApi.Controllers.Category;
 
 [ApiController]
-[SuppressMessage("Design", "CA1515:Make types internal", Justification = "Controllers must be public")]
 [Route("api/[controller]")]
 public sealed class CategoryController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IValidator<CategoryRequest> _validate;
+    private readonly IValidator<CategoryRequest> _validator;
 
     public CategoryController(AppDbContext context,
         IMapper mapper,
@@ -31,7 +23,7 @@ public sealed class CategoryController : ControllerBase
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _validate = validate ?? throw new ArgumentNullException(nameof(validate));
+        _validator = validate ?? throw new ArgumentNullException(nameof(validate));
     }
 
     [HttpGet("{id:int}")]
@@ -65,7 +57,7 @@ public sealed class CategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CategoryRequest request)
     {
-        ValidationResult result = await _validate.ValidateAsync(request);
+        ValidationResult result = await _validator.ValidateAsync(request);
         if (!result.IsValid)
         {
             result.AddToModelState(ModelState);
@@ -95,7 +87,7 @@ public sealed class CategoryController : ControllerBase
             return NotFound("Category not found");
         }
 
-        ValidationResult validationResult = await _validate.ValidateAsync(request);
+        ValidationResult validationResult = await _validator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);

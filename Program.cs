@@ -1,15 +1,9 @@
 using System.Reflection;
-
 using FluentValidation;
-
 using Mapster;
-
 using MapsterMapper;
-
 using Microsoft.EntityFrameworkCore;
-
 using Scalar.AspNetCore;
-
 using SpendTrackApi.Data;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
