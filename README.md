@@ -7,7 +7,33 @@
 ![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
-*Uma API moderna e robusta para controle de gastos pessoais*
+
+## 📖 Sobre o Projeto
+
+A **SpendTrack API** é uma solução completa para gerenciamento de gastos pessoais, desenvolvida com ASP.NET Core 9.0. A API oferece funcionalidades para criar, gerenciar categorias de gastos e registrar despesas de forma organizada e eficiente.
+
+---
+
+## 🧪 Versão 1 - Arquitetura Acoplada
+
+> ⚠️ Esta é a **primeira versão** da SpendTrack API e foi construída com arquitetura **acoplada** por escolha intencional.
+
+Nesta fase inicial, o objetivo é praticar e validar as funcionalidades básicas de uma API REST, com uma estrutura simples e direta.
+A aplicação ainda não segue um padrão totalmente desacoplado, como DDD ou Onion Architecture, mas mantém organização e boas práticas mínimas (como validações e separação em camadas).
+
+Isso permite uma evolução mais natural para versões futuras com aplicação de princípios SOLID, SRP, DIP e outros padrões de arquitetura.
+
+🔧 O projeto continuará evoluindo com:
+
+Implementação de testes automatizados
+
+Refatorações progressivas
+
+Adoção de um estilo arquitetural mais desacoplado e escalável
+---
+
+
+
 
 </div>
 
@@ -17,11 +43,9 @@ A **SpendTrack API** é uma solução completa para gerenciamento de gastos pess
 
 ### ✨ Características Principais
 
-- 🏗️ **Arquitetura Clean**: Separação clara de responsabilidades com controllers, models, validators e mappers
 - ✅ **Validação Robusta**: Implementação de validações usando FluentValidation
 - 🗺️ **Mapeamento Automático**: Uso do Mapster para conversão entre DTOs e entidades
 - 📊 **Documentação Automática**: OpenAPI/Swagger integrado com Scalar UI
-- 🐳 **Containerização**: Suporte completo ao Docker
 - 🌐 **Localização**: Configuração para cultura pt-BR
 - 🔄 **Entity Framework**: ORM moderno com SQLite
 - 🎯 **URLs Consistentes**: URLs em minúsculas para melhor compatibilidade
@@ -241,14 +265,14 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ## 👨‍💻 Autor
 
 **Antonio Tech**
-- GitLab: [@antonio-tech](https://gitlab.com/antonio-tech)
+- GitHub: [@antonio-tech](https://github.com/antoniomrrds)
 
 ## 📞 Suporte
 
 Se você tiver alguma dúvida ou problema:
 
-- 🐛 [Reportar um bug](https://gitlab.com/antonio-tech/spendtrackapi/-/issues/new)
-- 💡 [Solicitar uma feature](https://gitlab.com/antonio-tech/spendtrackapi/-/issues/new)
+- 🐛 [Reportar um bug](https://github.com/antoniomrrds/spendtrackapi/-/issues/new)
+- 💡 [Solicitar uma feature](https://github.com/antoniomrrds/spendtrackapi/-/issues/new)
 - 📧 Entrar em contato via GitLab
 
 ---
@@ -257,6 +281,6 @@ Se você tiver alguma dúvida ou problema:
 
 **⭐ Se este projeto te ajudou, considere dar uma estrela!**
 
-Feito com ❤️ e ☕ por [Antonio Tech](https://gitlab.com/antonio-tech)
+Feito com ❤️ e ☕ por [Antonio Tech](https://github.com/antoniomrrds)
 
 </div>
