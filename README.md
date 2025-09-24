@@ -1,93 +1,262 @@
-# SpendTrackApi
+# 💰 SpendTrack API
 
+<div align="center">
 
+![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?style=for-the-badge&logo=dotnet)
+![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
-## Getting started
+*Uma API moderna e robusta para controle de gastos pessoais*
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+</div>
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## 📖 Sobre o Projeto
 
-## Add your files
+A **SpendTrack API** é uma solução completa para gerenciamento de gastos pessoais, desenvolvida com ASP.NET Core 9.0. A API oferece funcionalidades para criar, gerenciar categorias de gastos e registrar despesas de forma organizada e eficiente.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+### ✨ Características Principais
+
+- 🏗️ **Arquitetura Clean**: Separação clara de responsabilidades com controllers, models, validators e mappers
+- ✅ **Validação Robusta**: Implementação de validações usando FluentValidation
+- 🗺️ **Mapeamento Automático**: Uso do Mapster para conversão entre DTOs e entidades
+- 📊 **Documentação Automática**: OpenAPI/Swagger integrado com Scalar UI
+- 🐳 **Containerização**: Suporte completo ao Docker
+- 🌐 **Localização**: Configuração para cultura pt-BR
+- 🔄 **Entity Framework**: ORM moderno com SQLite
+- 🎯 **URLs Consistentes**: URLs em minúsculas para melhor compatibilidade
+
+## 🚀 Tecnologias Utilizadas
+
+- **Framework**: .NET 9.0
+- **Linguagem**: C# (Latest version)
+- **Banco de Dados**: SQLite
+- **ORM**: Entity Framework Core 9.0
+- **Validação**: FluentValidation 12.0
+- **Mapeamento**: Mapster 7.4
+- **Documentação**: OpenAPI + Scalar UI
+- **Containerização**: Docker
+- **Commit**: Husky + Commitizen + Commitlint
+
+## 📋 Pré-requisitos
+
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [Docker](https://www.docker.com/) (opcional)
+- [Node.js](https://nodejs.org/) (para commits convencionais)
+- [PNPM](https://pnpm.io/) (gerenciador de pacotes Node.js)
+
+## 🛠️ Instalação e Configuração
+
+### 1. Clone o Repositório
+
+```bash
+git clone https://gitlab.com/antonio-tech/spendtrackapi.git
+cd spendtrackapi
+```
+
+### 2. Instale as Dependências Node.js
+
+```bash
+pnpm install
+```
+
+### 3. Configure o Banco de Dados
+
+```bash
+# Aplicar migrações
+dotnet ef database update
+```
+
+### 4. Execute o Projeto
+
+#### Localmente
+```bash
+dotnet run
+```
+
+#### Com Docker
+```bash
+docker compose up --build
+```
+
+## 📚 Documentação da API
+
+Após executar o projeto, acesse a documentação interativa:
+
+- **Scalar UI**: `https://localhost:5001/scalar/v1` (Desenvolvimento)
+- **OpenAPI Schema**: `https://localhost:5001/openapi/v1.json`
+
+## 🔗 Endpoints Principais
+
+### 📂 Categorias
+
+| Método | Endpoint | Descrição |
+|--------|----------|----------|
+| `GET` | `/api/category` | Lista todas as categorias |
+| `GET` | `/api/category/{id}` | Busca categoria por ID |
+| `POST` | `/api/category` | Cria nova categoria |
+| `PUT` | `/api/category/{id}` | Atualiza categoria |
+| `DELETE` | `/api/category/{id}` | Remove categoria |
+
+### 💳 Despesas
+
+| Método | Endpoint | Descrição |
+|--------|----------|----------|
+| `GET` | `/api/expense` | Lista todas as despesas |
+| `GET` | `/api/expense/{id}` | Busca despesa por ID |
+| `GET` | `/api/expense/total` | Retorna total de despesas |
+| `POST` | `/api/expense` | Cria nova despesa |
+| `PUT` | `/api/expense/{id}` | Atualiza despesa |
+| `DELETE` | `/api/expense/{id}` | Remove despesa |
+
+## 📊 Exemplos de Uso
+
+### Criar Categoria
+
+```json
+POST /api/category
+{
+  "name": "Alimentação",
+  "description": "Gastos com comida e bebida"
+}
+```
+
+### Criar Despesa
+
+```json
+POST /api/expense
+{
+  "description": "Almoço no restaurante",
+  "value": 45.90,
+  "date": "2024-01-15T12:00:00Z",
+  "categoryId": 1
+}
+```
+
+### Resposta de Despesa
+
+```json
+{
+  "id": 1,
+  "description": "Almoço no restaurante",
+  "value": 45.90,
+  "date": "2024-01-15T12:00:00Z",
+  "categoryId": 1,
+  "category": {
+    "id": 1,
+    "name": "Alimentação",
+    "description": "Gastos com comida e bebida"
+  }
+}
+```
+
+## 🏗️ Estrutura do Projeto
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/antonio-tech/spendtrackapi.git
-git branch -M main
-git push -uf origin main
+SpendTrackApi/
+├── Controllers/           # Controllers da API
+│   ├── Category/         # Endpoints de categorias
+│   └── Expense/          # Endpoints de despesas
+├── Data/                 # Contexto do Entity Framework
+├── Extensions/           # Extensões personalizadas
+├── Mapping/              # Configurações do Mapster
+├── Migrations/           # Migrações do banco de dados
+├── Models/               # Entidades do domínio
+├── Properties/           # Configurações do projeto
+├── Dockerfile           # Configuração do Docker
+├── compose.yaml         # Docker Compose
+└── Program.cs           # Ponto de entrada da aplicação
 ```
 
-## Integrate with your tools
+## 🔧 Comandos Úteis
 
-- [ ] [Set up project integrations](https://gitlab.com/antonio-tech/spendtrackapi/-/settings/integrations)
+### Entity Framework
 
-## Collaborate with your team
+```bash
+# Criar nova migração
+dotnet ef migrations add NomeDaMigracao
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+# Aplicar migrações
+dotnet ef database update
 
-## Test and Deploy
+# Remover última migração
+dotnet ef migrations remove
+```
 
-Use the built-in continuous integration in GitLab.
+### Docker
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```bash
+# Build da imagem
+docker build -t spendtrackapi .
 
-***
+# Executar container
+docker run -p 5000:8080 spendtrackapi
 
-# Editing this README
+# Docker Compose
+docker compose up --build
+docker compose down
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Commits Convencionais
 
-## Suggestions for a good README
+```bash
+# Usar commitizen para commits padronizados
+pnpm commit
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+# Ou usar git commit normalmente (será validado pelo commitlint)
+git commit -m "feat: adicionar endpoint de categorias"
+```
 
-## Name
-Choose a self-explaining name for your project.
+## 🤝 Contribuindo
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Faça commit das mudanças (`pnpm commit` ou `git commit -m 'feat: adicionar alguma feature'`)
+4. Push para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um Pull Request
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### 📝 Padrões de Commit
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Este projeto usa [Conventional Commits](https://www.conventionalcommits.org/) com [Gitmojis](https://gitmoji.dev/):
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+- `feat`: Nova funcionalidade
+- `fix`: Correção de bug
+- `docs`: Documentação
+- `style`: Formatação, ponto e vírgula, etc
+- `refactor`: Refatoração de código
+- `test`: Testes
+- `chore`: Tarefas de build, configuração, etc
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## 🔐 Variáveis de Ambiente
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+| Variável | Descrição | Padrão |
+|----------|-----------|--------|
+| `ASPNETCORE_ENVIRONMENT` | Ambiente da aplicação | `Development` |
+| `ConnectionStrings__DefaultConnection` | String de conexão do banco | SQLite local |
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## 📄 Licença
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+## 👨‍💻 Autor
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+**Antonio Tech**
+- GitLab: [@antonio-tech](https://gitlab.com/antonio-tech)
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## 📞 Suporte
 
-## License
-For open source projects, say how it is licensed.
+Se você tiver alguma dúvida ou problema:
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- 🐛 [Reportar um bug](https://gitlab.com/antonio-tech/spendtrackapi/-/issues/new)
+- 💡 [Solicitar uma feature](https://gitlab.com/antonio-tech/spendtrackapi/-/issues/new)
+- 📧 Entrar em contato via GitLab
+
+---
+
+<div align="center">
+
+**⭐ Se este projeto te ajudou, considere dar uma estrela!**
+
+Feito com ❤️ e ☕ por [Antonio Tech](https://gitlab.com/antonio-tech)
+
+</div>

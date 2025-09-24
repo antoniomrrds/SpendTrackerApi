@@ -11,13 +11,13 @@ app.db-wal
 node_modules
 # dotenv files
 .env
-
 # User-specific files
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
+app.db
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
