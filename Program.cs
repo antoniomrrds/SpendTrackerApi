@@ -1,20 +1,14 @@
 using System.Reflection;
-
 using FluentValidation;
-
 using Mapster;
-
 using MapsterMapper;
-
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
-
 using Scalar.AspNetCore;
-
 using SpendTrackApi.Data;
-using SpendTrackApi.Mapping;
-using SpendTrackApi.Mapping.Extensions;
+using System.Globalization;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Add services to the container.
@@ -22,15 +16,14 @@ builder.Services.AddControllers();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                           ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-var config = TypeAdapterConfig.GlobalSettings;
+TypeAdapterConfig config = TypeAdapterConfig.GlobalSettings;
 
-config.RegisterMappings();
+config.Scan(typeof(Program).Assembly);
 
-new MapsterConfig().Register(config);
 
 builder.Services.AddSingleton(config);
 
-builder.Services.AddScoped<IMapper, Mapper>();
+builder.Services.AddScoped<IMapper, ServiceMapper>();
 
 builder.Services.AddDbContext<AppDbContext>(options => { options.UseSqlite(connectionString); });
 
@@ -52,7 +45,7 @@ builder.Services.AddRouting(options =>
     options.LowercaseQueryStrings = true; // Forces lowercase query strings
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -67,4 +60,21 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+CultureInfo cultureInfo = new ("pt-BR");
+
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+// No ASP.NET Core, configure o middleware de localização
+RequestLocalizationOptions localizationOptions = new()
+{
+    DefaultRequestCulture = new RequestCulture(cultureInfo),
+    SupportedCultures = [cultureInfo],
+    SupportedUICultures = [cultureInfo]
+};
+
+app.UseRequestLocalization(localizationOptions);
+
+
+
+await app.RunAsync();
