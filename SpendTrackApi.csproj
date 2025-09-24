@@ -8,9 +8,7 @@
     </PropertyGroup>
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <!-- Garante suporte a C# moderno -->
         <AnalysisLevel>latest</AnalysisLevel>
-        <!-- Ativa os estilos e regras mais recentes -->
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     </PropertyGroup>
     <ItemGroup>

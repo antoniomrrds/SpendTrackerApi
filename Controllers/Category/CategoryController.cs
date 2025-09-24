@@ -105,19 +105,20 @@ public sealed class CategoryController : ControllerBase
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
         if (id <= 0)
-        {
             return BadRequest("Id must be greater than 0.");
-        }
 
-        Models.Category? existingCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-        if (existingCategory == null)
+        int deletedCount = await _context.Categories
+            .Where(c => c.Id == id && !_context.Expenses.Any(e => e.CategoryId == c.Id))
+            .ExecuteDeleteAsync();
+
+        if (deletedCount != 0)
         {
-            return NotFound("Category not found");
+            return Ok("Category deleted successfully.");
         }
 
-        _context.Categories.Remove(existingCategory);
-
-        await _context.SaveChangesAsync();
-        return Ok("Category deleted successfully");
+        bool exists = await _context.Categories.AnyAsync(c => c.Id == id);
+        return !exists
+            ? NotFound("Category not found.")
+            : Conflict("Cannot delete categories with associated expenses.");
     }
 }

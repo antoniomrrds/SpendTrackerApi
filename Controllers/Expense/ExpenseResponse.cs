@@ -9,5 +9,5 @@ internal record ExpenseResponse
     public decimal Value { get; init; }
     public int CategoryId { get; init; }
     public string CategoryName { get; init; } = string.Empty;
-    public string ValueFormated => Value.ToString("C", new System.Globalization.CultureInfo("pt-BR"));
+    public string FormattedValue  => Value.ToString("C");
 }

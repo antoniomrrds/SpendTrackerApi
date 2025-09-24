@@ -148,4 +148,12 @@ public sealed class ExpenseController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok("Expense deleted successfully.");
     }
+
+    [HttpGet("total")]
+    public async Task<IActionResult> GetTotalExpensesAmount()
+    {
+        decimal totalExpense = await _context.Expenses.SumAsync(x => x.Value);
+        string formattedTotalExpense = totalExpense.ToString("C");
+        return Ok(formattedTotalExpense);
+    }
 }
