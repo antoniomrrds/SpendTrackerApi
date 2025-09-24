@@ -8,12 +8,6 @@
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
 
-## 📖 Sobre o Projeto
-
-A **SpendTrack API** é uma solução completa para gerenciamento de gastos pessoais, desenvolvida com ASP.NET Core 9.0. A API oferece funcionalidades para criar, gerenciar categorias de gastos e registrar despesas de forma organizada e eficiente.
-
----
-
 ## 🧪 Versão 1 - Arquitetura Acoplada
 
 > ⚠️ Esta é a **primeira versão** da SpendTrack API e foi construída com arquitetura **acoplada** por escolha intencional.
