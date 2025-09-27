@@ -66,4 +66,22 @@ public class CategoryTests
         //Assert
         category.Name.ShouldBe(nameWithoutSpaces);
     }
+    
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    [InlineData("     ")]
+    public void SetName_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
+    {
+        //Arrange
+        string expectedName = _faker.Name.FirstName();
+        string expectedMessage = ValidationMessages.RequiredField.FormatInvariant(nameof(Category.Name));
+        Category category = new(expectedName);
+        
+        //Act
+        DomainException exception = Should.Throw<DomainException>(() => category.Name = invalidName!);
+
+        //Assert
+        exception.Message.ShouldBe(expectedMessage);
+    }
 }

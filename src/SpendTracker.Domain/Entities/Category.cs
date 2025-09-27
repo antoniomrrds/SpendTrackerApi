@@ -11,20 +11,20 @@ internal sealed class Category
     public string Name
     {
         get => _name;
-        set => _name = value.Trim();
+        set
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                _name = value.Trim();
+                return;
+            }
+            string nameErrorMessage = ValidationMessages.RequiredField.FormatInvariant(nameof(Name));
+            throw new DomainException(nameErrorMessage);
+        }
     }
 
     public Category(string name)
     {
-
-        if (string.IsNullOrWhiteSpace(name)) 
-        {
-            string nameErrorMessage = ValidationMessages.RequiredField.FormatInvariant(nameof(Name));
-            throw new DomainException(nameErrorMessage);
-        }
-
         Name = name;
-        
     }
-    
 }
