@@ -17,15 +17,10 @@ public class CategoryTests
         ValidationMessages.RequiredField.FormatInvariant(FieldName);
 
     private string RandomValidName => _faker.Name.FirstName();
-    private string RandomValidDescription => _faker.Lorem.Sentence();       
+    private string RandomValidDescription => _faker.Lorem.Sentence();
 
     private Category CreateValidCategory() => new(RandomValidName);
 
-    private static void AssertRequiredFieldException(Action action)
-    {
-        DomainException exception = Should.Throw<DomainException>(action);
-        exception.Message.ShouldBe(ExpectedMessage);
-    }
 
     [Fact]
     public void Constructor_GivenValidParameters_ShouldSetPropertiesCorrectly()
@@ -34,8 +29,7 @@ public class CategoryTests
         string expectedName = RandomValidName;
         string expectedDescription = RandomValidDescription;
         // Act
-        Category category = new(expectedName,expectedDescription);
-
+        Category category = new(expectedName, expectedDescription);
         // Assert
         category.Id.ShouldNotBe(Guid.Empty);
         category.Name.ShouldBe(expectedName);
@@ -46,8 +40,11 @@ public class CategoryTests
     [MemberData(nameof(TestData.InvalidNames), MemberType = typeof(TestData))]
     public void Constructor_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
     {
-        // Act & Assert
-        AssertRequiredFieldException(() => _ = new Category(invalidName!));
+        // Act 
+        void CategoryThrow() => _ = new Category(invalidName!);
+        // Assert
+        DomainException exception = Should.Throw<DomainException>(CategoryThrow);
+        exception.Message.ShouldBe(ExpectedMessage);
     }
 
     [Fact]
@@ -56,10 +53,8 @@ public class CategoryTests
         // Arrange
         string nameWithoutSpaces = RandomValidName;
         string nameWithSpaces = $"  {nameWithoutSpaces}  ";
-
         // Act
         Category category = new(nameWithSpaces);
-
         // Assert
         category.Name.ShouldBe(nameWithoutSpaces);
     }
@@ -70,10 +65,8 @@ public class CategoryTests
         // Arrange
         string nameWithoutSpaces = RandomValidName;
         string nameWithSpaces = $"  {nameWithoutSpaces}  ";
-
         // Act
         Category category = new(nameWithoutSpaces) { Name = nameWithSpaces };
-
         // Assert
         category.Name.ShouldBe(nameWithoutSpaces);
     }
@@ -84,8 +77,28 @@ public class CategoryTests
     {
         // Arrange
         Category category = CreateValidCategory();
-
-        // Act & Assert
-        AssertRequiredFieldException(() => category.Name = invalidName!);
+        // Act 
+        Action CategoryThrow = () => category.Name = invalidName!;
+        //Assert
+        DomainException exception = Should.Throw<DomainException>(CategoryThrow);
+        exception.Message.ShouldBe(ExpectedMessage);
     }
+
+    [Fact]
+    public void ConstructorOrSetDescription_GivenMoreThan200Chars_ThenShouldThrowDomainException()
+    {
+        // Arrange
+        string expectedDescription = _faker.Lorem.Letter(201);
+        string expectedMessage = ValidationMessages.MaxChars.FormatInvariant(nameof(Category.Description), 200);
+
+        // Act & Assert constructor
+        DomainException ctorException = Should.Throw<DomainException>(() => _ = new Category(RandomValidName,expectedDescription));
+        ctorException.Message.ShouldBe(expectedMessage);
+
+        // Act & Assert setter
+        Category category = new(RandomValidName);
+        DomainException setterException = Should.Throw<DomainException>(() => category.Description = expectedDescription);
+        setterException.Message.ShouldBe(expectedMessage);
+    }
+    
 }

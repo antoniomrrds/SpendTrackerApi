@@ -3,10 +3,11 @@ using FluentValidation.Results;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SpendTracker.Api.Controllers.Expense;
 using SpendTracker.Api.Extensions;
 using SpendTracker.Api.Data;
 
-namespace SpendTracker.Api.Controllers.Expense;
+namespace SpendTrackerApi.Controllers.Expense;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -1,7 +1,6 @@
 ﻿using Mapster;
-using SpendTracker.Api.Controllers.Category;
 
-namespace SpendTracker.Api.Mapping.Category;
+namespace SpendTrackerApi.Mapping.Category;
 
 internal sealed class CategoryMapping : IRegister
 {

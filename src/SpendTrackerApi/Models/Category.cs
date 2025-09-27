@@ -1,4 +1,4 @@
-﻿namespace SpendTracker.Api.Models;
+﻿namespace SpendTrackerApi.Models;
 
 public sealed class Category
 {
