@@ -17,7 +17,7 @@ internal sealed class Category
             throw new DomainException(nameErrorMessage);
         }
         
-        Name = name;
+        Name = name.Trim();
     }
     
 }

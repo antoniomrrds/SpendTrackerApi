@@ -9,19 +9,19 @@ namespace SpendTracker.Domain.Tests.Entities;
 
 public class CategoryTests
 {
- 
     private readonly Faker _faker = new();
+
     [Fact]
     public void Constructor_GivenWithValidName_ThenShouldSetNamePropertyCorrectly()
     {
         //Arrange
-        string nameExpected = _faker.Name.FirstName();
-        
+        string expectedName = _faker.Name.FirstName();
+
         //Act
-        Category category = new(nameExpected);
-        
+        Category category = new(expectedName);
+
         //Assert
-        category.Name.ShouldBe(nameExpected);
+        category.Name.ShouldBe(expectedName);
     }
 
     [Theory]
@@ -32,11 +32,23 @@ public class CategoryTests
     {
         //Arrange
         string expectedMessage = ValidationMessages.RequiredField.FormatInvariant(nameof(Category.Name));
-        
+
         //Act
         DomainException exception = Should.Throw<DomainException>(() => new Category(invalidName!));
-        
+
         //Assert
-        exception.Message.ShouldBe(expectedMessage); 
+        exception.Message.ShouldBe(expectedMessage);
+    }
+
+    [Fact]
+    public void Constructor_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
+    {
+        //Arrange
+        string nameWithoutSpaces  = _faker.Name.FindName(); 
+        string nameWithSpaces  = $"  {nameWithoutSpaces}  ";
+        //Act
+        Category category = new(nameWithSpaces);
+        //Assert
+        category.Name.ShouldBe(nameWithoutSpaces);
     }
 }
