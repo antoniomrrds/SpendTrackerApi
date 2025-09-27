@@ -35,7 +35,7 @@ internal sealed class Category
         const int MAXCHAR = 200;
         string valueWithoutSpace = value.Trim();
         if (valueWithoutSpace.Length == 0 || valueWithoutSpace.Length <= MAXCHAR && !string.IsNullOrWhiteSpace(value))
-            return value.Trim();
+            return valueWithoutSpace;
         
         string message = ValidationMessages.MaxChars.FormatInvariant(fieldName, MAXCHAR);
         throw new DomainException(message);

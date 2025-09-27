@@ -13,15 +13,14 @@ public class CategoryTests
     private readonly Faker _faker = new();
     private const string FieldName = nameof(Category.Name);
 
-    private static string ExpectedMessage =>
+    private static string ExpectedNameMessage =>
         ValidationMessages.RequiredField.FormatInvariant(FieldName);
 
     private string RandomValidName => _faker.Name.FirstName();
     private string RandomValidDescription => _faker.Lorem.Sentence();
 
     private Category CreateValidCategory() => new(RandomValidName);
-
-
+    
     [Fact]
     public void Constructor_GivenValidParameters_ShouldSetPropertiesCorrectly()
     {
@@ -35,55 +34,39 @@ public class CategoryTests
         category.Name.ShouldBe(expectedName);
         category.Description.ShouldBe(expectedDescription);
     }
-
+    
     [Theory]
     [MemberData(nameof(TestData.InvalidNames), MemberType = typeof(TestData))]
-    public void Constructor_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
-    {
-        // Act 
-        void CategoryThrow() => _ = new Category(invalidName!);
-        // Assert
-        DomainException exception = Should.Throw<DomainException>(CategoryThrow);
-        exception.Message.ShouldBe(ExpectedMessage);
-    }
-
-    [Fact]
-    public void Constructor_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
-    {
-        // Arrange
-        string nameWithoutSpaces = RandomValidName;
-        string nameWithSpaces = $"  {nameWithoutSpaces}  ";
-        // Act
-        Category category = new(nameWithSpaces);
-        // Assert
-        category.Name.ShouldBe(nameWithoutSpaces);
-    }
-
-    [Fact]
-    public void SetName_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
-    {
-        // Arrange
-        string nameWithoutSpaces = RandomValidName;
-        string nameWithSpaces = $"  {nameWithoutSpaces}  ";
-        // Act
-        Category category = new(nameWithoutSpaces) { Name = nameWithSpaces };
-        // Assert
-        category.Name.ShouldBe(nameWithoutSpaces);
-    }
-
-    [Theory]
-    [MemberData(nameof(TestData.InvalidNames), MemberType = typeof(TestData))]
-    public void SetName_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
+    public void ConstructorOrSetName_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
     {
         // Arrange
         Category category = CreateValidCategory();
-        // Act 
-        Action CategoryThrow = () => category.Name = invalidName!;
-        //Assert
-        DomainException exception = Should.Throw<DomainException>(CategoryThrow);
-        exception.Message.ShouldBe(ExpectedMessage);
-    }
 
+        // Act & Assert constructor
+        DomainException ctorException = Should.Throw<DomainException>(() => _ = new Category(invalidName!));
+        ctorException.Message.ShouldBe(ExpectedNameMessage);
+
+        // Act & Assert setter
+        DomainException setterException = Should.Throw<DomainException>(() => category.Name = invalidName!);
+        setterException.Message.ShouldBe(ExpectedNameMessage);
+    }
+    
+    [Fact]
+    public void ConstructorAndSetName_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
+    {
+        // Arrange
+        string nameWithoutSpaces = RandomValidName;
+        string nameWithSpaces = $"  {nameWithoutSpaces}  ";
+
+        // Act
+        Category categoryFromConstructor = new(nameWithSpaces);
+        Category category = new(nameWithoutSpaces) { Name = nameWithSpaces };
+
+        // Assert
+        categoryFromConstructor.Name.ShouldBe(nameWithoutSpaces);
+        category.Name.ShouldBe(nameWithoutSpaces);
+    }
+    
     [Fact]
     public void ConstructorOrSetDescription_GivenMoreThan200Chars_ThenShouldThrowDomainException()
     {
@@ -96,7 +79,7 @@ public class CategoryTests
         ctorException.Message.ShouldBe(expectedMessage);
 
         // Act & Assert setter
-        Category category = new(RandomValidName);
+        Category category = CreateValidCategory();
         DomainException setterException = Should.Throw<DomainException>(() => category.Description = expectedDescription);
         setterException.Message.ShouldBe(expectedMessage);
     }
