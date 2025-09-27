@@ -44,10 +44,25 @@ public class CategoryTests
     public void Constructor_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
     {
         //Arrange
-        string nameWithoutSpaces  = _faker.Name.FindName(); 
+        string nameWithoutSpaces  = _faker.Name.FirstName(); 
         string nameWithSpaces  = $"  {nameWithoutSpaces}  ";
         //Act
         Category category = new(nameWithSpaces);
+        //Assert
+        category.Name.ShouldBe(nameWithoutSpaces);
+    }
+
+    [Fact]
+    public void SetName_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
+    {
+        //Arrange
+        string nameWithoutSpaces = _faker.Name.FirstName();
+        string nameWithSpaces = $"  {nameWithoutSpaces}  ";
+        //Act
+        Category category = new(nameWithSpaces)
+        {
+            Name = nameWithSpaces
+        };
         //Assert
         category.Name.ShouldBe(nameWithoutSpaces);
     }

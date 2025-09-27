@@ -6,8 +6,14 @@ namespace SpendTracker.Domain.Entities;
 
 internal sealed class Category
 {
-    public string Name { get; set; }
-    
+    private string _name = string.Empty;
+
+    public string Name
+    {
+        get => _name;
+        set => _name = value.Trim();
+    }
+
     public Category(string name)
     {
 
@@ -16,8 +22,9 @@ internal sealed class Category
             string nameErrorMessage = ValidationMessages.RequiredField.FormatInvariant(nameof(Name));
             throw new DomainException(nameErrorMessage);
         }
+
+        Name = name;
         
-        Name = name.Trim();
     }
     
 }
