@@ -4,84 +4,85 @@ using SpendTracker.Domain.Entities;
 using SpendTracker.Domain.Errors;
 using SpendTracker.Domain.Extensions;
 using SpendTracker.Domain.Resources;
+using SpendTracker.Domain.Tests.Helpers;
 
 namespace SpendTracker.Domain.Tests.Entities;
 
 public class CategoryTests
 {
     private readonly Faker _faker = new();
+    private const string FieldName = nameof(Category.Name);
+
+    private static string ExpectedMessage =>
+        ValidationMessages.RequiredField.FormatInvariant(FieldName);
+
+    private string RandomValidName => _faker.Name.FirstName();
+
+    private Category CreateValidCategory() => new(RandomValidName);
+
+    private static void AssertRequiredFieldException(Action action)
+    {
+        DomainException exception = Should.Throw<DomainException>(action);
+        exception.Message.ShouldBe(ExpectedMessage);
+    }
 
     [Fact]
-    public void Constructor_GivenWithValidName_ThenShouldSetNamePropertyCorrectly()
+    public void Constructor_GivenValidName_ThenShouldSetNamePropertyCorrectly()
     {
-        //Arrange
-        string expectedName = _faker.Name.FirstName();
+        // Arrange
+        string expectedName = RandomValidName;
 
-        //Act
+        // Act
         Category category = new(expectedName);
 
-        //Assert
+        // Assert
         category.Name.ShouldBe(expectedName);
     }
 
     [Theory]
-    [InlineData("")]
-    [InlineData(null)]
-    [InlineData("     ")]
-    public void Constructor_GivenWithInvalidName_ThenShouldThrowDomainException(string? invalidName)
+    [MemberData(nameof(TestData.InvalidNames), MemberType = typeof(TestData))]
+    public void Constructor_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
     {
-        //Arrange
-        string expectedMessage = ValidationMessages.RequiredField.FormatInvariant(nameof(Category.Name));
-
-        //Act
-        DomainException exception = Should.Throw<DomainException>(() => new Category(invalidName!));
-
-        //Assert
-        exception.Message.ShouldBe(expectedMessage);
+        // Act & Assert
+        AssertRequiredFieldException(() => _ = new Category(invalidName!));
     }
 
     [Fact]
     public void Constructor_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
     {
-        //Arrange
-        string nameWithoutSpaces  = _faker.Name.FirstName(); 
-        string nameWithSpaces  = $"  {nameWithoutSpaces}  ";
-        //Act
+        // Arrange
+        string nameWithoutSpaces = RandomValidName;
+        string nameWithSpaces = $"  {nameWithoutSpaces}  ";
+
+        // Act
         Category category = new(nameWithSpaces);
-        //Assert
+
+        // Assert
         category.Name.ShouldBe(nameWithoutSpaces);
     }
 
     [Fact]
     public void SetName_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
     {
-        //Arrange
-        string nameWithoutSpaces = _faker.Name.FirstName();
+        // Arrange
+        string nameWithoutSpaces = RandomValidName;
         string nameWithSpaces = $"  {nameWithoutSpaces}  ";
-        //Act
-        Category category = new(nameWithSpaces)
-        {
-            Name = nameWithSpaces
-        };
-        //Assert
+
+        // Act
+        Category category = new(nameWithoutSpaces) { Name = nameWithSpaces };
+
+        // Assert
         category.Name.ShouldBe(nameWithoutSpaces);
     }
-    
+
     [Theory]
-    [InlineData("")]
-    [InlineData(null)]
-    [InlineData("     ")]
+    [MemberData(nameof(TestData.InvalidNames), MemberType = typeof(TestData))]
     public void SetName_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
     {
-        //Arrange
-        string expectedName = _faker.Name.FirstName();
-        string expectedMessage = ValidationMessages.RequiredField.FormatInvariant(nameof(Category.Name));
-        Category category = new(expectedName);
-        
-        //Act
-        DomainException exception = Should.Throw<DomainException>(() => category.Name = invalidName!);
+        // Arrange
+        Category category = CreateValidCategory();
 
-        //Assert
-        exception.Message.ShouldBe(expectedMessage);
+        // Act & Assert
+        AssertRequiredFieldException(() => category.Name = invalidName!);
     }
 }
