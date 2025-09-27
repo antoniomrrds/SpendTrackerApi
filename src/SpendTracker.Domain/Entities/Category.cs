@@ -1,6 +1,4 @@
-﻿using SpendTracker.Domain.Errors;
-using SpendTracker.Domain.Extensions;
-using SpendTracker.Domain.Resources;
+﻿using SpendTracker.Domain.Validation;
 
 namespace SpendTracker.Domain.Entities;
 
@@ -14,13 +12,13 @@ internal sealed class Category
     public string Name
     {
         get => _name;
-        set => _name = ValidateRequiredAndTrim(value, nameof(Name));
+        set => _name = DomainValidation.RequiredAndTrim(value, nameof(Name));
     }
 
     public string Description
     {
         get => _description;
-        set => _description = ValidateMax200Chars(value, nameof(Description));
+        set => _description = DomainValidation.MaxLength(value, nameof(Description), 200);
     }
 
     public Category(string name, string description = "")
@@ -29,26 +27,5 @@ internal sealed class Category
         Name = name;
         Description = description;
     }
-
-    private static string ValidateMax200Chars(string value, string fieldName = "")
-    {
-        const int MAXCHAR = 200;
-        string valueWithoutSpace = value.Trim();
-        if (valueWithoutSpace.Length == 0 || valueWithoutSpace.Length <= MAXCHAR && !string.IsNullOrWhiteSpace(value))
-            return valueWithoutSpace;
-        
-        string message = ValidationMessages.MaxChars.FormatInvariant(fieldName, MAXCHAR);
-        throw new DomainException(message);
-    }
-
-    private static string ValidateRequiredAndTrim(string value, string fieldName = "")
-    {
-        if (!string.IsNullOrWhiteSpace(value))
-        {
-            return value.Trim();
-        }
-
-        string message = ValidationMessages.RequiredField.FormatInvariant(fieldName);
-        throw new DomainException(message);
-    }
+    
 }

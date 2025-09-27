@@ -1,13 +1,8 @@
-﻿using Bogus;
-using Shouldly;
-using SpendTracker.Domain.Entities;
+﻿using SpendTracker.Domain.Entities;
 using SpendTracker.Domain.Errors;
 using SpendTracker.Domain.Extensions;
 using SpendTracker.Domain.Resources;
-using SpendTracker.Domain.Tests.Helpers;
-
 namespace SpendTracker.Domain.Tests.Entities;
-
 public class CategoryTests
 {
     private readonly Faker _faker = new();
