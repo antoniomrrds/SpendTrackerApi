@@ -17,6 +17,7 @@ public class CategoryTests
         ValidationMessages.RequiredField.FormatInvariant(FieldName);
 
     private string RandomValidName => _faker.Name.FirstName();
+    private string RandomValidDescription => _faker.Lorem.Sentence();       
 
     private Category CreateValidCategory() => new(RandomValidName);
 
@@ -27,16 +28,18 @@ public class CategoryTests
     }
 
     [Fact]
-    public void Constructor_GivenValidName_ThenShouldSetNamePropertyCorrectly()
+    public void Constructor_GivenValidParameters_ShouldSetPropertiesCorrectly()
     {
         // Arrange
         string expectedName = RandomValidName;
-
+        string expectedDescription = RandomValidDescription;
         // Act
-        Category category = new(expectedName);
+        Category category = new(expectedName,expectedDescription);
 
         // Assert
+        category.Id.ShouldNotBe(Guid.Empty);
         category.Name.ShouldBe(expectedName);
+        category.Description.ShouldBe(expectedDescription);
     }
 
     [Theory]
