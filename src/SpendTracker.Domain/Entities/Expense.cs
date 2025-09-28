@@ -1,3 +1,6 @@
+using SpendTracker.Domain.Errors;
+using SpendTracker.Domain.Extensions;
+using SpendTracker.Domain.Resources;
 using SpendTracker.Domain.Validation;
 
 namespace SpendTracker.Domain.Entities;
@@ -14,6 +17,10 @@ public sealed class Expense
     {
         ValidateDescription(description);
         ValidateAmount(amount);
+        if (date > DateTime.Now)
+        {
+            throw new DomainException(ValidationMessages.DateIsFuture.FormatInvariant(nameof(Date)));
+        }
         Id = Guid.NewGuid();
         Description = description;
         Amount = amount;
@@ -42,6 +49,11 @@ public sealed class Expense
 
     public void SetDate(DateTime newDate)
     {
+        if (newDate > DateTime.Now)
+        {
+            throw new DomainException(ValidationMessages.DateIsFuture.FormatInvariant(nameof(Date)));
+        }
+
         Date = newDate;
     }
 
