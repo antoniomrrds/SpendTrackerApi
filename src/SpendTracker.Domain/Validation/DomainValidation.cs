@@ -21,5 +21,12 @@ internal static class DomainValidation
             ? trimmed
             : throw new DomainException(ValidationMessages.MaxChars.FormatInvariant(fieldName, maxLength));
     }
+    
+    public static decimal GreaterThan(decimal number, string fieldName, decimal minValue)
+    {
+        return number > minValue
+            ? number
+            : throw new DomainException(ValidationMessages.GreaterThan.FormatInvariant(fieldName, minValue));
+    }
 
 }

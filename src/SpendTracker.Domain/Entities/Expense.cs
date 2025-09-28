@@ -1,21 +1,35 @@
+using SpendTracker.Domain.Validation;
+
 namespace SpendTracker.Domain.Entities;
 
 internal sealed class Expense
 {
     public Guid Id { get; private set; }
     public string Description { get; private set; } = string.Empty;
-    public decimal Value { get; private set; }
+    public decimal Amount { get; private set; }
     public DateTime Date { get; private set; }
     public Guid CategoryId { get; private set; }
-    public Expense(string description, decimal value, DateTime date, Guid categoryId)
+
+    public Expense(string description, decimal amount, DateTime date, Guid categoryId)
     {
+        ValidateAmount(amount);
         Id = Guid.NewGuid();
         Description = description;
-        Value = value;
+        Amount = amount;
         Date = date;
         CategoryId = categoryId;
     }
-    
-    internal Expense()
-    { }
-};
+
+    internal Expense() { }
+
+    public void SetAmount(decimal newAmount)
+    {
+        ValidateAmount(newAmount);
+        Amount = newAmount;
+    }
+
+    private static void ValidateAmount(decimal amount)
+    {
+        DomainValidation.GreaterThan(amount, nameof(Amount), 0);
+    }
+}

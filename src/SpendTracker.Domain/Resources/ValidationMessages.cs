@@ -5,11 +5,14 @@ namespace SpendTracker.Domain.Resources;
 public static class ValidationMessages
 {
     public static readonly CompositeFormat RequiredField =
-        CompositeFormat.Parse("O campo {0} é obrigatório.");
+        CompositeFormat.Parse("The field {0} is required.");
 
     public static readonly CompositeFormat InvalidValue =
-        CompositeFormat.Parse("O valor informado para {0} é inválido.");
+        CompositeFormat.Parse("The value provided for {0} is invalid.");
+        
+    public static readonly CompositeFormat GreaterThan =
+        CompositeFormat.Parse("The field {0} must be greater than {1}.");
     
     public static readonly CompositeFormat MaxChars =
-        CompositeFormat.Parse("O campo {0} não pode exceder {1} caracteres.");
+        CompositeFormat.Parse("The field {0} cannot exceed {1} characters.");
 }

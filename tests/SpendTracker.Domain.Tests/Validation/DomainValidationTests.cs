@@ -57,4 +57,30 @@ public class DomainValidationTests
         //Assert
         exception.Message.ShouldBe(ValidationMessages.MaxChars.FormatInvariant("Field", 200));
     }
+
+    [Fact]
+    public void GreaterThan_GivenValueGreaterThanMin_ThenShouldReturnValue()
+    {
+        //Arrange
+        const decimal value = 10;
+        const decimal minValue = 0;
+        //Act
+        decimal result = DomainValidation.GreaterThan(value, "Field", minValue);
+        //Assert
+        result.ShouldBe(value);
+        result.ShouldBeGreaterThan(minValue);
+    }
+
+    [Fact]
+    public void GreaterThan_GivenValueLessThanOrEqualToMin_ThenShouldThrow()
+    {
+        //Arrange
+        const decimal value = 50;
+        const decimal minValue = 100;
+        //Act
+        DomainException exception = Should.Throw<DomainException>(() =>
+            DomainValidation.GreaterThan(value, "Field", minValue));
+        //Assert
+        exception.Message.ShouldBe(ValidationMessages.GreaterThan.FormatInvariant("Field", minValue));
+    }
 }   
