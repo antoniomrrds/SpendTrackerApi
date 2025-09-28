@@ -15,12 +15,10 @@ public sealed class Expense
 
     public Expense(string description, decimal amount, DateTime date, Guid categoryId)
     {
-        ValidateDescription(description);
-        ValidateAmount(amount);
         ValidateDate(date);
         Id = Guid.NewGuid();
-        Description = description;
-        Amount = amount;
+        Description = ValidateDescription(description);
+        Amount = ValidateAmount(amount);
         Date = date;
         CategoryId = categoryId;
     }
@@ -33,9 +31,9 @@ public sealed class Expense
         Amount = newAmount;
     }
 
-    private static void ValidateAmount(decimal amount)
+    private static decimal ValidateAmount(decimal amount)
     {
-        DomainValidation.GreaterThan(amount, nameof(Amount), 0);
+       return DomainValidation.GreaterThan(amount, nameof(Amount), 0);
     }
 
     public void SetDescription(string newDescription)
@@ -58,8 +56,8 @@ public sealed class Expense
         }
     }
 
-    private static void ValidateDescription(string description)
+    private static string ValidateDescription(string description)
     {
-        DomainValidation.RequiredAndTrim(description, nameof(Description));
+     return  DomainValidation.RequiredAndTrim(description, nameof(Description));
     }
 }

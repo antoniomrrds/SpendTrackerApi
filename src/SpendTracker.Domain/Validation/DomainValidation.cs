@@ -29,4 +29,8 @@ internal static class DomainValidation
             : throw new DomainException(ValidationMessages.GreaterThan.FormatInvariant(fieldName, minValue));
     }
 
+    public static DateTime DateIsFuture(DateTime expectedDate)
+    {
+        return DateTime.Now;
+    }
 }

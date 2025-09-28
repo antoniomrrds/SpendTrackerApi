@@ -83,4 +83,18 @@ public class DomainValidationTests
         //Assert
         exception.Message.ShouldBe(ValidationMessages.GreaterThan.FormatInvariant("Field", minValue));
     }
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-7)]
+    [InlineData(-30)]
+    public void DateIsFuture_GivenDateIsNowOrPast_ThenShouldReturnValue(int daysOffset)
+    {
+        //Arrange
+        DateTime expectedDate = DateTime.Today.AddDays(daysOffset);
+        //Act
+        DateTime result = DomainValidation.DateIsFuture(expectedDate);
+        //Assert
+        result.ShouldBe(expectedDate);
+    }
 }   
