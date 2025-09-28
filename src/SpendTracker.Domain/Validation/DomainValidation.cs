@@ -31,6 +31,6 @@ internal static class DomainValidation
 
     public static DateTime DateIsFuture(DateTime expectedDate)
     {
-        return DateTime.Now;
+        return expectedDate;
     }
 }
