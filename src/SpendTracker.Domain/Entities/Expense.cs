@@ -2,7 +2,7 @@ using SpendTracker.Domain.Validation;
 
 namespace SpendTracker.Domain.Entities;
 
-internal sealed class Expense
+public sealed class Expense
 {
     public Guid Id { get; private set; }
     public string Description { get; private set; } = string.Empty;
@@ -31,5 +31,10 @@ internal sealed class Expense
     private static void ValidateAmount(decimal amount)
     {
         DomainValidation.GreaterThan(amount, nameof(Amount), 0);
+    }
+
+    public void SetDescription(string newDescription)
+    {
+        Description = newDescription;
     }
 }

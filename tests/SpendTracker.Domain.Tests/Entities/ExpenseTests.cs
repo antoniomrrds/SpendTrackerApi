@@ -26,22 +26,21 @@ public class ExpenseTests
     //     _output = output;
     // }
 
-    private readonly Expense _expenseMock = ExpenseMock.GetExpenseFaker();
-
+    private static readonly Expense ExpenseMock = Entities.ExpenseMock.GetExpenseFaker();
+    private readonly Expense _expenseCorrectlyValues = new(
+        ExpenseMock.Description,
+        ExpenseMock.Amount,
+        ExpenseMock.Date,
+        ExpenseMock.CategoryId);
+    
     [Fact]
     public void Constructor_GivenValidParameters_ThenShouldSetPropertiesCorrectly()
     {
-        //Act
-        Expense expense = new(_expenseMock.Description, 
-            _expenseMock.Amount,
-            _expenseMock.Date,
-            _expenseMock.CategoryId);
-        //Assert
-        expense.Id.ShouldNotBe(Guid.Empty);
-        expense.Description.ShouldBe(_expenseMock.Description);
-        expense.Amount.ShouldBe(_expenseMock.Amount);
-        expense.Date.ShouldBe(_expenseMock.Date);
-        expense.CategoryId.ShouldNotBe(Guid.Empty);
+        _expenseCorrectlyValues.Id.ShouldNotBe(Guid.Empty);
+        _expenseCorrectlyValues.Description.ShouldBe(ExpenseMock.Description);
+        _expenseCorrectlyValues.Amount.ShouldBe(ExpenseMock.Amount);
+        _expenseCorrectlyValues.Date.ShouldBe(ExpenseMock.Date);
+        _expenseCorrectlyValues.CategoryId.ShouldNotBe(Guid.Empty);
     }
 
     [Fact]
@@ -61,25 +60,20 @@ public class ExpenseTests
     [Fact]
     public void ConstructorAndSetAmount_GivenValueLessThanOrEqualToMin_ThenShouldThrow()
     {
+        //Arrange
         const decimal expectedIncorrectValue = 0;
         const decimal minValue = 0;
-        //Arrange 
-        Expense expense = new(
-            _expenseMock.Description,
-            _expenseMock.Amount,
-            _expenseMock.Date,
-            _expenseMock.CategoryId);
 
         // Act & Assert constructor
-        string expectedMessage = ValidationMessages.GreaterThan.FormatInvariant(nameof(expense.Amount), minValue);
-        DomainException ctorException = Should.Throw<DomainException>(() => _ = new Expense(_expenseMock.Description,
+        string expectedMessage = ValidationMessages.GreaterThan.FormatInvariant(nameof(_expenseCorrectlyValues.Amount), minValue);
+        DomainException ctorException = Should.Throw<DomainException>(() => _ = new Expense(ExpenseMock.Description,
             expectedIncorrectValue,
-            _expenseMock.Date,
-            _expenseMock.CategoryId)
+            ExpenseMock.Date,
+            ExpenseMock.CategoryId)
         );
         ctorException.Message.ShouldBe(expectedMessage);
         // Act & Assert setter
-        DomainException setterException = Should.Throw<DomainException>(() => expense.SetAmount(expectedIncorrectValue));
+        DomainException setterException = Should.Throw<DomainException>(() => _expenseCorrectlyValues.SetAmount(expectedIncorrectValue));
         setterException.Message.ShouldBe(expectedMessage);
     }
 
@@ -89,14 +83,28 @@ public class ExpenseTests
         //Arrange 
         const decimal expectedAmount = 1;
         // Act & Assert constructor
-        Expense expense = new(
-            _expenseMock.Description,
-            _expenseMock.Amount,
-            _expenseMock.Date,
-            _expenseMock.CategoryId);
-        expense.Amount.ShouldBe(_expenseMock.Amount);
+        _expenseCorrectlyValues.Amount.ShouldBe(ExpenseMock.Amount);
         // Act & Assert setter
-        expense.SetAmount(expectedAmount); 
-        expense.Amount.ShouldBe(expectedAmount);
+        _expenseCorrectlyValues.SetAmount(expectedAmount); 
+        _expenseCorrectlyValues.Amount.ShouldBe(expectedAmount);
+    }
+
+    [Theory]
+    [MemberData(nameof(TestData.InvalidNames), MemberType = typeof(TestData))]
+    public void ConstructorAndSetDescription_GivenIsEmptyOrNull_ThenShouldThrow(string? invalidValues)
+    {
+        
+        // Act & Assert constructor
+        string expectedMessage = ValidationMessages.RequiredField.FormatInvariant(nameof(_expenseCorrectlyValues.Description));
+        DomainException ctorException = Should.Throw<DomainException>(() => _ = new Expense(invalidValues!,
+            ExpenseMock.Amount,
+            ExpenseMock.Date,
+            ExpenseMock.CategoryId)
+        );
+        ctorException.Message.ShouldBe(expectedMessage);
+
+        // Act & Assert setter
+        DomainException setterException = Should.Throw<DomainException>(() => _expenseCorrectlyValues.SetDescription(invalidValues!));
+        setterException.Message.ShouldBe(expectedMessage);
     }
 }
