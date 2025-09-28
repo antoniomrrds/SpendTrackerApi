@@ -17,10 +17,7 @@ public sealed class Expense
     {
         ValidateDescription(description);
         ValidateAmount(amount);
-        if (date > DateTime.Now)
-        {
-            throw new DomainException(ValidationMessages.DateIsFuture.FormatInvariant(nameof(Date)));
-        }
+        ValidateDate(date);
         Id = Guid.NewGuid();
         Description = description;
         Amount = amount;
@@ -46,15 +43,19 @@ public sealed class Expense
         ValidateDescription(newDescription);
         Description = newDescription;
     }
-
+    
     public void SetDate(DateTime newDate)
     {
-        if (newDate > DateTime.Now)
+        ValidateDate(newDate);
+        Date = newDate;
+    }
+    
+    private static void ValidateDate(DateTime date)
+    {
+        if (date > DateTime.Now)
         {
             throw new DomainException(ValidationMessages.DateIsFuture.FormatInvariant(nameof(Date)));
         }
-
-        Date = newDate;
     }
 
     private static void ValidateDescription(string description)
