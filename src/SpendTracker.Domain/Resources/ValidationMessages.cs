@@ -9,7 +9,10 @@ public static class ValidationMessages
 
     public static readonly CompositeFormat InvalidValue =
         CompositeFormat.Parse("The value provided for {0} is invalid.");
-        
+    
+    public static readonly CompositeFormat DateIsFuture =
+        CompositeFormat.Parse("The provided date '{0}' cannot be in the future.");
+    
     public static readonly CompositeFormat GreaterThan =
         CompositeFormat.Parse("The field {0} must be greater than {1}.");
     

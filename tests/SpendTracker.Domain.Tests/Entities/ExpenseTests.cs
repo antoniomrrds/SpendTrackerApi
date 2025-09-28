@@ -128,11 +128,28 @@ public class ExpenseTests
     {
         DateTime expectedDate = DateTime.Today.AddDays(daysOffset);
         // Act & Assert constructor
-        Expense expense = new(ExpenseMock.Description, 50, expectedDate, ExpenseMock.CategoryId);
+        Expense expense = new(ExpenseMock.Description, ExpenseMock.Amount, expectedDate, ExpenseMock.CategoryId);
 
         expense.Date.ShouldBe(expectedDate);
         // Act & Assert setter
         expense.SetDate(expectedDate);
         expense.Date.ShouldBe(expectedDate);
+    }
+
+    [Fact]
+    public void ConstructorAndSetDate_GivenDateIsFuture_ThenShouldThrow()
+    {
+        DateTime expectedDate = DateTime.Today.AddDays(1);
+        // Act & Assert constructor
+        string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(nameof(_expenseCorrectlyValues.Date));
+        DomainException ctorException = Should.Throw<DomainException>(() => _ = new Expense(ExpenseMock.Description,
+            ExpenseMock.Amount,
+            expectedDate,
+            ExpenseMock.CategoryId));
+        ctorException.Message.ShouldBe(expectedMessage);
+
+        // Act & Assert setter
+        DomainException setterException = Should.Throw<DomainException>(() => _expenseCorrectlyValues.SetDate(expectedDate));
+        setterException.Message.ShouldBe(expectedMessage);
     }
 }
