@@ -5,7 +5,7 @@
   <ItemGroup>
     <!-- Mapster -->
     <PackageVersion Include="Bogus" Version="35.6.3" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.4"  />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Mapster" Version="7.4.0" />
     <PackageVersion Include="Mapster.DependencyInjection" Version="1.0.1" />
     <!-- API -->
