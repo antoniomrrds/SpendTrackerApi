@@ -31,6 +31,8 @@ internal static class DomainValidation
 
     public static DateTime DateIsFuture(DateTime expectedDate)
     {
-        return expectedDate;
+        return expectedDate > DateTime.Today
+            ? throw new DomainException(ValidationMessages.DateIsFuture.FormatInvariant(expectedDate)) 
+            : expectedDate;
     }
 }

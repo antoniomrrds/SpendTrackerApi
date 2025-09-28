@@ -141,7 +141,7 @@ public class ExpenseTests
     {
         DateTime expectedDate = DateTime.Today.AddDays(1);
         // Act & Assert constructor
-        string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(nameof(_expenseCorrectlyValues.Date));
+        string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(expectedDate);
         DomainException ctorException = Should.Throw<DomainException>(() => _ = new Expense(ExpenseMock.Description,
             ExpenseMock.Amount,
             expectedDate,

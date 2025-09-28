@@ -50,9 +50,9 @@ public sealed class Expense
     
     private static void ValidateDate(DateTime date)
     {
-        if (date > DateTime.Now)
+        if (date > DateTime.Today)
         {
-            throw new DomainException(ValidationMessages.DateIsFuture.FormatInvariant(nameof(Date)));
+            throw new DomainException(ValidationMessages.DateIsFuture.FormatInvariant(date));
         }
     }
 
