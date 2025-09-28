@@ -42,7 +42,7 @@ public sealed class Expense
 
     public void SetDate(DateTime newDate)
     {
-       
+        Date = newDate;
     }
 
     private static void ValidateDescription(string description)
