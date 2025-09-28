@@ -107,4 +107,16 @@ public class ExpenseTests
         DomainException setterException = Should.Throw<DomainException>(() => _expenseCorrectlyValues.SetDescription(invalidValues!));
         setterException.Message.ShouldBe(expectedMessage);
     }
+
+    [Fact]
+    public void ConstructorAndSetDescription_GivenIsNotNullAndNotEmpty_ThenShouldSetDescriptionCorrectly()
+    {
+        //Arrange 
+         string expectedDescription = ExpenseMock.Description;
+        // Act & Assert constructor
+        _expenseCorrectlyValues.Description.ShouldBe(expectedDescription);
+        // Act & Assert setter
+        _expenseCorrectlyValues.SetDescription(expectedDescription); 
+        _expenseCorrectlyValues.Description.ShouldBe(expectedDescription);
+    }
 }
