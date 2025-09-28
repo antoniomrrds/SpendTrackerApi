@@ -27,5 +27,7 @@ internal sealed class Category
         Name = name;
         Description = description;
     }
-    
+
+    internal Category() { }
+
 }

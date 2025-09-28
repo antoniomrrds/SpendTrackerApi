@@ -78,5 +78,15 @@ public class CategoryTests
         DomainException setterException = Should.Throw<DomainException>(() => category.Description = expectedDescription);
         setterException.Message.ShouldBe(expectedMessage);
     }
-    
+
+    [Fact]
+    public void Constructor_GivenParameterless_ThenShouldCreateObjectWithDefaultValues()
+    {
+        //Act
+        Category category = new();
+        //Assert
+        category.Id.ShouldBe(Guid.Empty);
+        category.Description.ShouldBe(string.Empty);
+        category.Name.ShouldBe(string.Empty);
+    }
 }

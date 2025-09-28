@@ -55,5 +55,4 @@ public class ExpenseTests
         expense.CategoryId.ShouldBe(Guid.Empty);
     }
     
-    
 }
