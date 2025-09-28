@@ -40,4 +40,20 @@ public class ExpenseTests
         expense.Date.ShouldBe(_expenseMock.Date);
         expense.CategoryId.ShouldNotBe(Guid.Empty);
     }
+    
+    [Fact]
+    public void Constructor_GivenParameterless_ThenShouldCreateObjectWithDefaultValues()
+    {
+        //Act
+        Expense expense = new();
+
+        //Assert
+        expense.Id.ShouldBe(Guid.Empty);
+        expense.Description.ShouldBe(string.Empty);
+        expense.Value.ShouldBe(0m);
+        expense.Date.ShouldBe(default);
+        expense.CategoryId.ShouldBe(Guid.Empty);
+    }
+    
+    
 }
