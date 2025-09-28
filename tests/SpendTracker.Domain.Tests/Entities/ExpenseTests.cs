@@ -119,4 +119,20 @@ public class ExpenseTests
         _expenseCorrectlyValues.SetDescription(expectedDescription); 
         _expenseCorrectlyValues.Description.ShouldBe(expectedDescription);
     }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-7)]
+    [InlineData(-30)]
+    public void ConstructorAndSetDate_GivenDateIsNowOrPast_ThenShouldSetDateCorrectly(int daysOffset)
+    {
+        DateTime expectedDate = DateTime.Today.AddDays(daysOffset);
+        // Act & Assert constructor
+        Expense expense = new(ExpenseMock.Description, 50, expectedDate, ExpenseMock.CategoryId);
+
+        expense.Date.ShouldBe(expectedDate);
+        // Act & Assert setter
+        expense.SetDate(expectedDate);
+        expense.Date.ShouldBe(expectedDate);
+    }
 }

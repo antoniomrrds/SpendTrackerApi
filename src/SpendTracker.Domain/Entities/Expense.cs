@@ -40,6 +40,11 @@ public sealed class Expense
         Description = newDescription;
     }
 
+    public void SetDate(DateTime newDate)
+    {
+       
+    }
+
     private static void ValidateDescription(string description)
     {
         DomainValidation.RequiredAndTrim(description, nameof(Description));
