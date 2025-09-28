@@ -13,6 +13,8 @@ public sealed class Expense
     public Expense(string description, decimal amount, DateTime date, Guid categoryId)
     {
         ValidateAmount(amount);
+        DomainValidation.RequiredAndTrim(description, nameof(Description));
+
         Id = Guid.NewGuid();
         Description = description;
         Amount = amount;
@@ -35,6 +37,7 @@ public sealed class Expense
 
     public void SetDescription(string newDescription)
     {
+        DomainValidation.RequiredAndTrim(newDescription, nameof(Description));
         Description = newDescription;
     }
 }
