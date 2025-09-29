@@ -1,0 +1,10 @@
+<Solution>
+    <Folder Name="/src/">
+        <Project Path=".\src\SpendTracker.Domain\SpendTracker.Domain.csproj" Type="Classic C#"/>
+        <Project Path=".\src\SpendTrackerApi\SpendTrackerApi.csproj" Type="Classic C#"/>
+    </Folder>
+    <Folder Name="/tests/">
+        <Project Path=".\tests\SpendTracker.Domain.Tests\SpendTracker.Domain.Tests.csproj" Type="Classic C#"/>
+    </Folder>
+</Solution>
+ 
