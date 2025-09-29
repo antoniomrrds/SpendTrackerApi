@@ -22,6 +22,11 @@ app.db
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# coverage reports
+coverage*.xml
+coverage-report/
+TestResults/
+
 # Mono auto generated files
 mono_crash.*
 
