@@ -38,12 +38,13 @@ public class CategoryTests
         Category category = CreateValidCategory();
 
         // Act & Assert constructor
-        DomainException ctorException = Should.Throw<DomainException>(() => _ = new Category(invalidName!));
-        ctorException.Message.ShouldBe(ExpectedNameMessage);
 
-        // Act & Assert setter
-        DomainException setterException = Should.Throw<DomainException>(() => category.Name = invalidName!);
-        setterException.Message.ShouldBe(ExpectedNameMessage);
+        void CallInvalidName() => _ = new Category(invalidName!);
+        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallInvalidName, ExpectedNameMessage);
+
+        void CallSetInvalidName() => category.SetName(invalidName!);
+         // Act & Assert setter
+        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallSetInvalidName, ExpectedNameMessage);
     }
     
     [Fact]
@@ -52,14 +53,15 @@ public class CategoryTests
         // Arrange
         string nameWithoutSpaces = RandomValidName;
         string nameWithSpaces = $"  {nameWithoutSpaces}  ";
-
-        // Act
-        Category categoryFromConstructor = new(nameWithSpaces);
-        Category category = new(nameWithoutSpaces) { Name = nameWithSpaces };
-
-        // Assert
-        categoryFromConstructor.Name.ShouldBe(nameWithoutSpaces);
+        
+        // Act & Assert setter
+        Category category = new(nameWithoutSpaces);
+        category.SetName(nameWithSpaces);
         category.Name.ShouldBe(nameWithoutSpaces);
+        
+        // Act & Assert constructor
+        Category categoryFromConstructor = new(nameWithSpaces);
+        categoryFromConstructor.Name.ShouldBe(nameWithoutSpaces);
     }
     
     [Fact]
@@ -70,13 +72,13 @@ public class CategoryTests
         string expectedMessage = ValidationMessages.MaxChars.FormatInvariant(nameof(Category.Description), 200);
 
         // Act & Assert constructor
-        DomainException ctorException = Should.Throw<DomainException>(() => _ = new Category(RandomValidName,expectedDescription));
-        ctorException.Message.ShouldBe(expectedMessage);
+        void CallMoreThan200Chars() => _ = new Category(RandomValidName, expectedDescription);
+        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallMoreThan200Chars, expectedMessage);
 
         // Act & Assert setter
         Category category = CreateValidCategory();
-        DomainException setterException = Should.Throw<DomainException>(() => category.Description = expectedDescription);
-        setterException.Message.ShouldBe(expectedMessage);
+        void CallSetMoreThan200Chars() => category.SetDescription(expectedDescription);
+        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallSetMoreThan200Chars, expectedMessage);
     }
 
     [Fact]

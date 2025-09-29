@@ -1,6 +1,3 @@
-using SpendTracker.Domain.Errors;
-using SpendTracker.Domain.Extensions;
-using SpendTracker.Domain.Resources;
 using SpendTracker.Domain.Validation;
 
 namespace SpendTracker.Domain.Entities;
@@ -15,11 +12,10 @@ public sealed class Expense
 
     public Expense(string description, decimal amount, DateTime date, Guid categoryId)
     {
-        ValidateDate(date);
         Id = Guid.NewGuid();
         Description = ValidateDescription(description);
         Amount = ValidateAmount(amount);
-        Date = date;
+        Date = ValidateDate(date);
         CategoryId = categoryId;
     }
 
@@ -27,37 +23,31 @@ public sealed class Expense
 
     public void SetAmount(decimal newAmount)
     {
-        ValidateAmount(newAmount);
-        Amount = newAmount;
-    }
-
-    private static decimal ValidateAmount(decimal amount)
-    {
-       return DomainValidation.GreaterThan(amount, nameof(Amount), 0);
+        Amount = ValidateAmount(newAmount);
     }
 
     public void SetDescription(string newDescription)
     {
-        ValidateDescription(newDescription);
-        Description = newDescription;
+        Description = ValidateDescription(newDescription);
     }
-    
+
     public void SetDate(DateTime newDate)
     {
-        ValidateDate(newDate);
-        Date = newDate;
+        Date = ValidateDate(newDate);
     }
-    
-    private static void ValidateDate(DateTime date)
+
+    private static DateTime ValidateDate(DateTime date)
     {
-        if (date > DateTime.Today)
-        {
-            throw new DomainException(ValidationMessages.DateIsFuture.FormatInvariant(date));
-        }
+        return DomainValidation.DateIsFuture(date);
     }
 
     private static string ValidateDescription(string description)
     {
-     return  DomainValidation.RequiredAndTrim(description, nameof(Description));
+        return DomainValidation.RequiredAndTrim(description, nameof(Description));
+    }
+
+    private static decimal ValidateAmount(decimal amount)
+    {
+        return DomainValidation.GreaterThan(amount, nameof(Amount), 0);
     }
 }
