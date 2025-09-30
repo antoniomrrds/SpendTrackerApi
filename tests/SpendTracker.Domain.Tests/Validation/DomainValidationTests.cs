@@ -12,14 +12,14 @@ public class DomainValidationTests
     private string RandomValidName => _faker.Name.FirstName();
 
     [Theory]
-    [MemberData(nameof(TestData.InvalidNames), MemberType = typeof(TestData))]
+    [MemberData(nameof(InvalidInputData.InvalidValues), MemberType = typeof(InvalidInputData))]
     public void RequiredAndTrim_GivenNullOrWhitespace_ThenShouldThrowDomainException(string? input)
     {
         //Arrange
         string expectedMessage = ValidationMessages.RequiredField.FormatInvariant("Field"); 
         //Act && Assert
-        void CallRequiredAndTrim() => DomainValidation.RequiredAndTrim(input!, "Field");
-        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallRequiredAndTrim, expectedMessage);
+        Action callRequiredAndTrim = () => DomainValidation.RequiredAndTrim(input!, "Field");
+        callRequiredAndTrim.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 
     [Fact]
@@ -54,8 +54,8 @@ public class DomainValidationTests
         string expectedMessage = ValidationMessages.MaxChars.FormatInvariant("Field", 200);
         
         //Act && Assert
-        void CallMaxLengthWithTooLongInput() => DomainValidation.MaxLength(inputExceedingMaxLengthExpected, "Field", 200);
-        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallMaxLengthWithTooLongInput,expectedMessage);
+        Action callMaxLengthWithTooLongInput = () => DomainValidation.MaxLength(inputExceedingMaxLengthExpected, "Field", 200);
+        callMaxLengthWithTooLongInput.ShouldThrowWithMessage<DomainException>(expectedMessage);
     
     }
 
@@ -80,8 +80,8 @@ public class DomainValidationTests
         const decimal minValue = 100;
         string expectedMessage = ValidationMessages.GreaterThan.FormatInvariant("Field", minValue);
         //Act && Assert
-        static void CallGreaterThan() => DomainValidation.GreaterThan(value, "Field", minValue); 
-        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallGreaterThan, expectedMessage);
+        Action callGreaterThan = () => DomainValidation.GreaterThan(value, "Field", minValue); 
+        callGreaterThan.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
     
     [Theory]
@@ -106,7 +106,7 @@ public class DomainValidationTests
         string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(expectedDate);
         
        //Act && Assert
-       void CallDateIsFuture() =>  DomainValidation.DateIsFuture(expectedDate); 
-       ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallDateIsFuture, expectedMessage);
+       Action callDateIsFuture = () =>  DomainValidation.DateIsFuture(expectedDate); 
+       callDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 }   

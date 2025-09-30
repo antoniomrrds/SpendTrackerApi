@@ -2,7 +2,9 @@
 using SpendTracker.Domain.Errors;
 using SpendTracker.Domain.Extensions;
 using SpendTracker.Domain.Resources;
+
 namespace SpendTracker.Domain.Tests.Entities;
+
 public class CategoryTests
 {
     private readonly Faker _faker = new();
@@ -15,7 +17,7 @@ public class CategoryTests
     private string RandomValidDescription => _faker.Lorem.Sentence();
 
     private Category CreateValidCategory() => new(RandomValidName);
-    
+
     [Fact]
     public void Constructor_GivenValidParameters_ShouldSetPropertiesCorrectly()
     {
@@ -29,41 +31,40 @@ public class CategoryTests
         category.Name.ShouldBe(expectedName);
         category.Description.ShouldBe(expectedDescription);
     }
-    
+
     [Theory]
-    [MemberData(nameof(TestData.InvalidNames), MemberType = typeof(TestData))]
+    [MemberData(nameof(InvalidInputData.InvalidValues), MemberType = typeof(InvalidInputData))]
     public void ConstructorOrSetName_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
     {
         // Arrange
         Category category = CreateValidCategory();
 
         // Act & Assert constructor
+        Action callInvalidName = () => _ = new Category(invalidName!);
+        callInvalidName.ShouldThrowWithMessage<DomainException>(ExpectedNameMessage);
 
-        void CallInvalidName() => _ = new Category(invalidName!);
-        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallInvalidName, ExpectedNameMessage);
-
-        void CallSetInvalidName() => category.SetName(invalidName!);
-         // Act & Assert setter
-        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallSetInvalidName, ExpectedNameMessage);
+        // Act & Assert setter
+        Action callSetInvalidName = () => category.SetName(invalidName!);
+        callSetInvalidName.ShouldThrowWithMessage<DomainException>(ExpectedNameMessage);
     }
-    
+
     [Fact]
     public void ConstructorAndSetName_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
     {
         // Arrange
         string nameWithoutSpaces = RandomValidName;
         string nameWithSpaces = $"  {nameWithoutSpaces}  ";
-        
+
         // Act & Assert setter
         Category category = new(nameWithoutSpaces);
         category.SetName(nameWithSpaces);
         category.Name.ShouldBe(nameWithoutSpaces);
-        
+
         // Act & Assert constructor
         Category categoryFromConstructor = new(nameWithSpaces);
         categoryFromConstructor.Name.ShouldBe(nameWithoutSpaces);
     }
-    
+
     [Fact]
     public void ConstructorOrSetDescription_GivenMoreThan200Chars_ThenShouldThrowDomainException()
     {
@@ -72,13 +73,13 @@ public class CategoryTests
         string expectedMessage = ValidationMessages.MaxChars.FormatInvariant(nameof(Category.Description), 200);
 
         // Act & Assert constructor
-        void CallMoreThan200Chars() => _ = new Category(RandomValidName, expectedDescription);
-        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallMoreThan200Chars, expectedMessage);
+        Action callMoreThan200Chars = () => _ = new Category(RandomValidName, expectedDescription);
+        callMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
         // Act & Assert setter
         Category category = CreateValidCategory();
-        void CallSetMoreThan200Chars() => category.SetDescription(expectedDescription);
-        ExceptionAssert.ShouldThrowWithMessage<DomainException>(CallSetMoreThan200Chars, expectedMessage);
+        Action callSetMoreThan200Chars = () => category.SetDescription(expectedDescription);
+        callSetMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 
     [Fact]

@@ -1,0 +1,21 @@
+<Project>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType> 
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Bogus"/>
+        <PackageReference Include="Shouldly"/>
+        <PackageReference Include="xunit.v3"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+        <PackageReference Include="xunit.runner.visualstudio"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="coverlet.collector"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+        <Compile Include="..\TestUtilities\GlobalUsings.cs" Link="GlobalUsings.cs"/>
+    </ItemGroup>
+</Project>
