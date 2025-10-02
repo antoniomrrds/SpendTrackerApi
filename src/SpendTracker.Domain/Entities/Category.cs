@@ -2,7 +2,7 @@
 
 namespace SpendTracker.Domain.Entities;
 
-internal sealed class Category
+public sealed class Category
 {
     public Guid Id { get; init; }
 
@@ -10,7 +10,8 @@ internal sealed class Category
 
     public string Description { get; private set; } = string.Empty;
     
-    internal Category() { }
+    //ef constructor
+    private Category() { }
 
     public Category(string name, string description = "")
     {

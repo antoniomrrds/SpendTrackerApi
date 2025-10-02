@@ -18,8 +18,8 @@ public sealed class Expense
         Date = ValidateDate(date);
         CategoryId = categoryId;
     }
-
-    internal Expense() { }
+    //ef constructor
+    private Expense() { }
 
     public void SetAmount(decimal newAmount)
     {

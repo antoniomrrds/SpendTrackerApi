@@ -6,7 +6,7 @@ internal sealed class CategoryMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<Models.Category, CategoryResponse>().TwoWays();
-        config.NewConfig<CategoryRequest, Models.Category>().TwoWays();
+        config.NewConfig<Models.CategoryEntity, CategoryResponse>().TwoWays();
+        config.NewConfig<CategoryRequest, Models.CategoryEntity>().TwoWays();
     }
 }

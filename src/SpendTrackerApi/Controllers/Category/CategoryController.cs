@@ -84,7 +84,7 @@ public sealed class CategoryController : ControllerBase
         Models.Category? existingCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
         if (existingCategory == null)
         {
-            return NotFound("Category not found");
+            return NotFound("CategoryEntity not found");
         }
 
         ValidationResult validationResult = await _validator.ValidateAsync(request);
@@ -113,12 +113,12 @@ public sealed class CategoryController : ControllerBase
 
         if (deletedCount != 0)
         {
-            return Ok("Category deleted successfully.");
+            return Ok("CategoryEntity deleted successfully.");
         }
 
         bool exists = await _context.Categories.AnyAsync(c => c.Id == id);
         return !exists
-            ? NotFound("Category not found.")
+            ? NotFound("CategoryEntity not found.")
             : Conflict("Cannot delete categories with associated expenses.");
     }
 }

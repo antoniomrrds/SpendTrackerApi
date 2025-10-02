@@ -7,14 +7,18 @@ namespace SpendTracker.Domain.Tests.Entities;
 
 internal static class ExpenseMock
 {
-    public static Expense GetExpenseFaker() => new Faker<Expense>()
-        .CustomInstantiator(_ => new Expense())
-        .RuleFor(e => e.Id, f => f.Random.Guid())
-        .RuleFor(e => e.Description, f => f.Commerce.ProductName())
-        .RuleFor(e => e.Amount, f => f.Finance.Amount(10, 5000))
-        .RuleFor(e => e.Date, f => f.Date.Recent(30))
-        .RuleFor(e => e.CategoryId, f => f.Random.Guid())
-        .Generate();
+    public static Expense CreateFakeExpense()
+    {
+        Faker<Expense> faker = new("pt_BR"); 
+        return faker
+            .CustomInstantiator(f => new Expense(
+                description: f.Commerce.ProductName(), 
+                amount: f.Finance.Amount(10, 5000),    
+                date: f.Date.Recent(30),          
+                categoryId: f.Random.Guid()            
+            ))
+            .Generate();
+    }
 }
 
 public class ExpenseTests
@@ -26,38 +30,23 @@ public class ExpenseTests
     //     _output = output;
     // }
 
-    private static readonly Expense ExpenseMock = Entities.ExpenseMock.GetExpenseFaker();
-
+    private static readonly Expense ExpenseMockInstance = ExpenseMock.CreateFakeExpense();
     private readonly Expense _expenseCorrectlyValues = new(
-        ExpenseMock.Description,
-        ExpenseMock.Amount,
-        ExpenseMock.Date,
-        ExpenseMock.CategoryId);
+        ExpenseMockInstance.Description,
+        ExpenseMockInstance.Amount,
+        ExpenseMockInstance.Date,
+        ExpenseMockInstance.CategoryId
+    );
 
     [Fact]
     public void Constructor_GivenValidParameters_ThenShouldSetPropertiesCorrectly()
     {
         _expenseCorrectlyValues.Id.ShouldNotBe(Guid.Empty);
-        _expenseCorrectlyValues.Description.ShouldBe(ExpenseMock.Description);
-        _expenseCorrectlyValues.Amount.ShouldBe(ExpenseMock.Amount);
-        _expenseCorrectlyValues.Date.ShouldBe(ExpenseMock.Date);
+        _expenseCorrectlyValues.Description.ShouldBe(ExpenseMockInstance.Description);
+        _expenseCorrectlyValues.Amount.ShouldBe(ExpenseMockInstance.Amount);
+        _expenseCorrectlyValues.Date.ShouldBe(ExpenseMockInstance.Date);
         _expenseCorrectlyValues.CategoryId.ShouldNotBe(Guid.Empty);
     }
-
-    [Fact]
-    public void Constructor_GivenParameterless_ThenShouldCreateObjectWithDefaultValues()
-    {
-        //Act
-        Expense expense = new();
-
-        //Assert
-        expense.Id.ShouldBe(Guid.Empty);
-        expense.Description.ShouldBe(string.Empty);
-        expense.Amount.ShouldBe(0m);
-        expense.Date.ShouldBe(default);
-        expense.CategoryId.ShouldBe(Guid.Empty);
-    }
-
     [Fact]
     public void ConstructorAndSetAmount_GivenValueLessThanOrEqualToMin_ThenShouldThrow()
     {
@@ -68,10 +57,10 @@ public class ExpenseTests
         // Act & Assert constructor
         string expectedMessage =
             ValidationMessages.GreaterThan.FormatInvariant(nameof(_expenseCorrectlyValues.Amount), minValue);
-        Action callGreaterThan0 = () => _ = new Expense(ExpenseMock.Description,
+        Action callGreaterThan0 = () => _ = new Expense(ExpenseMockInstance.Description,
                 expectedIncorrectValue,
-                ExpenseMock.Date,
-                ExpenseMock.CategoryId);
+                ExpenseMockInstance.Date,
+                ExpenseMockInstance.CategoryId);
 
         callGreaterThan0.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
@@ -86,7 +75,7 @@ public class ExpenseTests
         //Arrange 
         const decimal expectedAmount = 1;
         // Act & Assert constructor
-        _expenseCorrectlyValues.Amount.ShouldBe(ExpenseMock.Amount);
+        _expenseCorrectlyValues.Amount.ShouldBe(ExpenseMockInstance.Amount);
         // Act & Assert setter
         _expenseCorrectlyValues.SetAmount(expectedAmount);
         _expenseCorrectlyValues.Amount.ShouldBe(expectedAmount);
@@ -100,9 +89,9 @@ public class ExpenseTests
             ValidationMessages.RequiredField.FormatInvariant(nameof(_expenseCorrectlyValues.Description));
         // Act & Assert constructor
         Action callIsEmptyOrNull = () => _ = new Expense(invalidValues!,
-            ExpenseMock.Amount,
-            ExpenseMock.Date,
-            ExpenseMock.CategoryId);
+            ExpenseMockInstance.Amount,
+            ExpenseMockInstance.Date,
+            ExpenseMockInstance.CategoryId);
         callIsEmptyOrNull.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
         // Act & Assert setter
@@ -114,7 +103,7 @@ public class ExpenseTests
     public void ConstructorAndSetDescription_GivenIsNotNullAndNotEmpty_ThenShouldSetDescriptionCorrectly()
     {
         //Arrange 
-        string expectedDescription = ExpenseMock.Description;
+        string expectedDescription = ExpenseMockInstance.Description;
         // Act & Assert constructor
         _expenseCorrectlyValues.Description.ShouldBe(expectedDescription);
         // Act & Assert setter
@@ -130,8 +119,7 @@ public class ExpenseTests
     {
         DateTime expectedDate = DateTime.Today.AddDays(daysOffset);
         // Act & Assert constructor
-        Expense expense = new(ExpenseMock.Description, ExpenseMock.Amount, expectedDate, ExpenseMock.CategoryId);
-
+        Expense expense = new(ExpenseMockInstance.Description, ExpenseMockInstance.Amount, expectedDate, ExpenseMockInstance.CategoryId);
         expense.Date.ShouldBe(expectedDate);
         // Act & Assert setter
         expense.SetDate(expectedDate);
@@ -146,14 +134,28 @@ public class ExpenseTests
         // Act & Assert constructor
         string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(expectedDate);
 
-        Action callDateIsFuture = () => _ = new Expense(ExpenseMock.Description,
-            ExpenseMock.Amount,
+        Action callDateIsFuture = () => _ = new Expense(ExpenseMockInstance.Description,
+            ExpenseMockInstance.Amount,
             expectedDate,
-            ExpenseMock.CategoryId);
+            ExpenseMockInstance.CategoryId);
         callDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);
         
         // Act & Assert setter
         Action callSetDateIsFuture = () => _expenseCorrectlyValues.SetDate(expectedDate);
         callSetDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);
+    }
+    
+    [Fact]
+    public void CheckSealAndPublic_GivenClass_ThenShouldReturnTrue()
+    {
+        //Assert
+        typeof(Expense).ShouldBeSealedAndPublic();
+    }
+    
+    [Fact]
+    public void HasPrivateConstructor_GivenOnePrivateConstructor_ThenShouldReturnTrue()
+    {
+        //Assert
+        typeof(Expense).ShouldHavePrivateConstructor();
     }
 }

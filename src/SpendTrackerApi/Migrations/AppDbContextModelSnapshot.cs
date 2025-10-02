@@ -17,7 +17,7 @@ namespace SpendTracker.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
 
-            modelBuilder.Entity("SpendTrackApi.Models.Category", b =>
+            modelBuilder.Entity("SpendTrackApi.Models.CategoryEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,7 +36,7 @@ namespace SpendTracker.Api.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("SpendTrackApi.Models.Expense", b =>
+            modelBuilder.Entity("SpendTrackApi.Models.ExpenseEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,15 +62,15 @@ namespace SpendTracker.Api.Migrations
                     b.ToTable("Expenses");
                 });
 
-            modelBuilder.Entity("SpendTrackApi.Models.Expense", b =>
+            modelBuilder.Entity("SpendTrackApi.Models.ExpenseEntity", b =>
                 {
-                    b.HasOne("SpendTrackApi.Models.Category", "Category")
+                    b.HasOne("SpendTrackApi.Models.CategoryEntity", "CategoryEntity")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.Navigation("CategoryEntity");
                 });
 #pragma warning restore 612, 618
         }

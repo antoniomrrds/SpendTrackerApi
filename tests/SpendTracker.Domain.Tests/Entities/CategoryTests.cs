@@ -82,14 +82,28 @@ public class CategoryTests
         callSetMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 
+    // [Fact]
+    // public void Constructor_GivenParameterless_ThenShouldCreateObjectWithDefaultValues()
+    // {
+    //     //Act
+    //     Category category = new();
+    //     //Assert
+    //     category.Id.ShouldBe(Guid.Empty);
+    //     category.Description.ShouldBe(string.Empty);
+    //     category.Name.ShouldBe(string.Empty);
+    // }
+
     [Fact]
-    public void Constructor_GivenParameterless_ThenShouldCreateObjectWithDefaultValues()
+    public void CheckSealAndPublic_GivenClass_ThenShouldReturnTrue()
     {
-        //Act
-        Category category = new();
         //Assert
-        category.Id.ShouldBe(Guid.Empty);
-        category.Description.ShouldBe(string.Empty);
-        category.Name.ShouldBe(string.Empty);
+        typeof(Category).ShouldBeSealedAndPublic();
+    }
+    
+    [Fact]
+    public void HasPrivateConstructor_GivenOnePrivateConstructor_ThenShouldReturnTrue()
+    {
+        //Assert
+        typeof(Category).ShouldHavePrivateConstructor();
     }
 }

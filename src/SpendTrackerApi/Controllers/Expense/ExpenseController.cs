@@ -35,23 +35,23 @@ public sealed class ExpenseController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        Models.Expense expense = _mapper.Map<Models.Expense>(request);
-        await _context.Expenses.AddAsync(expense);
+        Models.ExpenseEntity expenseEntity = _mapper.Map<Models.ExpenseEntity>(request);
+        await _context.Expenses.AddAsync(expenseEntity);
         await _context.SaveChangesAsync();
-        Models.Expense? expenseWithCategory = await _context.Expenses
+        Models.ExpenseEntity? expenseWithCategory = await _context.Expenses
             .Include(e => e.Category)
             .AsNoTracking()
-            .SingleOrDefaultAsync(e => e.Id == expense.Id);
+            .SingleOrDefaultAsync(e => e.Id == expenseEntity.Id);
 
         if (expenseWithCategory == null)
         {
-            return NotFound("Expense not found after creation.");
+            return NotFound("ExpenseEntity not found after creation.");
         }
 
 
         ExpenseResponse expenseResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
         return CreatedAtAction(nameof(GetById),
-            new { id = expense.Id }, expenseResponse);
+            new { id = expenseEntity.Id }, expenseResponse);
     }
 
     [HttpGet("{id:int}")]
@@ -62,14 +62,14 @@ public sealed class ExpenseController : ControllerBase
             return BadRequest("Id must be greater than 0.");
         }
 
-        Models.Expense? expenseWithCategory = await _context.Expenses
+        Models.ExpenseEntity? expenseWithCategory = await _context.Expenses
             .Include(e => e.Category)
             .AsNoTracking()
             .SingleOrDefaultAsync(e => e.Id == id);
 
         if (expenseWithCategory == null)
         {
-            return NotFound("Expense not found.");
+            return NotFound("ExpenseEntity not found.");
         }
 
         ExpenseResponse expenseWithCategoryResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
@@ -87,10 +87,10 @@ public sealed class ExpenseController : ControllerBase
             return BadRequest("Id must be greater than 0.");
         }
 
-        Models.Expense? existingExpense = await _context.Expenses.FirstOrDefaultAsync(e => e.Id == id);
+        Models.ExpenseEntity? existingExpense = await _context.Expenses.FirstOrDefaultAsync(e => e.Id == id);
         if (existingExpense is null)
         {
-            return NotFound("Expense not found.");
+            return NotFound("ExpenseEntity not found.");
         }
 
         ValidationResult validationResult = await _validator.ValidateAsync(request);
@@ -103,14 +103,14 @@ public sealed class ExpenseController : ControllerBase
         _mapper.Map(request, existingExpense);
         await _context.SaveChangesAsync();
 
-        Models.Expense? expenseWithCategory = await _context.Expenses
+        Models.ExpenseEntity? expenseWithCategory = await _context.Expenses
             .Include(e => e.Category)
             .AsNoTracking()
             .SingleOrDefaultAsync(e => e.Id == id);
 
         if (expenseWithCategory == null)
         {
-            return NotFound("Expense not found after creation.");
+            return NotFound("ExpenseEntity not found after creation.");
         }
 
         ExpenseResponse expenseResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
@@ -121,7 +121,7 @@ public sealed class ExpenseController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        List<Models.Expense> expenseWithCategories = await _context.Expenses
+        List<Models.ExpenseEntity> expenseWithCategories = await _context.Expenses
             .AsNoTracking()
             .Include(e => e.Category)
             .ToListAsync(); 
@@ -139,15 +139,15 @@ public sealed class ExpenseController : ControllerBase
             return BadRequest("Id must be greater than 0.");
         }
 
-        Models.Expense? existingExpense = await _context.Expenses.FirstOrDefaultAsync(x => x.Id == id);
+        Models.ExpenseEntity? existingExpense = await _context.Expenses.FirstOrDefaultAsync(x => x.Id == id);
         if (existingExpense is null)
         {
-            return NotFound("Expense not found.");
+            return NotFound("ExpenseEntity not found.");
         }
 
         _context.Expenses.Remove(existingExpense);
         await _context.SaveChangesAsync();
-        return Ok("Expense deleted successfully.");
+        return Ok("ExpenseEntity deleted successfully.");
     }
 
     [HttpGet("total")]
