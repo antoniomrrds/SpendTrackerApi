@@ -1,4 +1,6 @@
 using FluentValidation;
+using FluentValidation.Results;
+
 namespace SpendTracker.Application.Category.Add;
 
 internal class CreateCategoryUseCase : ICreateCategoryUseCase
@@ -10,11 +12,10 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
         _validator = createValidator;
     }
 
-    public async Task<bool> Perform(CreateCategoryCommand createCategoryCommand)
+    public async Task<bool> Perform(CreateCategoryCommand command)
     {
-        await _validator.ValidateAsync(createCategoryCommand);
+        await _validator.ValidateAsync(command);
+
         return await Task.FromResult(true);
     }
-    
-
 }

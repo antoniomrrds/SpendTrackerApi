@@ -82,17 +82,6 @@ public class CategoryTests
         callSetMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 
-    // [Fact]
-    // public void Constructor_GivenParameterless_ThenShouldCreateObjectWithDefaultValues()
-    // {
-    //     //Act
-    //     Category category = new();
-    //     //Assert
-    //     category.Id.ShouldBe(Guid.Empty);
-    //     category.Description.ShouldBe(string.Empty);
-    //     category.Name.ShouldBe(string.Empty);
-    // }
-
     [Fact]
     public void CheckSealAndPublic_GivenClass_ThenShouldReturnTrue()
     {
