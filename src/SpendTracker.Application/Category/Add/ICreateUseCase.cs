@@ -2,7 +2,7 @@ namespace SpendTracker.Application.Category.Add;
 
 public interface ICreateCategoryUseCase
 {
-    Task<bool> Perform(CreateCategoryCommand command);
+    Task Perform(CreateCategoryCommand command);
 }
 
 public sealed record CreateCategoryCommand( string Name, string Description);
