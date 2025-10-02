@@ -12,6 +12,7 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
 
     public async Task<bool> Perform(CreateCategoryCommand createCategoryCommand)
     {
+        await _validator.ValidateAsync(createCategoryCommand);
         return await Task.FromResult(true);
     }
     

@@ -1,6 +1,7 @@
 using FluentValidation;
 using NSubstitute;
 using SpendTracker.Application.Category.Add;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace SpendTracker.Application.Tests.Category;
 
@@ -9,7 +10,6 @@ public class CategoryUseCaseTests
     private readonly Faker _faker = FakerHelper.Faker;
     
     [Fact]
-    [Trait("Perform", "CategoryUseCaseTests")]
     public async Task Perform_ShouldCallValidator_WhenCommandIsValid()
     {
         // Arrange
@@ -18,15 +18,15 @@ public class CategoryUseCaseTests
         CreateCategoryCommand command = new(name, description);
 
         IValidator<CreateCategoryCommand>? validator = Substitute.For<IValidator<CreateCategoryCommand>>();
-
-        await validator
-            .ValidateAsync(command, Arg.Any<CancellationToken>());
+        ValidationResult validatorResult = new();
+        validator
+            .ValidateAsync(command, Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(validatorResult));
 
         CreateCategoryUseCase useCase = new(validator);
 
         // Act
         Func<Task<bool>> act = async () => await useCase.Perform(command);
-
         // Assert
         await act.ShouldNotThrowAsync();
         await validator.Received(1).ValidateAsync(command, Arg.Any<CancellationToken>());
