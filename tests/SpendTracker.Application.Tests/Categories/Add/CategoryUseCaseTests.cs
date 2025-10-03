@@ -7,26 +7,35 @@ namespace SpendTracker.Application.Tests.Categories.Add;
 public class CategoryUseCaseTests
 {
     private readonly Faker _faker = FakerHelper.Faker;
-    
-    [Fact] public async Task  ShouldInvokeHasCategoryWithNameAsyncOnceAndReturnResult()
+    private readonly ICategoryRepository _categoryRepositoryMock;
+    private readonly CreateCategoryUseCase _sut;
+    public CategoryUseCaseTests()
+    { 
+        _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
+        _sut = new CreateCategoryUseCase(_categoryRepositoryMock);
+    }
+
+    private CreateCategoryCommand GenerateCommand()
     {
-        // Arrange
         var name = _faker.Name.FirstName();
         var description = _faker.Commerce.ProductName();
-        var command = new CreateCategoryCommand(name, description);
+        return new CreateCategoryCommand(name, description);
+    }
 
-        var categoryRepository = Substitute.For<ICategoryRepository>();
-        categoryRepository
+    [Fact] public async Task  ShouldInvokeHasCategoryWithNameAsyncOnceAndReturnResult_WhenCategoryDoesNotExist()
+    {
+        // Arrange
+        var command = GenerateCommand();
+
+        _categoryRepositoryMock
             .HasCategoryWithNameAsync(command.Name)
             .Returns(Task.FromResult(false));
 
-        var useCase = new CreateCategoryUseCase(categoryRepository);
-
         // Act
-        var result = await useCase.Perform(command);
+        var result = await _sut.Perform(command);
 
         // Assert
-        await categoryRepository.Received(1).HasCategoryWithNameAsync(command.Name);
+        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(command.Name);
         result.IsSuccess.ShouldBeTrue();
         result.Value.Id.ShouldNotBe(Guid.Empty);
         result.Value.Name.ShouldBe(command.Name);
@@ -37,22 +46,16 @@ public class CategoryUseCaseTests
     public async Task ShouldFailWhenCategoryAlreadyExists()
     {
         // Arrange
-        var name = _faker.Name.FirstName();
-        var description = _faker.Commerce.ProductName();
-        var command = new CreateCategoryCommand(name, description);
-
-        var categoryRepository = Substitute.For<ICategoryRepository>();
-        categoryRepository
+        var command = GenerateCommand();
+        _categoryRepositoryMock
             .HasCategoryWithNameAsync(command.Name)
             .Returns(Task.FromResult(true));
 
-        var useCase = new CreateCategoryUseCase(categoryRepository);
-
         // Act
-        var result = await useCase.Perform(command);
+        var result = await _sut.Perform(command);
         
         // Assert
-        await categoryRepository.Received(1).HasCategoryWithNameAsync(command.Name);
+        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(command.Name);
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(CategoryErrors.CategoryNameAlreadyExists);
     }
