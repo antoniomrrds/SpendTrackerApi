@@ -1,6 +1,6 @@
 using SpendTracker.Domain.Validation;
 
-namespace SpendTracker.Domain.Entities;
+namespace SpendTracker.Domain.Expenses;
 
 public sealed class Expense
 {

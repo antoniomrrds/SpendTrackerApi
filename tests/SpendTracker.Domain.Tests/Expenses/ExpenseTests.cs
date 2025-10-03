@@ -1,9 +1,9 @@
-using SpendTracker.Domain.Entities;
 using SpendTracker.Domain.Errors;
+using SpendTracker.Domain.Expenses;
 using SpendTracker.Domain.Extensions;
 using SpendTracker.Domain.Resources;
 
-namespace SpendTracker.Domain.Tests.Entities;
+namespace SpendTracker.Domain.Tests.Expenses;
 
 internal static class ExpenseMock
 {

@@ -7,7 +7,4 @@
         <ProjectReference Include="..\..\src\SpendTracker.Domain\SpendTracker.Domain.csproj"/>
         <ProjectReference Include="..\TestUtilities\TestUtilities.csproj" />
     </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Entities\"/>
-    </ItemGroup>
 </Project>

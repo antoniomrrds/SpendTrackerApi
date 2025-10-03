@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path=".\src\SpendTracker.Domain\SpendTracker.Domain.csproj" Type="Classic C#" />
     <Project Path=".\src\SpendTrackerApi\SpendTrackerApi.csproj" Type="Classic C#" />
+    <Project Path="src\SharedKernel\SharedKernel.csproj" Type="Classic C#" />
     <Project Path="src\SpendTracker.Application\SpendTracker.Application.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/tests/">

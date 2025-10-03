@@ -1,6 +1,6 @@
 ﻿using SpendTracker.Domain.Validation;
 
-namespace SpendTracker.Domain.Entities;
+namespace SpendTracker.Domain.Categories;
 
 public sealed class Category
 {

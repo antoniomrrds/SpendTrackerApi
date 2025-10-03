@@ -6,4 +6,7 @@
     <ItemGroup>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Categories\" />
+    </ItemGroup>
 </Project>

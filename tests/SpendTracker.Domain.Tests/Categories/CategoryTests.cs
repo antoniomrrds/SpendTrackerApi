@@ -1,9 +1,9 @@
-﻿using SpendTracker.Domain.Entities;
+﻿using SpendTracker.Domain.Categories;
 using SpendTracker.Domain.Errors;
 using SpendTracker.Domain.Extensions;
 using SpendTracker.Domain.Resources;
 
-namespace SpendTracker.Domain.Tests.Entities;
+namespace SpendTracker.Domain.Tests.Categories;
 
 public class CategoryTests
 {

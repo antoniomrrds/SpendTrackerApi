@@ -1,8 +1,10 @@
-namespace SpendTracker.Application.Category.Add;
+using SharedKernel;
+
+namespace SpendTracker.Application.Categories.Add;
 
 public interface ICreateCategoryUseCase
 {
-    Task<CreateCategoryResult> Perform(CreateCategoryCommand command);
+    Task<Result<CreateCategoryResult>> Perform(CreateCategoryCommand command);
 }
 
 public sealed record CreateCategoryCommand(string Name, string Description);
