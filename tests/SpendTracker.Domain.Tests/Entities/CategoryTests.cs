@@ -22,8 +22,8 @@ public class CategoryTests
     public void Constructor_GivenValidParameters_ShouldSetPropertiesCorrectly()
     {
         // Arrange
-        string expectedName = RandomValidName;
-        string expectedDescription = RandomValidDescription;
+        var expectedName = RandomValidName;
+        var expectedDescription = RandomValidDescription;
         // Act
         Category category = new(expectedName, expectedDescription);
         // Assert
@@ -37,14 +37,14 @@ public class CategoryTests
     public void ConstructorOrSetName_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
     {
         // Arrange
-        Category category = CreateValidCategory();
+        var category = CreateValidCategory();
 
         // Act & Assert constructor
         Action callInvalidName = () => _ = new Category(invalidName!);
         callInvalidName.ShouldThrowWithMessage<DomainException>(ExpectedNameMessage);
 
         // Act & Assert setter
-        Action callSetInvalidName = () => category.SetName(invalidName!);
+        var callSetInvalidName = () => category.SetName(invalidName!);
         callSetInvalidName.ShouldThrowWithMessage<DomainException>(ExpectedNameMessage);
     }
 
@@ -52,8 +52,8 @@ public class CategoryTests
     public void ConstructorAndSetName_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
     {
         // Arrange
-        string nameWithoutSpaces = RandomValidName;
-        string nameWithSpaces = $"  {nameWithoutSpaces}  ";
+        var nameWithoutSpaces = RandomValidName;
+        var nameWithSpaces = $"  {nameWithoutSpaces}  ";
 
         // Act & Assert setter
         Category category = new(nameWithoutSpaces);
@@ -69,16 +69,16 @@ public class CategoryTests
     public void ConstructorOrSetDescription_GivenMoreThan200Chars_ThenShouldThrowDomainException()
     {
         // Arrange
-        string expectedDescription = _faker.Lorem.Letter(201);
-        string expectedMessage = ValidationMessages.MaxChars.FormatInvariant(nameof(Category.Description), 200);
+        var expectedDescription = _faker.Lorem.Letter(201);
+        var expectedMessage = ValidationMessages.MaxChars.FormatInvariant(nameof(Category.Description), 200);
 
         // Act & Assert constructor
         Action callMoreThan200Chars = () => _ = new Category(RandomValidName, expectedDescription);
         callMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
         // Act & Assert setter
-        Category category = CreateValidCategory();
-        Action callSetMoreThan200Chars = () => category.SetDescription(expectedDescription);
+        var category = CreateValidCategory();
+        var callSetMoreThan200Chars = () => category.SetDescription(expectedDescription);
         callSetMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 
@@ -88,7 +88,7 @@ public class CategoryTests
         //Assert
         typeof(Category).ShouldBeSealedAndPublic();
     }
-    
+
     [Fact]
     public void HasPrivateConstructor_GivenOnePrivateConstructor_ThenShouldReturnTrue()
     {

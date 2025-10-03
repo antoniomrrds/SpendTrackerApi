@@ -8,14 +8,14 @@ public sealed class CategoryEntity
     public string Name
     {
         get => _name;
-        set => _name = value.Trim() ;
+        set => _name = value.Trim();
     }
 
-    private string _description   = string.Empty;
+    private string _description = string.Empty;
 
     public string Description
     {
         get => _description;
-        set => _description = value.Trim() ;
+        set => _description = value.Trim();
     }
 }

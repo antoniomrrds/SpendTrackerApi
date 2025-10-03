@@ -9,7 +9,7 @@ public sealed class Category
     public string Name { get; private set; } = string.Empty;
 
     public string Description { get; private set; } = string.Empty;
-    
+
     //ef constructor
     private Category() { }
 
@@ -24,7 +24,7 @@ public sealed class Category
     {
         Name = ValidateName(name);
     }
-    
+
     public void SetDescription(string description)
     {
         Description = ValidateDescription(description);

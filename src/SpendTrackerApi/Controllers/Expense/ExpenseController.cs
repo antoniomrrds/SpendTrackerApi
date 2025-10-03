@@ -4,8 +4,8 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpendTracker.Api.Controllers.Expense;
-using SpendTracker.Api.Extensions;
 using SpendTracker.Api.Data;
+using SpendTracker.Api.Extensions;
 
 namespace SpendTrackerApi.Controllers.Expense;
 
@@ -27,7 +27,7 @@ public sealed class ExpenseController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ExpenseRequest request)
     {
-        ValidationResult? result = await _validator.ValidateAsync(request);
+        var result = await _validator.ValidateAsync(request);
 
         if (!result.IsValid)
         {
@@ -35,7 +35,7 @@ public sealed class ExpenseController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        Models.ExpenseEntity expenseEntity = _mapper.Map<Models.ExpenseEntity>(request);
+        var expenseEntity = _mapper.Map<Models.ExpenseEntity>(request);
         await _context.Expenses.AddAsync(expenseEntity);
         await _context.SaveChangesAsync();
         Models.ExpenseEntity? expenseWithCategory = await _context.Expenses
@@ -49,7 +49,7 @@ public sealed class ExpenseController : ControllerBase
         }
 
 
-        ExpenseResponse expenseResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
+        var expenseResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
         return CreatedAtAction(nameof(GetById),
             new { id = expenseEntity.Id }, expenseResponse);
     }
@@ -72,7 +72,7 @@ public sealed class ExpenseController : ControllerBase
             return NotFound("ExpenseEntity not found.");
         }
 
-        ExpenseResponse expenseWithCategoryResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
+        var expenseWithCategoryResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
 
         return Ok(expenseWithCategoryResponse);
     }
@@ -93,7 +93,7 @@ public sealed class ExpenseController : ControllerBase
             return NotFound("ExpenseEntity not found.");
         }
 
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        var validationResult = await _validator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
@@ -113,7 +113,7 @@ public sealed class ExpenseController : ControllerBase
             return NotFound("ExpenseEntity not found after creation.");
         }
 
-        ExpenseResponse expenseResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
+        var expenseResponse = _mapper.Map<ExpenseResponse>(expenseWithCategory);
 
         return Ok(expenseResponse);
     }
@@ -124,9 +124,9 @@ public sealed class ExpenseController : ControllerBase
         List<Models.ExpenseEntity> expenseWithCategories = await _context.Expenses
             .AsNoTracking()
             .Include(e => e.Category)
-            .ToListAsync(); 
-        
-        IEnumerable<ExpenseResponse> expenseResponse = _mapper.Map<IEnumerable<ExpenseResponse>>(expenseWithCategories);
+            .ToListAsync();
+
+        var expenseResponse = _mapper.Map<IEnumerable<ExpenseResponse>>(expenseWithCategories);
 
         return Ok(expenseResponse);
     }
@@ -154,7 +154,7 @@ public sealed class ExpenseController : ControllerBase
     public async Task<IActionResult> GetTotalExpensesAmount()
     {
         decimal totalExpense = await _context.Expenses.SumAsync(x => x.Value);
-        string formattedTotalExpense = totalExpense.ToString("C");
+        var formattedTotalExpense = totalExpense.ToString("C");
         return Ok(formattedTotalExpense);
     }
 }

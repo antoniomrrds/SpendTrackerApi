@@ -3,7 +3,7 @@ using SpendTracker.Api.Controllers.Expense;
 
 namespace SpendTracker.Api.Mapping.Expense;
 
-internal sealed class  ExpenseMapping: IRegister
+internal sealed class ExpenseMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {

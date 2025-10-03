@@ -1,4 +1,3 @@
-using System.Reflection;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
@@ -7,16 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using SpendTracker.Api.Data;
 using System.Globalization;
+using System.Reflection;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Add services to the container.
 builder.Services.AddControllers();
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                          ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                       ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-TypeAdapterConfig config = TypeAdapterConfig.GlobalSettings;
+var config = TypeAdapterConfig.GlobalSettings;
 
 config.Scan(typeof(Program).Assembly);
 
@@ -45,7 +45,7 @@ builder.Services.AddRouting(options =>
     options.LowercaseQueryStrings = true; // Forces lowercase query strings
 });
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -60,7 +60,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-CultureInfo cultureInfo = new ("pt-BR");
+CultureInfo cultureInfo = new("pt-BR");
 
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;

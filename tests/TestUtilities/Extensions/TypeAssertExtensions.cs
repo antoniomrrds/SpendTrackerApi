@@ -6,7 +6,7 @@ public static class TypeAssertExtensions
 {
     public static void ShouldHavePrivateConstructor(this Type type)
     {
-        bool hasPrivateConstructor = type
+        var hasPrivateConstructor = type
             .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
             .Any(c => c.IsPrivate);
 

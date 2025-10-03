@@ -3,8 +3,8 @@ using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SpendTracker.Api.Extensions;
 using SpendTracker.Api.Data;
+using SpendTracker.Api.Extensions;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace SpendTracker.Api.Controllers.Category;
@@ -34,7 +34,7 @@ public sealed class CategoryController : ControllerBase
             return BadRequest("Id must be greater than zero.");
         }
 
-        CategoryResponse? category = await _context.Categories
+        var category = await _context.Categories
             .AsNoTracking()
             .ProjectToType<CategoryResponse>(_mapper.Config)
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -45,7 +45,7 @@ public sealed class CategoryController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        List<CategoryResponse> categoryResponse = await _context
+        var categoryResponse = await _context
             .Categories
             .AsNoTracking()
             .ProjectToType<CategoryResponse>(_mapper.Config)
@@ -57,7 +57,7 @@ public sealed class CategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CategoryRequest request)
     {
-        ValidationResult result = await _validator.ValidateAsync(request);
+        var result = await _validator.ValidateAsync(request);
         if (!result.IsValid)
         {
             result.AddToModelState(ModelState);
@@ -67,7 +67,7 @@ public sealed class CategoryController : ControllerBase
         Models.Category category = _mapper.Map<Models.Category>(request);
         _context.Categories.Add(category);
         await _context.SaveChangesAsync();
-        CategoryResponse categoryResponse = _mapper.Map<CategoryResponse>(category);
+        var categoryResponse = _mapper.Map<CategoryResponse>(category);
         return CreatedAtAction(nameof(GetById), new { id = categoryResponse.Id }, categoryResponse);
     }
 
@@ -87,7 +87,7 @@ public sealed class CategoryController : ControllerBase
             return NotFound("CategoryEntity not found");
         }
 
-        ValidationResult validationResult = await _validator.ValidateAsync(request);
+        var validationResult = await _validator.ValidateAsync(request);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
@@ -97,7 +97,7 @@ public sealed class CategoryController : ControllerBase
         _mapper.Map(request, existingCategory);
 
         await _context.SaveChangesAsync();
-        CategoryResponse categoryResponse = _mapper.Map<CategoryResponse>(existingCategory);
+        var categoryResponse = _mapper.Map<CategoryResponse>(existingCategory);
         return Ok(categoryResponse);
     }
 
@@ -107,7 +107,7 @@ public sealed class CategoryController : ControllerBase
         if (id <= 0)
             return BadRequest("Id must be greater than 0.");
 
-        int deletedCount = await _context.Categories
+        var deletedCount = await _context.Categories
             .Where(c => c.Id == id && !_context.Expenses.Any(e => e.CategoryId == c.Id))
             .ExecuteDeleteAsync();
 
@@ -116,7 +116,7 @@ public sealed class CategoryController : ControllerBase
             return Ok("CategoryEntity deleted successfully.");
         }
 
-        bool exists = await _context.Categories.AnyAsync(c => c.Id == id);
+        var exists = await _context.Categories.AnyAsync(c => c.Id == id);
         return !exists
             ? NotFound("CategoryEntity not found.")
             : Conflict("Cannot delete categories with associated expenses.");
