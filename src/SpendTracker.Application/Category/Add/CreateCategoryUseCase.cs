@@ -10,6 +10,7 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
 
     public async Task<CreateCategoryResult> Perform(CreateCategoryCommand command)
     {
-
+        await _categoryExistsRepository.HasCategoryWithNameAsync(command.Name);
+        return new CreateCategoryResult(Guid.NewGuid(), command.Name,command.Description);
     }
 }
