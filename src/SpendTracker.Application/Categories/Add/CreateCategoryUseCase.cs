@@ -20,7 +20,9 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
             return CategoryErrors.CategoryNameAlreadyExists;
         }
 
-        var categoryResult = new CreateCategoryResult(Guid.NewGuid(), command.Name, command.Description);
+        Category category = new(name: command.Name, description: command.Description);
+        await _categoryRepository.AddAsync(category);
+        var categoryResult = new CreateCategoryResult(category.Id, category.Name, category.Description);
 
         return categoryResult;
     }
