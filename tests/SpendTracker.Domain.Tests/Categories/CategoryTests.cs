@@ -1,7 +1,6 @@
-﻿using SpendTracker.Domain.Categories;
+﻿using SharedKernel.Resources;
+using SpendTracker.Domain.Categories;
 using SpendTracker.Domain.Errors;
-using SpendTracker.Domain.Extensions;
-using SpendTracker.Domain.Resources;
 
 namespace SpendTracker.Domain.Tests.Categories;
 
@@ -11,7 +10,7 @@ public class CategoryTests
     private const string FieldName = nameof(Category.Name);
 
     private static string ExpectedNameMessage =>
-        ValidationMessages.RequiredField.FormatInvariant(FieldName);
+        ValidationMessageProvider.Get("RequiredField", FieldNameProvider.Get(FieldName));
 
     private string RandomValidName => _faker.Name.FirstName();
     private string RandomValidDescription => _faker.Lorem.Sentence();
@@ -44,7 +43,7 @@ public class CategoryTests
         callInvalidName.ShouldThrowWithMessage<DomainException>(ExpectedNameMessage);
 
         // Act & Assert setter
-        var callSetInvalidName = () => category.SetName(invalidName!);
+        Action callSetInvalidName = () => category.SetName(invalidName!);
         callSetInvalidName.ShouldThrowWithMessage<DomainException>(ExpectedNameMessage);
     }
 
@@ -70,8 +69,8 @@ public class CategoryTests
     {
         // Arrange
         var expectedDescription = _faker.Lorem.Letter(201);
-        var expectedMessage = ValidationMessages.MaxChars.FormatInvariant(nameof(Category.Description), 200);
-
+        var expectedMessage = ValidationMessageProvider.Get(ValidationKeys.MaxChars, FieldNameProvider.Get(nameof(Category.Description)), 200);
+        
         // Act & Assert constructor
         Action callMoreThan200Chars = () => _ = new Category(RandomValidName, expectedDescription);
         callMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);

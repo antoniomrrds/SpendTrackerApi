@@ -1,3 +1,11 @@
 namespace SpendTracker.Domain.Errors;
 
-public class DomainException(string message) : Exception(message);
+public class DomainException : Exception
+{
+    public string Field { get; }
+
+    public DomainException(string message, string field = "") : base(message)
+    {
+        Field = field;
+    }
+}
