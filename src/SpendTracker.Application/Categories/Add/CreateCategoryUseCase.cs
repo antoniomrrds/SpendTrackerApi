@@ -1,4 +1,5 @@
 using SharedKernel;
+using SpendTracker.Application.Abstractions.Data;
 using SpendTracker.Domain.Categories;
 
 namespace SpendTracker.Application.Categories.Add;
@@ -6,10 +7,11 @@ namespace SpendTracker.Application.Categories.Add;
 internal class CreateCategoryUseCase : ICreateCategoryUseCase
 {
     private readonly ICategoryRepository _categoryRepository;
-
-    public CreateCategoryUseCase(ICategoryRepository categoryRepository)
+    private readonly IUnitOfWork _unitOfWork;
+    public CreateCategoryUseCase(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
     {
         _categoryRepository = categoryRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<CreateCategoryResult>>  Perform(CreateCategoryCommand command)
@@ -22,8 +24,8 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
 
         Category category = new(name: command.Name, description: command.Description);
         await _categoryRepository.AddAsync(category);
-        var categoryResult = new CreateCategoryResult(category.Id, category.Name, category.Description);
-
-        return categoryResult;
+        await _unitOfWork.CommitAsync();
+        
+        return new CreateCategoryResult(category.Id, category.Name, category.Description);
     }
 }
