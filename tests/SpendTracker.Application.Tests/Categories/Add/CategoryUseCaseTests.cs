@@ -1,4 +1,5 @@
 using NSubstitute;
+using SpendTracker.Application.Abstractions.Data;
 using SpendTracker.Application.Categories.Add;
 using SpendTracker.Domain.Categories;
 
@@ -8,7 +9,9 @@ public class CategoryUseCaseTests
 {
     private readonly Faker _faker = FakerHelper.Faker;
     private readonly ICategoryRepository _categoryRepositoryMock;
+    private readonly IUnitOfWork _unitOfWorkMock;
     private readonly CreateCategoryUseCase _sut;
+
 
     private readonly string _name;
     private readonly string _description;
@@ -24,12 +27,16 @@ public class CategoryUseCaseTests
         
         _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
         _categoryRepositoryMock.HasCategoryWithNameAsync(_command.Name).Returns(false);
-        _sut = new CreateCategoryUseCase(_categoryRepositoryMock);
+        
+        _unitOfWorkMock = Substitute.For<IUnitOfWork>();
+        
+        _sut = new CreateCategoryUseCase(_categoryRepositoryMock, _unitOfWorkMock);
         
     }
 
-
-    [Fact] public async Task  ShouldInvokeHasCategoryWithNameAsyncOnceAndReturnResult_WhenCategoryDoesNotExist()
+    //🧩 standard "Given_When_Then" 
+    [Fact]
+    public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnSuccessResult()   
     {
         
         //Act
@@ -44,7 +51,7 @@ public class CategoryUseCaseTests
     }
 
     [Fact]
-    public async Task ShouldFailWhenCategoryAlreadyExists()
+    public async Task Perform_WhenCategoryAlreadyExists_ShouldReturnFailureWithProperError()
     {
         // Arrange
         _categoryRepositoryMock
@@ -61,7 +68,7 @@ public class CategoryUseCaseTests
     }
 
     [Fact]
-    public async Task ShouldInstantiateCategoryAndPassItToTheRepository()
+    public async Task Perform_WhenCommandIsValid_ShouldAddTrimmedCategoryToRepository()
     {
         // Arrange
         var name = $"  {_name}  "; 
@@ -77,5 +84,17 @@ public class CategoryUseCaseTests
             category.Description == command.Description &&
             category.Id != Guid.Empty
         ));
+    }
+
+    [Fact]
+    public async Task Perform_WhenCategoryIsCreatedSuccessfully_ShouldCommitIUnitOfWork()
+    {
+        //Act
+        var result = await _sut.Perform(_command);
+        
+        //Assert
+        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name);
+        result.IsSuccess.ShouldBeTrue();
+        await _unitOfWorkMock.Received(1).CommitAsync();
     }
 }
