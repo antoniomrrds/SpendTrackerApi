@@ -11,6 +11,7 @@ public class CategoryUseCaseTests
     private readonly ICategoryRepository _categoryRepositoryMock;
     private readonly IUnitOfWork _unitOfWorkMock;
     private readonly CreateCategoryUseCase _sut;
+    private readonly CancellationToken _cancellationToken;
 
 
     private readonly string _name;
@@ -24,7 +25,7 @@ public class CategoryUseCaseTests
          _name = _faker.Commerce.Categories(1)[0]; 
         _description = _faker.Lorem.Sentence();
         _command = GenerateCommand();
-        
+        _cancellationToken = CancellationToken.None;
         _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
         _categoryRepositoryMock.HasCategoryWithNameAsync(_command.Name).Returns(false);
         
@@ -43,7 +44,7 @@ public class CategoryUseCaseTests
         var result = await _sut.Perform(_command);
 
         //Assert
-        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name);
+        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name,_cancellationToken);
         result.IsSuccess.ShouldBeTrue();
         result.Value.Id.ShouldNotBe(Guid.Empty);
         result.Value.Name.ShouldBe(_command.Name);
@@ -55,14 +56,14 @@ public class CategoryUseCaseTests
     {
         // Arrange
         _categoryRepositoryMock
-            .HasCategoryWithNameAsync(_command.Name)
+            .HasCategoryWithNameAsync(_command.Name, _cancellationToken)
             .Returns(Task.FromResult(true));
 
         //Act
         var result = await _sut.Perform(_command);
         
         //Assert
-        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name);
+        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name,_cancellationToken);
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(CategoryErrors.CategoryNameAlreadyExists);
     }
@@ -83,7 +84,7 @@ public class CategoryUseCaseTests
             category.Name == expectedName &&
             category.Description == command.Description &&
             category.Id != Guid.Empty
-        ));
+        ), _cancellationToken);
     }
 
     [Fact]
@@ -93,7 +94,7 @@ public class CategoryUseCaseTests
         var result = await _sut.Perform(_command);
         
         //Assert
-        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name);
+        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name, _cancellationToken);
         result.IsSuccess.ShouldBeTrue();
         await _unitOfWorkMock.Received(1).CommitAsync();
     }

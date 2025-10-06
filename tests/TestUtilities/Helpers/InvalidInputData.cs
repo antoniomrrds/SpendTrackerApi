@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace TestUtilities.Helpers;
 
 public static class InvalidInputData

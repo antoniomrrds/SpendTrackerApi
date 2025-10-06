@@ -8,15 +8,18 @@
         <PackageReference Include="Shouldly"/>
         <PackageReference Include="xunit.v3"/>
     </ItemGroup>
-
     <ItemGroup Condition="'$(IsTestProject)' == 'true'">
         <PackageReference Include="xunit.runner.visualstudio"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="coverlet.collector"/>
         <PackageReference Include="NSubstitute" />
     </ItemGroup>
-
-    <ItemGroup Condition="'$(IsTestProject)' == 'true'">
-        <Compile Include="..\TestUtilities\GlobalUsings.cs" Link="GlobalUsings.cs"/>
+    <!-- new feature to avoid file global -->
+    <ItemGroup>
+        <Using Include="Xunit" />
+        <using Include="Bogus" />
+        <using Include="Shouldly" />
+        <using Include="TestUtilities.Extensions" />
+        <using Include="TestUtilities.Helpers" />
     </ItemGroup>
 </Project>
