@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\TestSharedPackages.props"/>
+    <PropertyGroup>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup> 
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Application\Application.csproj" />
+        <ProjectReference Include="..\TestUtilities\TestUtilities.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    </ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" >
+    <Import Project="..\SrcSharedPackages.props"/>
+    <ItemGroup>
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Mapster"/>
+        <PackageReference Include="Mapster.DependencyInjection"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Categories\" />
+    </ItemGroup>
+</Project>
