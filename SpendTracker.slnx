@@ -16,6 +16,7 @@
   <Folder Name="/tests/">
     <Project Path="tests\Application.Tests\Application.Tests.csproj" Type="Classic C#" />
     <Project Path="tests\Domain.Tests\Domain.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\Infrastructure.Tests\Infrastructure.Tests.csproj" Type="Classic C#" />
     <Project Path="tests\TestUtilities\TestUtilities.csproj" Type="Classic C#" />
     <File Path="tests\TestSharedPackages.props" />
   </Folder>

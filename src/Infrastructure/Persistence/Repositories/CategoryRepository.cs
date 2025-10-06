@@ -1,17 +1,25 @@
 using Application.Categories.Add;
 using Domain.Categories;
+using Infrastructure.Persistence.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repositories;
+namespace Infrastructure.Persistence.Repositories;
 
 internal class CategoryRepository:ICategoryRepository
 {
-    public Task<bool> HasCategoryWithNameAsync(string name)
+    private readonly AppDbContext _context;
+    public CategoryRepository(AppDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public Task<Category> AddAsync(Category category)
+    public async Task<bool> HasCategoryWithNameAsync(string name , CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        return await _context.Categories.AnyAsync(c => c.Name == name, cancellationToken);
+    }
+
+    public async Task AddAsync(Category category, CancellationToken cancellationToken = default)
+    {
+      await _context.Categories.AddAsync(category, cancellationToken);
     }
 }

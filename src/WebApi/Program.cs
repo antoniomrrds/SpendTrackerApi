@@ -6,13 +6,14 @@ using Scalar.AspNetCore;
 using Infrastructure;
 using System.Globalization;
 using System.Reflection;
+using Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration)
+    .AddApplication();
     
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -71,7 +72,6 @@ RequestLocalizationOptions localizationOptions = new()
 };
 
 app.UseRequestLocalization(localizationOptions);
-
 
 
 await app.RunAsync();
