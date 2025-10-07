@@ -48,7 +48,7 @@ public class CategoryRepositoryTests:IClassFixture<SqliteInMemoryFixture>
     [Fact]
     public async Task HasCategoryWithNameAsync_WhenCategoryNameDoesNotExist_ShouldReturnFalse()
     {
-        var exists = await _sut.HasCategoryWithNameAsync("NomeInexistente", TestContext.Current.CancellationToken);
+        var exists = await _sut.HasCategoryWithNameAsync("NameDoesNotExit", TestContext.Current.CancellationToken);
         exists.ShouldBeFalse();
     }
 
