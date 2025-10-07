@@ -16,13 +16,14 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
 
     public async Task<Result<CreateCategoryResult>>  Perform(CreateCategoryCommand command)
     {
+        Category category = new(name: command.Name, description: command.Description);
+        
         var categoryAlreadyExists = await _categoryRepository.HasCategoryWithNameAsync(command.Name);
         if (categoryAlreadyExists)
         {
             return CategoryErrors.CategoryNameAlreadyExists;
         }
 
-        Category category = new(name: command.Name, description: command.Description);
         await _categoryRepository.AddAsync(category);
         await _unitOfWork.CommitAsync();
         
