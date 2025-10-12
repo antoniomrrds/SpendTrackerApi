@@ -88,11 +88,11 @@ dotnet_style_allow_statement_immediately_after_block_experimental = true
 #### C# Coding Conventions ####
 
 # var preferences
-csharp_style_var_when_type_is_apparent = true
+csharp_style_var_when_type_is_apparent = false
 
-csharp_style_var_elsewhere = true
+csharp_style_var_elsewhere = false
 
-csharp_style_var_for_built_in_types = true
+csharp_style_var_for_built_in_types = false
 
 # Expression-bodied members
 csharp_style_expression_bodied_accessors = true
@@ -281,3 +281,6 @@ dotnet_diagnostic.CA1032.severity = suggestion
 dotnet_diagnostic.CA1707.severity = none
 [**tests/**.cs]
 dotnet_diagnostic.CA1707.severity = none
+
+# IDE0320: Make anonymous function static
+dotnet_diagnostic.IDE0320.severity = suggestion

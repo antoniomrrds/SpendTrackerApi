@@ -32,7 +32,7 @@ public sealed class Category
 
     private static string? ValidateDescription(string? description) {
         
-        var trimmed = description?.Trim();
+        string? trimmed = description?.Trim();
 
         return string.IsNullOrWhiteSpace(trimmed) 
             ? null 

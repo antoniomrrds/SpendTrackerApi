@@ -21,8 +21,8 @@ public class CategoryTests
     public void Constructor_GivenValidParameters_ShouldSetPropertiesCorrectly()
     {
         // Arrange
-        var expectedName = RandomValidName;
-        var expectedDescription = RandomValidDescription;
+        string expectedName = RandomValidName;
+        string expectedDescription = RandomValidDescription;
         // Act
         Category category = new(expectedName, expectedDescription);
         // Assert
@@ -36,7 +36,7 @@ public class CategoryTests
     public void ConstructorOrSetName_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
     {
         // Arrange
-        var category = CreateValidCategory();
+        Category category = CreateValidCategory();
 
         // Act & Assert constructor
         Action callInvalidName = () => _ = new Category(invalidName!);
@@ -51,8 +51,8 @@ public class CategoryTests
     public void ConstructorAndSetName_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
     {
         // Arrange
-        var nameWithoutSpaces = RandomValidName;
-        var nameWithSpaces = $"  {nameWithoutSpaces}  ";
+        string nameWithoutSpaces = RandomValidName;
+        string nameWithSpaces = $"  {nameWithoutSpaces}  ";
 
         // Act & Assert setter
         Category category = new(nameWithoutSpaces);
@@ -68,8 +68,8 @@ public class CategoryTests
     public void ConstructorOrSetDescription_GivenMoreThan200Chars_ThenShouldThrowDomainException()
     {
         // Arrange
-        var expectedDescription = _faker.Lorem.Letter(201);
-        var expectedMessage = ValidationMessageProvider.Get(ValidationKeys.MaxChars,
+        string? expectedDescription = _faker.Lorem.Letter(201);
+        string expectedMessage = ValidationMessageProvider.Get(ValidationKeys.MaxChars,
             FieldNameProvider.Get(nameof(Category.Description)), 200);
 
         // Act & Assert constructor
@@ -77,8 +77,8 @@ public class CategoryTests
         callMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
         // Act & Assert setter
-        var category = CreateValidCategory();
-        var callSetMoreThan200Chars = () => category.SetDescription(expectedDescription);
+        Category category = CreateValidCategory();
+        Action callSetMoreThan200Chars = () => category.SetDescription(expectedDescription);
         callSetMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 

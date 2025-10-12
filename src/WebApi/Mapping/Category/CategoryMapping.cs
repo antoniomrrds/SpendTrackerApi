@@ -6,7 +6,7 @@
 // {
 //     public void Register(TypeAdapterConfig config)
 //     {
-//         config.NewConfig<Models.CategoryEntity, CategoryResponse>().TwoWays();
-//         config.NewConfig<CategoryRequest, Models.CategoryEntity>().TwoWays();
+//         config.NewConfig<Models.CategoryEntity, CreateCategoryResponse>().TwoWays();
+//         config.NewConfig<CreateCategoryRequest, Models.CategoryEntity>().TwoWays();
 //     }
 // }

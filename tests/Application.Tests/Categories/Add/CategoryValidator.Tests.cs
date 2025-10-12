@@ -18,9 +18,9 @@ public class CategoryValidatorTests
     [Fact]
     public void Validator_WhenNameIsInvalid_ShouldReturnError()
     {
-        var command = BuildCommand(name: string.Empty);
+        CreateCategoryCommand command = BuildCommand(name: string.Empty);
         
-        var result = _sut.TestValidate(command);
+        TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
 
         result.ShouldHaveValidationErrorFor(c => c.Name)
             .WithErrorMessage(
@@ -30,9 +30,9 @@ public class CategoryValidatorTests
     [Fact]
     public void Validator_WhenNameIsTooShort_ShouldReturnError()
     {
-        var command = BuildCommand(name: "i");
+        CreateCategoryCommand command = BuildCommand(name: "i");
         
-        var result = _sut.TestValidate(command);
+        TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
 
         result.ShouldHaveValidationErrorFor(c => c.Name)
             .WithErrorMessage(ValidationMessageProvider.Get(ValidationKeys.StringLengthRangeMessage,
@@ -42,9 +42,9 @@ public class CategoryValidatorTests
     [Fact]
     public void Validator_WhenNameIsCorrect_ShouldReturnNameWithoutError()
     {
-        var command = BuildCommand();
+        CreateCategoryCommand command = BuildCommand();
 
-        var result = _sut.TestValidate(command);
+        TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
         
         result.ShouldNotHaveValidationErrorFor(c => c.Name);
     }
@@ -52,10 +52,10 @@ public class CategoryValidatorTests
     [Fact]
     public void Validator_WhenDescriptionIsTooLong_ShouldReturnError()
     {
-        var longDescription = new string('a', 201);
-        var command = BuildCommand(description: longDescription);
+        string longDescription = new string('a', 201);
+        CreateCategoryCommand command = BuildCommand(description: longDescription);
         
-        var result = _sut.TestValidate(command);
+        TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
 
         result.ShouldHaveValidationErrorFor(c => c.Description)
             .WithErrorMessage(ValidationMessageProvider.Get(ValidationKeys.MaxChars,
@@ -65,9 +65,9 @@ public class CategoryValidatorTests
     [Fact]
     public void Validator_WhenDescriptionIsOnlyWhitespace_ShouldReturnError()
     {
-        var command = BuildCommand(description: "   ");
+        CreateCategoryCommand command = BuildCommand(description: "   ");
 
-        var result = _sut.TestValidate(command);
+        TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
 
         result.ShouldHaveValidationErrorFor(c => c.Description)
             .WithErrorMessage(ValidationMessageProvider.Get(ValidationKeys.WhitespaceOnly,
@@ -77,9 +77,9 @@ public class CategoryValidatorTests
     [Fact]
     public void Validator_WhenDescriptionIsEmpty_ShouldNotReturnError()
     {
-        var command = BuildCommand(description: string.Empty);
+        CreateCategoryCommand command = BuildCommand(description: string.Empty);
 
-        var result = _sut.TestValidate(command);
+        TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
 
         result.ShouldNotHaveValidationErrorFor(c => c.Description);
     }
@@ -87,10 +87,10 @@ public class CategoryValidatorTests
     [Fact]
     public void Validator_WhenDescriptionIsValid_ShouldNotReturnError()
     {
-        var command = BuildCommand();
+        CreateCategoryCommand command = BuildCommand();
 
 
-        var result = _sut.TestValidate(command);
+        TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
         result.ShouldNotHaveValidationErrorFor(c => c.Description);
     }
 }

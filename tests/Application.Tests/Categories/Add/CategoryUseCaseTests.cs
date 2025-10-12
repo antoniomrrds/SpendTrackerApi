@@ -3,6 +3,7 @@ using Application.Abstractions.Data;
 using Application.Categories.Add;
 using Domain.Categories;
 using Domain.Errors;
+using SharedKernel;
 using SharedKernel.Resources;
 
 namespace Application.Tests.Categories.Add;
@@ -40,7 +41,7 @@ public class CategoryUseCaseTests
     public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnSuccessResult()
     {
         //Act
-        var result = await _sut.Perform(_command);
+        Result<CreateCategoryResult> result = await _sut.Perform(_command);
 
         //Assert
         await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name, _cancellationToken);
@@ -59,7 +60,7 @@ public class CategoryUseCaseTests
             .Returns(Task.FromResult(true));
 
         //Act
-        var result = await _sut.Perform(_command);
+        Result<CreateCategoryResult> result = await _sut.Perform(_command);
 
         //Assert
         await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name, _cancellationToken);
@@ -71,11 +72,11 @@ public class CategoryUseCaseTests
     public async Task Perform_WhenCommandIsValid_ShouldAddTrimmedCategoryToRepository()
     {
         // Arrange
-        var name = $"  {_name}  ";
-        var command = new CreateCategoryCommand(name, _description);
+        string name = $"  {_name}  ";
+        CreateCategoryCommand command = new CreateCategoryCommand(name, _description);
         // Act
-        var result = await _sut.Perform(command);
-        var expectedName = command.Name.Trim();
+        Result<CreateCategoryResult> result = await _sut.Perform(command);
+        string expectedName = command.Name.Trim();
         // Assert
         result.IsSuccess.ShouldBeTrue();
 
@@ -90,7 +91,7 @@ public class CategoryUseCaseTests
     public async Task Perform_WhenCategoryIsCreatedSuccessfully_ShouldCommitIUnitOfWork()
     {
         //Act
-        var result = await _sut.Perform(_command);
+        Result<CreateCategoryResult> result = await _sut.Perform(_command);
 
         //Assert
         await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name, _cancellationToken);
@@ -103,7 +104,7 @@ public class CategoryUseCaseTests
     public async Task Perform_WhenNameIsInvalid_ShouldThrowExceptionAndNotCallRepository(string invalidName)
     {
         // Arrange
-        var commandWithInvalidName = new CreateCategoryCommand(invalidName, _description);
+        CreateCategoryCommand commandWithInvalidName = new CreateCategoryCommand(invalidName, _description);
         
         // Act & Assert
         await Should.ThrowAsync<DomainException>(() => _sut.Perform(commandWithInvalidName));

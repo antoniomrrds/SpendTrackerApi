@@ -18,7 +18,7 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
     {
         Category category = new(name: command.Name, description: command.Description);
         
-        var categoryAlreadyExists = await _categoryRepository.HasCategoryWithNameAsync(command.Name);
+        bool categoryAlreadyExists = await _categoryRepository.HasCategoryWithNameAsync(command.Name);
         if (categoryAlreadyExists)
         {
             return CategoryErrors.CategoryNameAlreadyExists;

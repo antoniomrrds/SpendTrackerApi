@@ -1,49 +1,44 @@
-using FluentValidation;
-using Mapster;
-using MapsterMapper;
+using Application;
 using Microsoft.AspNetCore.Localization;
 using Scalar.AspNetCore;
 using Infrastructure;
+using Infrastructure.Persistence.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using System.Reflection;
-using Application;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services
-    .AddInfrastructure(builder.Configuration)
-    .AddApplication();
-    
-// Add services to the container.
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+builder.Services.AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
-var config = TypeAdapterConfig.GlobalSettings;
-
-config.Scan(typeof(Program).Assembly);
-
-builder.Services.AddSingleton(config);
-
-builder.Services.AddScoped<IMapper, ServiceMapper>();
+// Add services to the container.
+// var config = TypeAdapterConfig.GlobalSettings;
+//
+// config.Scan(typeof(Program).Assembly);
+//
+// builder.Services.AddSingleton(config);
+//
+// builder.Services.AddScoped<IMapper, ServiceMapper>();
 
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options => { options.SuppressModelStateInvalidFilter = true; });
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-// Configures routing to generate lowercase URLs and query strings.
-// This helps avoid issues on case-sensitive environments (e.g., Linux servers),
-// Example:
-//   Without this setting:    /api/Tarefas/5?SortBy=Nome
-//   With this setting:    /api/tarefas/5?sortby=nome
-// This ensures consistency, prevents 404 errors in production,
-// and follows REST API best practices by using clean, predicatable URLs.
-builder.Services.AddRouting(options =>
-{
-    options.LowercaseUrls = true; // Forces lowercase URls
-    options.LowercaseQueryStrings = true; // Forces lowercase query strings
-});
+WebApplication app = builder.Build();
 
-var app = builder.Build();
+CultureInfo cultureInfo = new("pt-BR");
+
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+RequestLocalizationOptions localizationOptions = new()
+{
+    DefaultRequestCulture = new RequestCulture(cultureInfo),
+    SupportedCultures = [cultureInfo],
+    SupportedUICultures = [cultureInfo]
+};
+
+app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -58,20 +53,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-CultureInfo cultureInfo = new("pt-BR");
-
-CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-// No ASP.NET Core, configure o middleware de localização
-RequestLocalizationOptions localizationOptions = new()
-{
-    DefaultRequestCulture = new RequestCulture(cultureInfo),
-    SupportedCultures = [cultureInfo],
-    SupportedUICultures = [cultureInfo]
-};
-
-app.UseRequestLocalization(localizationOptions);
-
-
 await app.RunAsync();
+
+public abstract partial class Program{};

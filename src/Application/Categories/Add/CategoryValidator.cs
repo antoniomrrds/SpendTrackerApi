@@ -3,7 +3,7 @@ using SharedKernel.Resources;
 
 namespace Application.Categories.Add;
 
-internal class CategoryValidator : AbstractValidator<CreateCategoryCommand>
+public class CategoryValidator : AbstractValidator<CreateCategoryCommand>
 {
     public CategoryValidator()
     {

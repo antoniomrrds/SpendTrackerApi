@@ -16,7 +16,7 @@ internal static class DomainValidation
 
     public static string MaxLength(string? value, string fieldName, int maxLength)
     {
-        var trimmed = value?.Trim() ?? string.Empty;
+        string trimmed = value?.Trim() ?? string.Empty;
 
         return string.IsNullOrWhiteSpace(trimmed) || trimmed.Length <= maxLength
             ? trimmed

@@ -55,7 +55,7 @@ public class ExpenseTests
         const decimal minValue = 0;
 
         // Act & Assert constructor
-        var expectedMessage = ValidationMessageProvider.Get(ValidationKeys.GreaterThan,
+        string expectedMessage = ValidationMessageProvider.Get(ValidationKeys.GreaterThan,
             FieldNameProvider.Get(nameof(Expense.Amount)), minValue);
         Action callGreaterThan0 = () => _ = new Expense(ExpenseMockInstance.Description,
             expectedIncorrectValue,
@@ -64,7 +64,7 @@ public class ExpenseTests
 
         callGreaterThan0.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
-        var callSetAmount = () => _expenseCorrectlyValues.SetAmount(expectedIncorrectValue);
+        Action callSetAmount = () => _expenseCorrectlyValues.SetAmount(expectedIncorrectValue);
         // Act & Assert setter
         callSetAmount.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
@@ -85,7 +85,7 @@ public class ExpenseTests
     [MemberData(nameof(InvalidInputData.InvalidValues), MemberType = typeof(InvalidInputData))]
     public void ConstructorAndSetDescription_GivenIsEmptyOrNull_ThenShouldThrow(string? invalidValues)
     {
-        var expectedMessage =
+        string expectedMessage =
             ValidationMessageProvider.Get(ValidationKeys.RequiredField, FieldNameProvider.Get(nameof(Expense.Description)));
         // Act & Assert constructor
         Action callIsEmptyOrNull = () => _ = new Expense(invalidValues!,
@@ -103,7 +103,7 @@ public class ExpenseTests
     public void ConstructorAndSetDescription_GivenIsNotNullAndNotEmpty_ThenShouldSetDescriptionCorrectly()
     {
         //Arrange 
-        var expectedDescription = ExpenseMockInstance.Description;
+        string expectedDescription = ExpenseMockInstance.Description;
         // Act & Assert constructor
         _expenseCorrectlyValues.Description.ShouldBe(expectedDescription);
         // Act & Assert setter
@@ -117,7 +117,7 @@ public class ExpenseTests
     [InlineData(-30)]
     public void ConstructorAndSetDate_GivenDateIsNowOrPast_ThenShouldSetDateCorrectly(int daysOffset)
     {
-        var expectedDate = DateTime.Today.AddDays(daysOffset);
+        DateTime expectedDate = DateTime.Today.AddDays(daysOffset);
         // Act & Assert constructor
         Expense expense = new(ExpenseMockInstance.Description, ExpenseMockInstance.Amount, expectedDate,
             ExpenseMockInstance.IdCategory);
@@ -130,9 +130,9 @@ public class ExpenseTests
     [Fact]
     public void ConstructorAndSetDate_GivenDateIsFuture_ThenShouldThrow()
     {
-        var futureDate = DateTime.Today.AddDays(1);
+        DateTime futureDate = DateTime.Today.AddDays(1);
         // Act & Assert constructor
-        var expectedMessage =
+        string expectedMessage =
             ValidationMessageProvider.Get(ValidationKeys.DateIsFuture, futureDate.ToShortDateString());
 
         Action callDateIsFuture = () => _ = new Expense(ExpenseMockInstance.Description,
@@ -142,7 +142,7 @@ public class ExpenseTests
         callDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
         // Act & Assert setter
-        var callSetDateIsFuture = () => _expenseCorrectlyValues.SetDate(futureDate);
+        Action callSetDateIsFuture = () => _expenseCorrectlyValues.SetDate(futureDate);
         callSetDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 

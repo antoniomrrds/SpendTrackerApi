@@ -21,12 +21,12 @@ public class UnitOfWorkTests : IClassFixture<SqliteInMemoryFixture>
     public async Task CommitAsync_WhenCalled_ShouldPersistChanges()
     {
         // Arrange
-        var category = new Category("Test", "Descrição");
+        Category category = new Category("Test", "Descrição");
         await _context.Categories.AddAsync(category ,  TestContext.Current.CancellationToken);
         // Act
         await _sut.CommitAsync();
         // Assert
-        var saved = await _context.Categories.FirstOrDefaultAsync(c => c.Id == category.Id, TestContext.Current.CancellationToken);
+        Category? saved = await _context.Categories.FirstOrDefaultAsync(c => c.Id == category.Id, TestContext.Current.CancellationToken);
         saved.ShouldNotBeNull();
         saved.Name.ShouldBe("Test");
     }

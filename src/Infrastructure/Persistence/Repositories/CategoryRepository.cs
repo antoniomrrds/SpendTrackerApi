@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-internal class CategoryRepository:ICategoryRepository
+public class CategoryRepository:ICategoryRepository
 {
     private readonly AppDbContext _context;
     public CategoryRepository(AppDbContext context)

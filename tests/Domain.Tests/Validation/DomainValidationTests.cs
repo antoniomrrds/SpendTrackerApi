@@ -15,7 +15,7 @@ public class DomainValidationTests
     public void RequiredAndTrim_GivenNullOrWhitespace_ThenShouldThrowDomainException(string? input)
     {
         //Arrange
-        var expectedMessage = ValidationMessageProvider.Get(ValidationKeys.RequiredField, FieldNameProvider.Get("Field"));
+        string expectedMessage = ValidationMessageProvider.Get(ValidationKeys.RequiredField, FieldNameProvider.Get("Field"));
         //Act && Assert
         Action callRequiredAndTrim = () => DomainValidation.RequiredAndTrim(input!, "Field");
         callRequiredAndTrim.ShouldThrowWithMessage<DomainException>(expectedMessage);
@@ -25,10 +25,10 @@ public class DomainValidationTests
     public void RequiredAndTrim_GivenValidInput_ThenShouldReturnTrimmed()
     {
         // Arrange
-        var inputWithoutSpacesExpected = RandomValidName;
-        var inputWithSpaces = $"  {inputWithoutSpacesExpected}  ";
+        string inputWithoutSpacesExpected = RandomValidName;
+        string inputWithSpaces = $"  {inputWithoutSpacesExpected}  ";
         // Act
-        var result = DomainValidation.RequiredAndTrim(inputWithSpaces, "Field");
+        string result = DomainValidation.RequiredAndTrim(inputWithSpaces, "Field");
         // Assert
         result.ShouldBe(inputWithoutSpacesExpected);
     }
@@ -38,9 +38,9 @@ public class DomainValidationTests
     {
         //Arrange
         string inputWithoutSpacesExpected = new('a', 198);
-        var inputWithMaxCharsAndSpaces = $" {inputWithoutSpacesExpected} ";
+        string inputWithMaxCharsAndSpaces = $" {inputWithoutSpacesExpected} ";
         //Act
-        var result = DomainValidation.MaxLength(inputWithMaxCharsAndSpaces, "Field", 200);
+        string result = DomainValidation.MaxLength(inputWithMaxCharsAndSpaces, "Field", 200);
         //Assert
         result.ShouldBe(inputWithoutSpacesExpected);
     }
@@ -50,7 +50,7 @@ public class DomainValidationTests
     {
         //Arrange
         string inputExceedingMaxLengthExpected = new('a', 201);
-        var expectedMessage = ValidationMessageProvider.Get(ValidationKeys.MaxChars, FieldNameProvider.Get("Field"), 200);
+        string expectedMessage = ValidationMessageProvider.Get(ValidationKeys.MaxChars, FieldNameProvider.Get("Field"), 200);
         //Act && Assert
         Action callMaxLengthWithTooLongInput = () => DomainValidation.MaxLength(inputExceedingMaxLengthExpected, "Field", 200);
         callMaxLengthWithTooLongInput.ShouldThrowWithMessage<DomainException>(expectedMessage);
@@ -64,7 +64,7 @@ public class DomainValidationTests
         const decimal value = 10;
         const decimal minValue = 0;
         //Act
-        var result = DomainValidation.GreaterThan(value, "Field", minValue);
+        decimal result = DomainValidation.GreaterThan(value, "Field", minValue);
         //Assert
         result.ShouldBe(value);
         result.ShouldBeGreaterThan(minValue);
@@ -76,7 +76,7 @@ public class DomainValidationTests
         //Arrange
         const decimal value = 50;
         const decimal minValue = 100;
-        var expectedMessage = ValidationMessageProvider.Get(ValidationKeys.GreaterThan, FieldNameProvider.Get("Field"), minValue);        //Act && Assert
+        string expectedMessage = ValidationMessageProvider.Get(ValidationKeys.GreaterThan, FieldNameProvider.Get("Field"), minValue);        //Act && Assert
         Action callGreaterThan = () => DomainValidation.GreaterThan(value, "Field", minValue);
         callGreaterThan.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
@@ -88,9 +88,9 @@ public class DomainValidationTests
     public void DateIsFuture_GivenDateIsNowOrPast_ThenShouldReturnValue(int daysOffset)
     {
         //Arrange
-        var expectedDate = DateTime.Today.AddDays(daysOffset);
+        DateTime expectedDate = DateTime.Today.AddDays(daysOffset);
         //Act
-        var result = DomainValidation.DateIsFuture(expectedDate);
+        DateTime result = DomainValidation.DateIsFuture(expectedDate);
         //Assert
         result.ShouldBe(expectedDate);
     }
@@ -99,8 +99,8 @@ public class DomainValidationTests
     public void DateIsFuture_GivenDateIsFuture_ThenShouldThrow()
     {
         //Arrange
-        var expectedDate = DateTime.Today.AddDays(1);
-        var expectedMessage = ValidationMessageProvider.Get(ValidationKeys.DateIsFuture, expectedDate.ToShortDateString());
+        DateTime expectedDate = DateTime.Today.AddDays(1);
+        string expectedMessage = ValidationMessageProvider.Get(ValidationKeys.DateIsFuture, expectedDate.ToShortDateString());
         //Act && Assert
         Action callDateIsFuture = () => DomainValidation.DateIsFuture(expectedDate);
         callDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);

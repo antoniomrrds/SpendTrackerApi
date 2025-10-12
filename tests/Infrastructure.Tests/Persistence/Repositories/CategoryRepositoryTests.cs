@@ -30,7 +30,7 @@ public class CategoryRepositoryTests:IClassFixture<SqliteInMemoryFixture>
         await _sut.AddAsync(_category,TestContext.Current.CancellationToken);
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var saved = await _context.Categories.FirstOrDefaultAsync(c => c.Id == _category.Id,
+        Category? saved = await _context.Categories.FirstOrDefaultAsync(c => c.Id == _category.Id,
             cancellationToken: TestContext.Current.CancellationToken);
         saved.ShouldNotBeNull();
         saved.Name.ShouldBe(_category.Name);
@@ -41,14 +41,14 @@ public class CategoryRepositoryTests:IClassFixture<SqliteInMemoryFixture>
     {
         await _sut.AddAsync(_category ,TestContext.Current.CancellationToken );
         await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
-        var saved = await _sut.HasCategoryWithNameAsync(_category.Name, TestContext.Current.CancellationToken);
+        bool saved = await _sut.HasCategoryWithNameAsync(_category.Name, TestContext.Current.CancellationToken);
         saved.ShouldBeTrue();
     }
     
     [Fact]
     public async Task HasCategoryWithNameAsync_WhenCategoryNameDoesNotExist_ShouldReturnFalse()
     {
-        var exists = await _sut.HasCategoryWithNameAsync("NameDoesNotExit", TestContext.Current.CancellationToken);
+        bool exists = await _sut.HasCategoryWithNameAsync("NameDoesNotExit", TestContext.Current.CancellationToken);
         exists.ShouldBeFalse();
     }
 
