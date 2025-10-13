@@ -1,5 +1,6 @@
 using Domain.Errors;
-using SharedKernel.Resources;
+using Domain.Resources;
+using SharedKernel.Extensions;
 
 namespace Domain.Validation;
 
@@ -9,9 +10,7 @@ internal static class DomainValidation
     {
         return !string.IsNullOrWhiteSpace(value)
             ? value.Trim()
-            : throw new DomainException(
-                ValidationMessageProvider.Get(ValidationKeys.RequiredField, FieldNameProvider.Get(fieldName)),
-                FieldNameProvider.Get(fieldName));
+            : throw new DomainException(ValidationMessages.RequiredField.FormatInvariant(fieldName));
     }
 
     public static string MaxLength(string? value, string fieldName, int maxLength)
@@ -21,25 +20,20 @@ internal static class DomainValidation
         return string.IsNullOrWhiteSpace(trimmed) || trimmed.Length <= maxLength
             ? trimmed
             : throw new DomainException(
-                ValidationMessageProvider.Get(ValidationKeys.MaxChars, FieldNameProvider.Get(fieldName), maxLength),
-                FieldNameProvider.Get(fieldName));
+                ValidationMessages.MaxChars.FormatInvariant(fieldName, maxLength));
     }
 
     public static decimal GreaterThan(decimal number, string fieldName, decimal minValue)
     {
         return number > minValue
             ? number
-            : throw new DomainException(
-                ValidationMessageProvider.Get(ValidationKeys.GreaterThan, FieldNameProvider.Get(fieldName), minValue),
-                FieldNameProvider.Get(fieldName));
+            : throw new DomainException(ValidationMessages.GreaterThan.FormatInvariant(fieldName, minValue));
     }
 
     public static DateTime DateIsFuture(DateTime expectedDate)
     {
         return expectedDate > DateTime.Today
-            ? throw new DomainException(
-                ValidationMessageProvider.Get(ValidationKeys.DateIsFuture, expectedDate.ToShortDateString()),
-                "Date")
+            ? throw new DomainException(ValidationMessages.DateIsFuture.FormatInvariant(expectedDate.ToShortDateString()))
             : expectedDate;
     }
 }

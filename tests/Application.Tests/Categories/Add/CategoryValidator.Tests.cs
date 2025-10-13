@@ -1,6 +1,7 @@
 using FluentValidation.TestHelper;
-using SharedKernel.Resources;
 using Application.Categories.Add;
+using Domain.Resources;
+using SharedKernel.Extensions;
 
 namespace Application.Tests.Categories.Add;
 [Trait("Type", "Unit")]
@@ -23,8 +24,7 @@ public class CategoryValidatorTests
         TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
 
         result.ShouldHaveValidationErrorFor(c => c.Name)
-            .WithErrorMessage(
-                ValidationMessageProvider.Get(ValidationKeys.RequiredField, FieldNameProvider.Get("Name")));
+            .WithErrorMessage(ValidationMessages.RequiredField.FormatInvariant("Name"));
     }
 
     [Fact]
@@ -35,8 +35,8 @@ public class CategoryValidatorTests
         TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
 
         result.ShouldHaveValidationErrorFor(c => c.Name)
-            .WithErrorMessage(ValidationMessageProvider.Get(ValidationKeys.StringLengthRangeMessage,
-                FieldNameProvider.Get("Name"), 4, 150));
+            .WithErrorMessage(
+                ValidationMessages.StringLengthRangeMessage.FormatInvariant("Name", 4, 150));
     }
 
     [Fact]
@@ -52,14 +52,13 @@ public class CategoryValidatorTests
     [Fact]
     public void Validator_WhenDescriptionIsTooLong_ShouldReturnError()
     {
-        string longDescription = new string('a', 201);
+        string longDescription = new('a', 201);
         CreateCategoryCommand command = BuildCommand(description: longDescription);
         
         TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
 
         result.ShouldHaveValidationErrorFor(c => c.Description)
-            .WithErrorMessage(ValidationMessageProvider.Get(ValidationKeys.MaxChars,
-                FieldNameProvider.Get("Description"),200));
+            .WithErrorMessage(ValidationMessages.MaxChars.FormatInvariant("Description", 200));
     }
     
     [Fact]
@@ -70,8 +69,7 @@ public class CategoryValidatorTests
         TestValidationResult<CreateCategoryCommand>? result = _sut.TestValidate(command);
 
         result.ShouldHaveValidationErrorFor(c => c.Description)
-            .WithErrorMessage(ValidationMessageProvider.Get(ValidationKeys.WhitespaceOnly,
-                FieldNameProvider.Get("Description")));
+            .WithErrorMessage(ValidationMessages.WhiteSpaceOnly.FormatInvariant("Description"));
     }
 
     [Fact]

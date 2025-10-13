@@ -4,47 +4,4 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-    <PropertyGroup>
-        <NeutralLanguage>pt-BR</NeutralLanguage>
-    </PropertyGroup>
-    <ItemGroup>
-      <EmbeddedResource Update="Resources\FieldNames.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>FieldNames.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Resources\FieldNames.pt-BR.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>FieldNames.pt-BR.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Resources\ValidationMessages.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>ValidationMessages.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Resources\ValidationMessages.pt-BR.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>ValidationMessages.pt-BR.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-      <Compile Update="Resources\FieldNames.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>FieldNames.resx</DependentUpon>
-      </Compile>
-      <Compile Update="Resources\FieldNames.pt-BR.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>FieldNames.pt-BR.resx</DependentUpon>
-      </Compile>
-      <Compile Update="Resources\ValidationMessages.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>ValidationMessages.resx</DependentUpon>
-      </Compile>
-      <Compile Update="Resources\ValidationMessages.pt-BR.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>ValidationMessages.pt-BR.resx</DependentUpon>
-      </Compile>
-    </ItemGroup>
 </Project>

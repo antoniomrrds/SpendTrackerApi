@@ -2,14 +2,14 @@ using Application;
 using Microsoft.AspNetCore.Localization;
 using Scalar.AspNetCore;
 using Infrastructure;
-using Infrastructure.Persistence.Data;
-using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-builder.Services.AddApplication()
+builder.Services.AddControllers();
+
+builder.Services
+    .AddApplication()
     .AddInfrastructure(builder.Configuration);
 
 // Add services to the container.
@@ -23,7 +23,6 @@ builder.Services.AddApplication()
 
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options => { options.SuppressModelStateInvalidFilter = true; });
-
 WebApplication app = builder.Build();
 
 CultureInfo cultureInfo = new("pt-BR");
@@ -38,7 +37,6 @@ RequestLocalizationOptions localizationOptions = new()
     SupportedUICultures = [cultureInfo]
 };
 
-app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -48,6 +46,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRequestLocalization(localizationOptions);
 
 app.UseAuthorization();
 
@@ -55,4 +54,4 @@ app.MapControllers();
 
 await app.RunAsync();
 
-public abstract partial class Program{};
+public abstract partial class Program;

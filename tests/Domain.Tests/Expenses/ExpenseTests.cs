@@ -1,6 +1,7 @@
-using SharedKernel.Resources;
 using Domain.Errors;
 using Domain.Expenses;
+using Domain.Resources;
+using SharedKernel.Extensions;
 
 namespace Domain.Tests.Expenses;
 internal static class ExpenseMock
@@ -18,7 +19,7 @@ internal static class ExpenseMock
             .Generate();
     }
 }
-
+[Trait("Type", "Unit")]
 public class ExpenseTests
 {
     // serve para printar e outras coisas no tests
@@ -55,8 +56,7 @@ public class ExpenseTests
         const decimal minValue = 0;
 
         // Act & Assert constructor
-        string expectedMessage = ValidationMessageProvider.Get(ValidationKeys.GreaterThan,
-            FieldNameProvider.Get(nameof(Expense.Amount)), minValue);
+        string expectedMessage = ValidationMessages.GreaterThan.FormatInvariant("Amount", minValue);
         Action callGreaterThan0 = () => _ = new Expense(ExpenseMockInstance.Description,
             expectedIncorrectValue,
             ExpenseMockInstance.Date,
@@ -85,8 +85,7 @@ public class ExpenseTests
     [MemberData(nameof(InvalidInputData.InvalidValues), MemberType = typeof(InvalidInputData))]
     public void ConstructorAndSetDescription_GivenIsEmptyOrNull_ThenShouldThrow(string? invalidValues)
     {
-        string expectedMessage =
-            ValidationMessageProvider.Get(ValidationKeys.RequiredField, FieldNameProvider.Get(nameof(Expense.Description)));
+        string expectedMessage = ValidationMessages.RequiredField.FormatInvariant("Description");
         // Act & Assert constructor
         Action callIsEmptyOrNull = () => _ = new Expense(invalidValues!,
             ExpenseMockInstance.Amount,
@@ -133,7 +132,7 @@ public class ExpenseTests
         DateTime futureDate = DateTime.Today.AddDays(1);
         // Act & Assert constructor
         string expectedMessage =
-            ValidationMessageProvider.Get(ValidationKeys.DateIsFuture, futureDate.ToShortDateString());
+            ValidationMessages.DateIsFuture.FormatInvariant(futureDate.ToShortDateString());
 
         Action callDateIsFuture = () => _ = new Expense(ExpenseMockInstance.Description,
             ExpenseMockInstance.Amount,

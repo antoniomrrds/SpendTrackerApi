@@ -3,6 +3,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel;
+using System.Globalization;
 using WebApi.Extensions;
 
 namespace WebApi.Controllers.Categories.Add;
@@ -23,7 +24,7 @@ public class CreateCategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCategoryRequest request)
     {
-        CreateCategoryCommand command = new CreateCategoryCommand(request.Name, request.Description);
+        CreateCategoryCommand command = new(request.Name, request.Description);
         ValidationResult? validation = await _validator.ValidateAsync(command);
         if (!validation.IsValid)
         {

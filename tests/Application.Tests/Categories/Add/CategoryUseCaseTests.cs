@@ -4,7 +4,6 @@ using Application.Categories.Add;
 using Domain.Categories;
 using Domain.Errors;
 using SharedKernel;
-using SharedKernel.Resources;
 
 namespace Application.Tests.Categories.Add;
 
@@ -73,7 +72,7 @@ public class CategoryUseCaseTests
     {
         // Arrange
         string name = $"  {_name}  ";
-        CreateCategoryCommand command = new CreateCategoryCommand(name, _description);
+        CreateCategoryCommand command = new(name, _description);
         // Act
         Result<CreateCategoryResult> result = await _sut.Perform(command);
         string expectedName = command.Name.Trim();
@@ -104,7 +103,7 @@ public class CategoryUseCaseTests
     public async Task Perform_WhenNameIsInvalid_ShouldThrowExceptionAndNotCallRepository(string invalidName)
     {
         // Arrange
-        CreateCategoryCommand commandWithInvalidName = new CreateCategoryCommand(invalidName, _description);
+        CreateCategoryCommand commandWithInvalidName = new (invalidName, _description);
         
         // Act & Assert
         await Should.ThrowAsync<DomainException>(() => _sut.Perform(commandWithInvalidName));

@@ -1,6 +1,8 @@
-﻿using SharedKernel.Resources;
-using Domain.Categories;
+﻿using Domain.Categories;
 using Domain.Errors;
+using Domain.Resources;
+using SharedKernel.Extensions;
+
 namespace Domain.Tests.Categories;
 
 [Trait("Type", "Unit")]
@@ -9,8 +11,7 @@ public class CategoryTests
     private readonly Faker _faker = new();
     private const string FieldName = nameof(Category.Name);
 
-    private static string ExpectedNameMessage =>
-        ValidationMessageProvider.Get("RequiredField", FieldNameProvider.Get(FieldName));
+    private static string ExpectedNameMessage => ValidationMessages.RequiredField.FormatInvariant(FieldName);
 
     private string RandomValidName => _faker.Name.FirstName();
     private string RandomValidDescription => _faker.Lorem.Sentence();
@@ -69,8 +70,9 @@ public class CategoryTests
     {
         // Arrange
         string? expectedDescription = _faker.Lorem.Letter(201);
-        string expectedMessage = ValidationMessageProvider.Get(ValidationKeys.MaxChars,
-            FieldNameProvider.Get(nameof(Category.Description)), 200);
+     
+
+        string expectedMessage = ValidationMessages.MaxChars.FormatInvariant(nameof(Category.Description), 200);
 
         // Act & Assert constructor
         Action callMoreThan200Chars = () => _ = new Category(RandomValidName, expectedDescription);
