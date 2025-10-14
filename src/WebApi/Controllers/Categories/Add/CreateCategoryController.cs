@@ -3,7 +3,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel;
-using System.Globalization;
 using WebApi.Extensions;
 
 namespace WebApi.Controllers.Categories.Add;
@@ -26,16 +25,15 @@ public class CreateCategoryController : ControllerBase
     {
         CreateCategoryCommand command = new(request.Name, request.Description);
         ValidationResult? validation = await _validator.ValidateAsync(command);
+
         if (!validation.IsValid)
-        {
-            validation.AddToModelState(ModelState);
-            return ValidationProblem(ModelState);
-        }
-        
+            return this.ToValidationProblem(validation);
+
         Result<CreateCategoryResult> result = await _useCase.Perform(command);
-        return result.IsFailure 
-            ? Conflict(result.Error.Description) 
-            : Ok(result.Value);
-        // return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+
+        return result.IsFailure
+            ? this.ToConflictProblem(result.Error.Description, "Erro ao criar categoria")
+            : this.ToOkResponse(result.Value, "Categoria criada com sucesso");
     }
 }
+
