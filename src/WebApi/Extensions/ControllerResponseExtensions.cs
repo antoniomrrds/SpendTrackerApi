@@ -8,24 +8,24 @@ public static class ControllerResponseExtensions
     public static IActionResult ToValidationProblem(this ControllerBase controller, ValidationResult validationResult)
     {
         IDictionary<string, string[]>? errors = validationResult.ToDictionary();
-        ValidationProblemDetails problem = new(errors)
+        CustomProblemDetails problem = new()
         {
             Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
             Title = "A solicitação contém erros de validação.",
             Status = StatusCodes.Status400BadRequest,
             Detail = "Um ou mais campos estão inválidos.",
             Instance = controller.HttpContext.Request.Path,
-            Extensions = { ["fieldErrors"] = errors }
+            Errors = errors
         };
 
-        ApiResponse<ValidationProblemDetails> response = ApiResponseFactory.ErrorResponse<ValidationProblemDetails>(problem, "Erro de validação", problem.Status
-                                                                                                                                                  ?? StatusCodes.Status400BadRequest);
+        ApiResponse<CustomProblemDetails> response = ApiResponseFactory
+            .ErrorResponse<CustomProblemDetails>(problem, "Erro de validação", problem.Status);
         return controller.BadRequest(response);
     }
 
     public static IActionResult ToNotFoundProblem(this ControllerBase controller, string detail, string message = "Recurso não encontrado")
     {
-        ProblemDetails problem = new()
+        CustomProblemDetails problem = new()
         {
             Type = "https://tools.ietf.org/html/rfc9110#section-15.5.4",
             Title = "Recurso não encontrado.",
@@ -34,13 +34,13 @@ public static class ControllerResponseExtensions
             Instance = controller.HttpContext.Request.Path
         };
 
-        ApiResponse<ProblemDetails> response = ApiResponseFactory.ErrorResponse<ProblemDetails>(problem, message, problem.Status ?? StatusCodes.Status404NotFound);
+        ApiResponse<CustomProblemDetails> response = ApiResponseFactory.ErrorResponse<CustomProblemDetails>(problem, message, problem.Status);
         return controller.NotFound(response);
     }
 
     public static IActionResult ToConflictProblem(this ControllerBase controller, string detail, string message = "Conflito de dados")
     {
-        ProblemDetails problem = new()
+        CustomProblemDetails problem = new()
         {
             Type = "https://tools.ietf.org/html/rfc9110#section-15.5.10",
             Title = "Conflito de dados.",
@@ -49,7 +49,7 @@ public static class ControllerResponseExtensions
             Instance = controller.HttpContext.Request.Path
         };
 
-        ApiResponse<ProblemDetails> response = ApiResponseFactory.ErrorResponse<ProblemDetails>(problem, message, problem.Status ?? StatusCodes.Status409Conflict);
+        ApiResponse<CustomProblemDetails> response = ApiResponseFactory.ErrorResponse<CustomProblemDetails>(problem, message, problem.Status);
         return controller.Conflict(response);
     }
 
