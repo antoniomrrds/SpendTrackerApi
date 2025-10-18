@@ -1,7 +1,7 @@
 using Application;
+using Infrastructure;
 using Microsoft.AspNetCore.Localization;
 using Scalar.AspNetCore;
-using Infrastructure;
 using System.Globalization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -36,7 +36,6 @@ RequestLocalizationOptions localizationOptions = new()
     SupportedCultures = [cultureInfo],
     SupportedUICultures = [cultureInfo]
 };
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

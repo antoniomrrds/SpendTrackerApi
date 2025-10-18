@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace TestUtilities.Extensions;
 
 public static class ExceptionAssertExtensions

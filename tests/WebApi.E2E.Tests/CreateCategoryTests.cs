@@ -16,9 +16,7 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     private const string Description = "Description";
 
     public CreateCategoryTests(SqliteTestWebAppFactory factory)
-        : base(factory)
-    {
-    }
+        : base(factory) {}
 
     [Fact]
     public async Task PostCategory_WithInvalidData_ShouldReturnBadRequest()
@@ -41,7 +39,6 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
             () => problemDetails.Errors.Keys.ShouldBe([Name, Description])
         );
 
-
         List<string> expectedErrors = GetExpectedErrors();
 
         List<string> actualErrors =
@@ -55,6 +52,29 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
             () => actualErrors.Count.ShouldBe(expectedErrors.Count),
             () => actualErrors.ShouldBe(expectedErrors)
         );
+    }
+
+    [Fact]
+    public async Task PostCategory_WithExistingName_ShouldReturnConflict()
+    {
+        //Add a category to the database
+        CreateCategoryRequest expectedRequest = new(
+            Name: Faker.Name.FirstName(),
+            Description : Faker.Lorem.Letter(200)
+        );
+        HttpResponseMessage response1 = await HttpClient
+            .PostAsJsonAsync(CategoriesRoutes.Add, expectedRequest, CancellationToken);
+        
+        response1.StatusCode.ShouldBe(HttpStatusCode.OK);
+        HttpResponseMessage response =  await HttpClient
+            .PostAsJsonAsync(CategoriesRoutes.Add, expectedRequest, CancellationToken);  
+       
+       response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+       CustomProblemDetails problemDetails = await response.GetProblemDetails();
+       problemDetails.ShouldSatisfyAllConditions(
+           () => problemDetails.Errors.ShouldNotBeNull()
+       );
+        
     }
     
     private static List<string> GetExpectedErrors() =>

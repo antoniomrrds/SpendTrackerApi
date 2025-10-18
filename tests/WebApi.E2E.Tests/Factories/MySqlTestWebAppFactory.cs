@@ -13,14 +13,28 @@ namespace WebApi.E2E.Tests.Factories;
 public class MySqlTestWebAppFactory: WebApplicationFactory<Program>, ITestWebAppFactory , IAsyncLifetime
 {
     private const string MySqlVersionString = "8.0.43";
-    private readonly MySqlContainer _mySqlContainer = new MySqlBuilder()
-        .WithImage("mysql:8.0.43-debian")
-        .WithUsername("test")
-        .WithPassword("test")
-        .WithDatabase("spendtracker")
-        .Build();
+    private readonly MySqlContainer _mySqlContainer;
 
-    public async ValueTask InitializeAsync() => await _mySqlContainer.StartAsync();
+    public MySqlTestWebAppFactory()
+    {
+        _mySqlContainer  = new MySqlBuilder()
+            .WithImage("mysql:8.0.43-debian")
+            .WithUsername("test")
+            .WithPassword("test")
+            .WithDatabase("spendtracker")
+            .Build();
+    }
+
+    public async ValueTask InitializeAsync()
+    {
+        await _mySqlContainer.StartAsync();
+        using IServiceScope scope = Services.CreateScope();
+        IServiceProvider scopedServices = scope.ServiceProvider;
+        AppDbContext cntx = scopedServices.GetRequiredService<AppDbContext>();
+        await cntx.Database.EnsureCreatedAsync();
+
+    }
+
     public new async Task DisposeAsync()
     {
         await _mySqlContainer.StopAsync();
@@ -29,14 +43,18 @@ public class MySqlTestWebAppFactory: WebApplicationFactory<Program>, ITestWebApp
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureTestServices(s =>
+        string? connectionString = _mySqlContainer.GetConnectionString();
+        base.ConfigureWebHost(builder);
+        builder.ConfigureTestServices(services =>
         {
-            s.RemoveAll<DbContextOptions<AppDbContext>>();
-            string connection = _mySqlContainer.GetConnectionString();
-            MySqlServerVersion serverVersion = new(new Version(MySqlVersionString));
-            s.AddDbContext<AppDbContext>(o => o.UseMySql(connection, serverVersion));
+           MySqlServerVersion serverVersion = new(new Version(MySqlVersionString));
+
+            services.RemoveAll<DbContextOptions<AppDbContext>>();
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseMySql(connectionString, serverVersion);
+            });
         });
     }
-
     public IServiceScope CreateScope() => Services.CreateScope();
 }

@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text.Json.Serialization;
-
 namespace WebApi.Extensions;
 
 public class ApiResponse<T>

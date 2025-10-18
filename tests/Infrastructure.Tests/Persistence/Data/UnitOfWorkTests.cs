@@ -21,7 +21,7 @@ public class UnitOfWorkTests : IClassFixture<SqliteInMemoryFixture>
     public async Task CommitAsync_WhenCalled_ShouldPersistChanges()
     {
         // Arrange
-        Category category = new Category("Test", "Descrição");
+        Category category = new("Test", "Descrição");
         await _context.Categories.AddAsync(category ,  TestContext.Current.CancellationToken);
         // Act
         await _sut.CommitAsync();
