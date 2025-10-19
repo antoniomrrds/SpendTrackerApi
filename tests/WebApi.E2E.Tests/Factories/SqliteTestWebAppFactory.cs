@@ -1,6 +1,7 @@
 using Infrastructure.Persistence.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -23,7 +24,7 @@ public class SqliteTestWebAppFactory : WebApplicationFactory<Program>, ITestWebA
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureServices(services =>
+        builder.ConfigureTestServices(services =>
         {
             ServiceDescriptor? dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType ==
                                                                     typeof(IDbContextOptionsConfiguration<

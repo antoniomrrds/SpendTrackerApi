@@ -1,3 +1,5 @@
+using Application.Categories.Add;
+using Application.Tests.Categories.Mock;
 using Domain.Categories;
 using Domain.Resources;
 using SharedKernel.Extensions;
@@ -16,8 +18,18 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     private const string Name = "Name";
     private const string Description = "Description";
 
+    private HttpResponseMessage? _sut;
+    private static readonly CreateCategoryRequest CreateMockInstance = CategoriesMock.Create();
+
+    private async Task<HttpResponseMessage> AddCategory(CreateCategoryRequest request)
+    {
+        return await HttpClient
+            .PostAsJsonAsync(CategoriesRoutes.Add, request, CancellationToken);
+    }
+
     public CreateCategoryTests(SqliteTestWebAppFactory factory)
-        : base(factory) {}
+        : base(factory)
+    { }
 
     [Fact]
     public async Task PostCategory_WithInvalidData_ShouldReturnBadRequest()
@@ -29,12 +41,11 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
         );
 
         //Act
-        HttpResponseMessage response = await HttpClient
-            .PostAsJsonAsync(CategoriesRoutes.Add, invalidRequest, CancellationToken);
+        _sut = await AddCategory(invalidRequest);
         //Assert
-        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        CustomProblemDetails problemDetails = await response.GetProblemDetails();
-        
+        _sut.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        CustomProblemDetails problemDetails = await _sut.GetProblemDetails();
+
         problemDetails.ShouldSatisfyAllConditions(
             () => problemDetails.Errors.ShouldNotBeNull(),
             () => problemDetails.Errors.Keys.ShouldBe([Name, Description])
@@ -58,28 +69,37 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     [Fact]
     public async Task PostCategory_WithExistingName_ShouldReturnConflict()
     {
+
         //Add a category to the database
-        CreateCategoryRequest expectedRequest = new(
-            Name: Faker.Name.FirstName(),
-            Description : Faker.Lorem.Letter(200)
+        HttpResponseMessage addCategory = await AddCategory(CreateMockInstance);
+        addCategory.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        //Act
+        _sut = await AddCategory(CreateMockInstance);
+        //Assert
+        _sut.StatusCode.ShouldBe(HttpStatusCode.Conflict);
+        CustomProblemDetails problemDetails = await _sut.GetProblemDetails();
+        problemDetails.ShouldSatisfyAllConditions(
+            () => problemDetails.Errors.ShouldNotBeNull(),
+            () => problemDetails.Errors.Count.ShouldBe(0),
+            () => problemDetails.Detail.ShouldBe(CategoryErrors.CategoryNameAlreadyExists.Description)
         );
-        HttpResponseMessage response1 = await HttpClient
-            .PostAsJsonAsync(CategoriesRoutes.Add, expectedRequest, CancellationToken);
-        
-        response1.StatusCode.ShouldBe(HttpStatusCode.OK);
-        HttpResponseMessage response =  await HttpClient
-            .PostAsJsonAsync(CategoriesRoutes.Add, expectedRequest, CancellationToken);  
-       
-       response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
-       CustomProblemDetails problemDetails = await response.GetProblemDetails();
-       problemDetails.ShouldSatisfyAllConditions(
-           () => problemDetails.Errors.ShouldNotBeNull(),
-           () => problemDetails.Errors.Count.ShouldBe(0),
-           () => problemDetails.Detail.ShouldBe(CategoryErrors.CategoryNameAlreadyExists.Description)
-       );
-        
     }
-    
+
+    [Fact]
+    public async Task PostCategory_WithValidData_ShouldReturnCorrectData()
+    {
+        await ResetDatabaseAsync();
+
+        //Act
+        _sut = await AddCategory(CreateMockInstance);
+        //Assert
+        _sut.StatusCode.ShouldBe(HttpStatusCode.OK);
+        ApiResponse<CreateCategoryResult> result = await _sut.GetApiResponse<CreateCategoryResult>();
+        result.IsSuccess.ShouldBeTrue();
+        result.Payload?.Id.ShouldNotBe(Guid.Empty);
+    }
+
     private static List<string> GetExpectedErrors() =>
     [
         ValidationMessages.RequiredField.FormatInvariant(Name),

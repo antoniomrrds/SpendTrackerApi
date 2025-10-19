@@ -6,11 +6,12 @@ namespace WebApi.E2E.Tests;
 
 public abstract class BaseIntegrationTest<TFactory> : IClassFixture<TFactory> where TFactory : class, ITestWebAppFactory
 {
+    
     protected BaseIntegrationTest(TFactory factory)
     {
         IServiceScope scope = factory.CreateScope();
         HttpClient = factory.CreateClient();
-        Faker = new Faker();
+        Faker = FakerHelper.Faker;
         DbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     }
    
@@ -18,4 +19,12 @@ public abstract class BaseIntegrationTest<TFactory> : IClassFixture<TFactory> wh
     protected HttpClient HttpClient { get; }
     protected Faker Faker { get; }
     protected AppDbContext DbContext { get; }
+    
+    protected async Task ResetDatabaseAsync()
+    {
+        await DbContext.Database.EnsureDeletedAsync();
+        await DbContext.Database.EnsureCreatedAsync();
+    }
+
 }
+

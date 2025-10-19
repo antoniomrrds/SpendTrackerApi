@@ -22,4 +22,19 @@ public static class  HttpResponseMessageExtensions
         problemDetails.ErrorDetails.ShouldNotBeNull();
         return problemDetails.ErrorDetails;
     }
+
+    internal static async Task<ApiResponse<T>> GetApiResponse<T>(this HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new InvalidOleVariantTypeException("Failed response");
+        }
+
+        ApiResponse<T>? apiResponse = await response
+            .Content
+            .ReadFromJsonAsync<ApiResponse<T>>();
+        
+        apiResponse.ShouldNotBeNull();
+        return apiResponse;
+    }
 }
