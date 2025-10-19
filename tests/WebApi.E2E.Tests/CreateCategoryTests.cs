@@ -1,3 +1,4 @@
+using Domain.Categories;
 using Domain.Resources;
 using SharedKernel.Extensions;
 using System.Net;
@@ -72,7 +73,9 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
        response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
        CustomProblemDetails problemDetails = await response.GetProblemDetails();
        problemDetails.ShouldSatisfyAllConditions(
-           () => problemDetails.Errors.ShouldNotBeNull()
+           () => problemDetails.Errors.ShouldNotBeNull(),
+           () => problemDetails.Errors.Count.ShouldBe(0),
+           () => problemDetails.Detail.ShouldBe(CategoryErrors.CategoryNameAlreadyExists.Description)
        );
         
     }
