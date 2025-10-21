@@ -8,7 +8,8 @@ using System.Net.Http.Json;
 using WebApi.Controllers.Categories.Add;
 using WebApi.E2E.Tests.Extensions;
 using WebApi.E2E.Tests.Factories;
-using WebApi.Extensions;
+using WebApi.Responses.Errors;
+using WebApi.Responses.Success;
 
 namespace WebApi.E2E.Tests;
 
@@ -44,7 +45,7 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
         _sut = await AddCategory(invalidRequest);
         //Assert
         _sut.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        CustomProblemDetails problemDetails = await _sut.GetProblemDetails();
+        ApiValidationErrorsResponse problemDetails = await _sut.GetErrorResponse<ApiValidationErrorsResponse>();
 
         problemDetails.ShouldSatisfyAllConditions(
             () => problemDetails.Errors.ShouldNotBeNull(),
@@ -78,11 +79,10 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
         _sut = await AddCategory(CreateMockInstance);
         //Assert
         _sut.StatusCode.ShouldBe(HttpStatusCode.Conflict);
-        CustomProblemDetails problemDetails = await _sut.GetProblemDetails();
-        problemDetails.ShouldSatisfyAllConditions(
-            () => problemDetails.Errors.ShouldNotBeNull(),
-            () => problemDetails.Errors.Count.ShouldBe(0),
-            () => problemDetails.Detail.ShouldBe(CategoryErrors.CategoryNameAlreadyExists.Description)
+        ApiErrorResponse errorResponse = await _sut.GetErrorResponse<ApiErrorResponse>();
+        errorResponse.ShouldSatisfyAllConditions(
+            () => errorResponse.IsSuccess.ShouldBeFalse(),
+            () => errorResponse.Error.ShouldBe(CategoryErrors.CategoryNameAlreadyExists.Description)
         );
     }
 
@@ -95,7 +95,7 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
         _sut = await AddCategory(CreateMockInstance);
         //Assert
         _sut.StatusCode.ShouldBe(HttpStatusCode.OK);
-        ApiResponse<CreateCategoryResult> result = await _sut.GetApiResponse<CreateCategoryResult>();
+        ApiSuccessResponse<CreateCategoryResult> result = await _sut.GetApiResponse<CreateCategoryResult>();
         result.IsSuccess.ShouldBeTrue();
         result.Payload?.Id.ShouldNotBe(Guid.Empty);
     }

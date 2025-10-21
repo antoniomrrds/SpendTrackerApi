@@ -32,7 +32,9 @@ public class CreateCategoryController : ControllerBase
         Result<CreateCategoryResult> result = await _useCase.Perform(command);
 
         return result.IsFailure
-            ? this.ToConflictProblem(result.Error.Description, "Erro ao criar categoria")
+            ? this.ToConflictProblem(
+                 result.Error.Description,
+                "Erro ao criar categoria")
             : this.ToOkResponse(result.Value, "Categoria criada com sucesso");
     }
 }
