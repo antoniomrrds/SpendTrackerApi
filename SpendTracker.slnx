@@ -1,10 +1,24 @@
 <Solution>
-    <Folder Name="/src/">
-        <Project Path=".\src\SpendTracker.Domain\SpendTracker.Domain.csproj" Type="Classic C#"/>
-        <Project Path=".\src\SpendTrackerApi\SpendTrackerApi.csproj" Type="Classic C#"/>
-    </Folder>
-    <Folder Name="/tests/">
-        <Project Path=".\tests\SpendTracker.Domain.Tests\SpendTracker.Domain.Tests.csproj" Type="Classic C#"/>
-    </Folder>
+  <Folder Name="/solution-items/">
+    <File Path="docker-compose.yml" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src\Application\Application.csproj" Type="Classic C#" />
+    <Project Path="src\Domain\Domain.csproj" Type="Classic C#" />
+    <Project Path="src\Infrastructure\Infrastructure.csproj" Type="Classic C#" />
+    <Project Path="src\SharedKernel\SharedKernel.csproj" Type="Classic C#" />
+    <Project Path="src\WebApi\WebApi.csproj" Type="Classic C#" />
+    <File Path="src\SrcSharedPackages.props" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests\Application.Tests\Application.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\Domain.Tests\Domain.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\Infrastructure.Tests\Infrastructure.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\TestUtilities\TestUtilities.csproj" Type="Classic C#" />
+    <Project Path="tests\WebApi.E2E.Tests\WebApi.E2E.Tests.csproj" Type="Classic C#" />
+    <File Path="tests\TestSharedPackages.props" />
+  </Folder>
 </Solution>
- 

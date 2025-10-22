@@ -11,19 +11,16 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "packageManager": "pnpm@10.16.0",
+    "packageManager": "pnpm@10.17.1",
     "devDependencies": {
         "@commitlint/cli": "^19.8.1",
         "@commitlint/config-conventional": "^19.8.1",
         "commitizen": "^4.3.0",
-        "cz-emoji-conventional": "^1.2.1",
-        "commitlint-config-gitmoji": "^2.3.1",
         "husky": "^9.1.7"
     },
-    "config": {
-        "commitizen": {
-            "path": "node_modules/cz-emoji-conventional",
-            "useGitmojis": true
-        }
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
     }
+  }
 }
