@@ -21,7 +21,7 @@ app.db
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-
+global.json
 # coverage reports
 coverage*.xml
 coverage-report/
