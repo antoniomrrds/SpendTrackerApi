@@ -4,9 +4,9 @@ using FluentValidation;
 
 namespace Application.Categories.Add;
 
-public class CategoryValidator : AbstractValidator<CreateCategoryCommand>
+public class CreateCategoryValidator : AbstractValidator<CreateCategoryCommand>
 {
-    public CategoryValidator()
+    public CreateCategoryValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage(ValidationMessages.RequiredField.FormatInvariant("Name"))

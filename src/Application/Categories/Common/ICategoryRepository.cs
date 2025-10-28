@@ -1,6 +1,6 @@
 using Domain.Categories;
 
-namespace Application.Categories.Add;
+namespace Application.Categories.Common;
 
 public interface ICategoryRepository
 {

@@ -1,5 +1,5 @@
 using Application.Abstractions.Data;
-using Application.Categories.Add;
+using Application.Categories.Common;
 using Infrastructure.Persistence.Data;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;

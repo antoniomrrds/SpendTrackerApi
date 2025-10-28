@@ -1,0 +1,7 @@
+﻿namespace Application.Tests.Categories.GetById;
+
+public abstract class TestCommon
+{
+    protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
+    protected Faker Faker { get; } = FakerHelper.Faker;
+}

@@ -5,9 +5,9 @@ using Domain.Resources;
 
 namespace Application.Tests.Categories.Add;
 [Trait("Type", "Unit")]
-public class CategoryValidatorTests
+public class CreateCategoryValidatorTests
 {
-    private readonly CategoryValidator _sut = new();
+    private readonly CreateCategoryValidator _sut = new();
     private static readonly Faker Faker = FakerHelper.Faker;
 
     private readonly string _validName = Faker.Commerce.ProductName();
