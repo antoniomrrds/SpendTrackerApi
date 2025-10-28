@@ -1,7 +1,7 @@
 using Domain.Errors;
 using Domain.Expenses;
+using Domain.Extensions;
 using Domain.Resources;
-using SharedKernel.Extensions;
 
 namespace Domain.Tests.Expenses;
 internal static class ExpenseMock

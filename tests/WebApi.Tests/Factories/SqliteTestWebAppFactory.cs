@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data.Common;
-using WebApi.E2E.Tests.Abstractions;
+using WebApi.Tests.Abstractions;
 
-namespace WebApi.E2E.Tests.Factories;
+namespace WebApi.Tests.Factories;
 
 public class SqliteTestWebAppFactory : WebApplicationFactory<Program>, ITestWebAppFactory,IAsyncLifetime
 {

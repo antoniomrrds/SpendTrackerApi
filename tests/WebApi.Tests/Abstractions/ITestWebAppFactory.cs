@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace WebApi.E2E.Tests.Abstractions;
+namespace WebApi.Tests.Abstractions;
 
 public interface ITestWebAppFactory
 {

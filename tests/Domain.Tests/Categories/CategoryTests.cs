@@ -1,7 +1,7 @@
 ﻿using Domain.Categories;
 using Domain.Errors;
+using Domain.Extensions;
 using Domain.Resources;
-using SharedKernel.Extensions;
 
 namespace Domain.Tests.Categories;
 

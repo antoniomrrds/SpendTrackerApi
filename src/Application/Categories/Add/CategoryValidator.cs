@@ -1,6 +1,6 @@
+using Domain.Extensions;
 using Domain.Resources;
 using FluentValidation;
-using SharedKernel.Extensions;
 
 namespace Application.Categories.Add;
 

@@ -6,12 +6,12 @@ using Domain.Resources;
 using System.Net;
 using System.Net.Http.Json;
 using WebApi.Controllers.Categories.Add;
-using WebApi.E2E.Tests.Extensions;
-using WebApi.E2E.Tests.Factories;
+using WebApi.Tests.Extensions;
 using WebApi.Responses.Errors;
 using WebApi.Responses.Success;
+using WebApi.Tests.Factories;
 
-namespace WebApi.E2E.Tests;
+namespace WebApi.Tests;
 
 [Trait("Type", "E2E")]
 public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>

@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.MySql;
-using WebApi.E2E.Tests.Abstractions;
+using WebApi.Tests.Abstractions;
 
-namespace WebApi.E2E.Tests.Factories;
+namespace WebApi.Tests.Factories;
 
 public class MySqlTestWebAppFactory: WebApplicationFactory<Program>, ITestWebAppFactory , IAsyncLifetime
 {

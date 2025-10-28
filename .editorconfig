@@ -273,10 +273,11 @@ dotnet_diagnostic.S125.severity = none
 
 # IDE0053: Use expression body for lambda expression
 dotnet_diagnostic.IDE0053.severity = none
+dotnet_diagnostic.CA1812.severity = none
 
 # IDE0130: Namespace should match project structure
 dotnet_diagnostic.IDE0130.severity = none
-dotnet_diagnostic.CA1032.severity = suggestion
+dotnet_diagnostic.CA1032.severity = suggestion 
 [**/Migrations/**.cs]
 dotnet_diagnostic.CA1707.severity = none
 [**tests/**.cs]

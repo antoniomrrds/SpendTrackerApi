@@ -3,14 +3,26 @@ using Infrastructure;
 using Microsoft.AspNetCore.Localization;
 using Scalar.AspNetCore;
 using System.Globalization;
+using WebApi.Exceptions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
+builder.Services.AddExceptionHandler<DomainExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+builder.Services.AddProblemDetails(configure =>
+{
+    configure.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+    };
+});
+
+
 
 // Add services to the container.
 // var config = TypeAdapterConfig.GlobalSettings;
@@ -43,6 +55,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 app.UseRequestLocalization(localizationOptions);

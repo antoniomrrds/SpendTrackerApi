@@ -1,8 +1,8 @@
 using Infrastructure.Persistence.Data;
 using Microsoft.Extensions.DependencyInjection;
-using WebApi.E2E.Tests.Abstractions;
+using WebApi.Tests.Abstractions;
 
-namespace WebApi.E2E.Tests;
+namespace WebApi.Tests;
 
 public abstract class BaseIntegrationTest<TFactory> : IClassFixture<TFactory> where TFactory : class, ITestWebAppFactory
 {

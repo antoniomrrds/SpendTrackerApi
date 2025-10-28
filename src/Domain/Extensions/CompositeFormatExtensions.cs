@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 
-namespace SharedKernel.Extensions;
+namespace Domain.Extensions;
 
 public static class CompositeFormatExtensions
 {

@@ -25,16 +25,12 @@ public class CreateCategoryController : ControllerBase
     {
         CreateCategoryCommand command = new(request.Name, request.Description);
         ValidationResult? validation = await _validator.ValidateAsync(command);
-
         if (!validation.IsValid)
             return this.ToValidationProblem(validation);
 
         Result<CreateCategoryResult> result = await _useCase.Perform(command);
-
         return result.IsFailure
-            ? this.ToConflictProblem(
-                 result.Error.Description,
-                "Erro ao criar categoria")
+            ? this.ToConflictProblem(result.Error.Description, "Erro ao criar categoria")
             : this.ToOkResponse(result.Value, "Categoria criada com sucesso");
     }
 }

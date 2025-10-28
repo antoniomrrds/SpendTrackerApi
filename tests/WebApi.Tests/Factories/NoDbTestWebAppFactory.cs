@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace WebApi.E2E.Tests.Factories;
+namespace WebApi.Tests.Factories;
 
 public class NoDbTestWebAppFactory : WebApplicationFactory<Program>
 {

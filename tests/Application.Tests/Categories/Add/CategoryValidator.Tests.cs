@@ -1,7 +1,7 @@
 using FluentValidation.TestHelper;
 using Application.Categories.Add;
+using Domain.Extensions;
 using Domain.Resources;
-using SharedKernel.Extensions;
 
 namespace Application.Tests.Categories.Add;
 [Trait("Type", "Unit")]

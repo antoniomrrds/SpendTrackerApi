@@ -26,7 +26,7 @@ global.json
 coverage*.xml
 coverage-report/
 TestResults/
-
+coveragereport/
 # Mono auto generated files
 mono_crash.*
 

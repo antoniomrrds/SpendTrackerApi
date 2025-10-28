@@ -3,12 +3,11 @@ using System.Runtime.InteropServices;
 using WebApi.Responses.Errors;
 using WebApi.Responses.Success;
 
-namespace WebApi.E2E.Tests.Extensions;
+namespace WebApi.Tests.Extensions;
 
 public static class  HttpResponseMessageExtensions
 {
-    internal static async Task<TError> GetErrorResponse<TError>(this HttpResponseMessage response)
-        where TError : ApiErrorBase
+    internal static async Task<TError> GetErrorResponse<TError>(this HttpResponseMessage response) where TError : class
     {
         if (response.IsSuccessStatusCode)
         {

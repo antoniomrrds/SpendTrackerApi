@@ -1,4 +1,4 @@
-﻿namespace WebApi.E2E.Tests;
+﻿namespace WebApi.Tests;
 
 public static class CategoriesRoutes
 {

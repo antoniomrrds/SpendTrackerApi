@@ -18,7 +18,7 @@
     <Project Path="tests\Domain.Tests\Domain.Tests.csproj" Type="Classic C#" />
     <Project Path="tests\Infrastructure.Tests\Infrastructure.Tests.csproj" Type="Classic C#" />
     <Project Path="tests\TestUtilities\TestUtilities.csproj" Type="Classic C#" />
-    <Project Path="tests\WebApi.E2E.Tests\WebApi.E2E.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\WebApi.Tests\WebApi.Tests.csproj" Type="Classic C#" />
     <File Path="tests\TestSharedPackages.props" />
   </Folder>
 </Solution>
