@@ -1,8 +1,8 @@
 using Application.Categories.Add;
 using Application.Tests.Categories.Mock;
 using Domain.Categories;
+using Domain.Extensions;
 using Domain.Resources;
-using SharedKernel.Extensions;
 using System.Net;
 using System.Net.Http.Json;
 using WebApi.Controllers.Categories.Add;

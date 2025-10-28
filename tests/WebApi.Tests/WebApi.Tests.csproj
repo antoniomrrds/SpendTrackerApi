@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\TestSharedPackages.props" />
+    <PropertyGroup>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" />
+        <ProjectReference Include="..\Application.Tests\Application.Tests.csproj" />
+        <ProjectReference Include="..\TestUtilities\TestUtilities.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Data.Sqlite" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Testcontainers.MySql" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+    </ItemGroup>
+
+</Project>
