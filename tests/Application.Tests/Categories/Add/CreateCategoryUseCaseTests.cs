@@ -1,6 +1,7 @@
 using NSubstitute;
 using Application.Abstractions.Data;
 using Application.Categories.Add;
+using Application.Categories.Common;
 using Domain.Categories;
 using Domain.Errors;
 using SharedKernel;
@@ -8,7 +9,7 @@ using SharedKernel;
 namespace Application.Tests.Categories.Add;
 
 [Trait("Type", "Unit")]
-public class CategoryUseCaseTests
+public class CreateCategoryUseCaseTests
 {
     private readonly Faker _faker = FakerHelper.Faker;
     private readonly ICategoryRepository _categoryRepositoryMock;
@@ -21,7 +22,7 @@ public class CategoryUseCaseTests
     private readonly CreateCategoryCommand _command;
     private CreateCategoryCommand GenerateCommand() => new(_name, _description);
 
-    public CategoryUseCaseTests()
+    public CreateCategoryUseCaseTests()
     {
         _name = _faker.Commerce.Categories(1)[0];
         _description = _faker.Lorem.Sentence();

@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Json;
 using System.Runtime.InteropServices;
-using WebApi.Responses.Errors;
 using WebApi.Responses.Success;
 
 namespace WebApi.Tests.Extensions;

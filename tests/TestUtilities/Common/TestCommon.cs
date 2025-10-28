@@ -1,4 +1,4 @@
-﻿namespace Application.Tests.Categories.GetById;
+﻿namespace TestUtilities.Common;
 
 public abstract class TestCommon
 {
