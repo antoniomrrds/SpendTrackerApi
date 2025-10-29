@@ -15,11 +15,12 @@ public class GetByIdUseCaseTests : TestCommon
 {
     private readonly GetByIdUseCase _sut;
     private readonly ICategoryRepository _categoryRepositoryMock;
+    private readonly Category _expectedCategory = MockCategory.Valid();
     public GetByIdUseCaseTests()
     {
         _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        _categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), AnyCancellationToken)
-            .Returns(MockCategory.Valid());
+        _categoryRepositoryMock.GetByIdAsync(_expectedCategory.Id, AnyCancellationToken)
+            .Returns(_expectedCategory);
         _sut = new GetByIdUseCase(_categoryRepositoryMock);
     }
 
@@ -39,15 +40,23 @@ public class GetByIdUseCaseTests : TestCommon
     public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnFailure()
     {
         //Arrange
-        Guid validGuid = Faker.Random.Guid();
-        _categoryRepositoryMock.GetByIdAsync(validGuid, AnyCancellationToken)
+        _categoryRepositoryMock.GetByIdAsync(_expectedCategory.Id, AnyCancellationToken)
             .ReturnsNull();
         //Act
-        Result<Category?> result = await _sut.Perform(validGuid);
+        Result<Category?> result = await _sut.Perform(_expectedCategory.Id);
         //Assert
-        await _categoryRepositoryMock.Received(1).GetByIdAsync(validGuid,   
+        await _categoryRepositoryMock.Received(1).GetByIdAsync(_expectedCategory.Id,   
             AnyCancellationToken);
         result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBe(CategoryErrors.NotFound(validGuid.ToString()));
+        result.Error.ShouldBe(CategoryErrors.NotFound(_expectedCategory.Id.ToString()));
     }
-}
+
+    [Fact]
+    public async Task Perform_WhenCategoryExists_ShouldReturnSuccessAndCategory()
+    { 
+       //Act
+       Result<Category?> result = await _sut.Perform(_expectedCategory.Id);
+       //Assert
+       result.IsSuccess.ShouldBeTrue();
+       result.Value.ShouldBe(_expectedCategory);
+    } }
