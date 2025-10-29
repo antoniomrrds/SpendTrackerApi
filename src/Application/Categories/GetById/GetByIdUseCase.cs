@@ -5,7 +5,7 @@ using SharedKernel;
 
 namespace Application.Categories.GetById;
 
-internal class GetByIdUseCase:IGetByIdUseCase
+internal class GetByIdUseCase : IGetByIdUseCase
 {
     private readonly ICategoryRepository _repo;
 
@@ -16,18 +16,14 @@ internal class GetByIdUseCase:IGetByIdUseCase
 
     public async Task<Result<Category?>> Perform(Guid id)
     {
-            if (id == Guid.Empty)
-            {
-                return CommonErrors.GuidInvalid;
-            }
+        if (id == Guid.Empty)
+        {
+            return CommonErrors.GuidInvalid;
+        }
 
-            Category? result =   await _repo.GetByIdAsync(id);
-            if (result is null)
-            {
-                return CategoryErrors.NotFound(id.ToString());
-            }
-
-            return result;
+        Category? result = await _repo.GetByIdAsync(id);
+        return result is null 
+            ? CategoryErrors.NotFound(id.ToString())
+               : result;
     }
-    
 }
