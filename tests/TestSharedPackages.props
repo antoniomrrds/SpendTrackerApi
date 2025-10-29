@@ -7,12 +7,12 @@
         <PackageReference Include="Bogus"/>
         <PackageReference Include="Shouldly"/>
         <PackageReference Include="xunit.v3"/>
+        <PackageReference Include="NSubstitute" />
     </ItemGroup>
     <ItemGroup Condition="'$(IsTestProject)' == 'true'">
         <PackageReference Include="xunit.runner.visualstudio"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="coverlet.collector"/>
-        <PackageReference Include="NSubstitute" />
     </ItemGroup>
     <!-- new feature to avoid file global -->
     <ItemGroup>
