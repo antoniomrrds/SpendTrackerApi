@@ -14,7 +14,6 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
         _categoryRepository = categoryRepository;
         _unitOfWork = unitOfWork;
     }
-
     public async Task<Result<CreateCategoryResult>>  Perform(CreateCategoryCommand command)
     {
         Category category = new(name: command.Name, description: command.Description);

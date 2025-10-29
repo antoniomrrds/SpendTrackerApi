@@ -1,10 +1,9 @@
-﻿using SharedKernel;
+﻿using Domain.Categories;
+using SharedKernel;
 
 namespace Application.Categories.GetById;
 
 public interface IGetByIdUseCase
 {
-    Result<bool> Perform(GetByIdCommand  command); 
+    Task<Result<Category?>> Perform(Guid  id); 
 }
-
-public sealed record GetByIdCommand(Guid Id);

@@ -22,4 +22,9 @@ public class CategoryRepository:ICategoryRepository
     {
       await _context.Categories.AddAsync(category, cancellationToken);
     }
+
+    public Task<Category?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }
