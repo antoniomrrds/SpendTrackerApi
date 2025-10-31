@@ -1,5 +1,6 @@
+using Application.Categories.Common;
 using Domain.Categories;
-using Infrastructure.Persistence.Data;
+using Domain.Tests.Categories;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Tests.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -7,31 +8,35 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Tests.Persistence.Repositories;
 
 //run the command to execute the integration test
-//dotnet test --filter Type=Integration 
+//dotnet test --filter Type=Integration
 [Trait("Type", "Integration")]
-public class CategoryRepositoryTests:IClassFixture<SqliteInMemoryFixture>
+public class CategoryRepositoryTests : BaseSqliteIntegrationTest
 {
-    private readonly AppDbContext _context;
     private readonly CategoryRepository _sut;
-    private readonly Faker _faker = FakerHelper.Faker;
     private readonly Category _category;
-    
-    public CategoryRepositoryTests(SqliteInMemoryFixture fixture)
-    {
-        _context = fixture.Context;
-        _category = new Category(_faker.Name.FirstName(), _faker.Lorem.Letter(200));
-        _sut = new CategoryRepository(_context);
 
+    private async Task SeedCategoryAsync()
+    {
+        await DbContext.Categories.AddAsync(_category);
+        await DbContext.SaveChangesAsync();
     }
-    
+
+    public CategoryRepositoryTests(SqliteInMemoryFixture fixture)
+        : base(fixture)
+    {
+        _category = MockCategory.Valid();
+        _sut = new CategoryRepository(DbContext);
+    }
+
     [Fact]
     public async Task AddAsync_WhenCategoryIsValid_ShouldPersistCategory()
     {
-        await _sut.AddAsync(_category,TestContext.Current.CancellationToken);
-        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
+        await SeedCategoryAsync();
 
-        Category? saved = await _context.Categories.FirstOrDefaultAsync(c => c.Id == _category.Id,
-            cancellationToken: TestContext.Current.CancellationToken);
+        Category? saved = await DbContext.Categories.FirstOrDefaultAsync(
+            c => c.Id == _category.Id,
+            CancellationToken
+        );
         saved.ShouldNotBeNull();
         saved.Name.ShouldBe(_category.Name);
     }
@@ -39,17 +44,33 @@ public class CategoryRepositoryTests:IClassFixture<SqliteInMemoryFixture>
     [Fact]
     public async Task HasCategoryWithNameAsync_WhenCategoryNameExists_ShouldReturnTrue()
     {
-        await _sut.AddAsync(_category ,TestContext.Current.CancellationToken );
-        await _context.SaveChangesAsync(TestContext.Current.CancellationToken);
-        bool saved = await _sut.HasCategoryWithNameAsync(_category.Name, TestContext.Current.CancellationToken);
+        await SeedCategoryAsync();
+        bool saved = await _sut.HasCategoryWithNameAsync(_category.Name, CancellationToken);
         saved.ShouldBeTrue();
     }
-    
+
     [Fact]
     public async Task HasCategoryWithNameAsync_WhenCategoryNameDoesNotExist_ShouldReturnFalse()
     {
-        bool exists = await _sut.HasCategoryWithNameAsync("NameDoesNotExit", TestContext.Current.CancellationToken);
+        bool exists = await _sut.HasCategoryWithNameAsync("NameDoesNotExit", CancellationToken);
         exists.ShouldBeFalse();
     }
 
+    [Fact]
+    public async Task GetByIdAsync_WhenCategoryExists_ShouldReturnCategoryDto()
+    {
+        await SeedCategoryAsync();
+        CategoryDto? categoryResponse = await _sut.GetByIdAsync(
+            _category.Id,
+            TestContext.Current.CancellationToken
+        );
+
+        categoryResponse.ShouldNotBeNull();
+        categoryResponse.ShouldSatisfyAllConditions(
+            c => c.ShouldNotBeNull(),
+            c => c.Id.ShouldBe(_category.Id),
+            c => c.Name.ShouldBe(_category.Name),
+            c => c.Description.ShouldBe(_category.Description)
+        );
+    }
 }

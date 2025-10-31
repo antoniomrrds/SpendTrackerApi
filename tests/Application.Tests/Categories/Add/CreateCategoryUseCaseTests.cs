@@ -1,9 +1,9 @@
-using NSubstitute;
 using Application.Abstractions.Data;
 using Application.Categories.Add;
 using Application.Categories.Common;
 using Domain.Categories;
 using Domain.Errors;
+using NSubstitute;
 using SharedKernel;
 
 namespace Application.Tests.Categories.Add;
@@ -20,6 +20,7 @@ public class CreateCategoryUseCaseTests
     private readonly string _name;
     private readonly string _description;
     private readonly CreateCategoryCommand _command;
+
     private CreateCategoryCommand GenerateCommand() => new(_name, _description);
 
     public CreateCategoryUseCaseTests()
@@ -36,7 +37,7 @@ public class CreateCategoryUseCaseTests
         _sut = new CreateCategoryUseCase(_categoryRepositoryMock, _unitOfWorkMock);
     }
 
-    //🧩 standard "Given_When_Then" 
+    //🧩 standard "Given_When_Then"
     [Fact]
     public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnSuccessResult()
     {
@@ -44,7 +45,9 @@ public class CreateCategoryUseCaseTests
         Result<CreateCategoryResult> result = await _sut.Perform(_command);
 
         //Assert
-        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name, _cancellationToken);
+        await _categoryRepositoryMock
+            .Received(1)
+            .HasCategoryWithNameAsync(_command.Name, _cancellationToken);
         result.IsSuccess.ShouldBeTrue();
         result.Value.Id.ShouldNotBe(Guid.Empty);
         result.Value.Name.ShouldBe(_command.Name);
@@ -63,7 +66,9 @@ public class CreateCategoryUseCaseTests
         Result<CreateCategoryResult> result = await _sut.Perform(_command);
 
         //Assert
-        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name, _cancellationToken);
+        await _categoryRepositoryMock
+            .Received(1)
+            .HasCategoryWithNameAsync(_command.Name, _cancellationToken);
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(CategoryErrors.CategoryNameAlreadyExists);
     }
@@ -80,11 +85,16 @@ public class CreateCategoryUseCaseTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
 
-        await _categoryRepositoryMock.Received(1).AddAsync(Arg.Is<Category>(category =>
-            category.Name == expectedName &&
-            category.Description == command.Description &&
-            category.Id != Guid.Empty
-        ), _cancellationToken);
+        await _categoryRepositoryMock
+            .Received(1)
+            .AddAsync(
+                Arg.Is<Category>(category =>
+                    category.Name == expectedName
+                    && category.Description == command.Description
+                    && category.Id != Guid.Empty
+                ),
+                _cancellationToken
+            );
     }
 
     [Fact]
@@ -94,21 +104,25 @@ public class CreateCategoryUseCaseTests
         Result<CreateCategoryResult> result = await _sut.Perform(_command);
 
         //Assert
-        await _categoryRepositoryMock.Received(1).HasCategoryWithNameAsync(_command.Name, _cancellationToken);
+        await _categoryRepositoryMock
+            .Received(1)
+            .HasCategoryWithNameAsync(_command.Name, _cancellationToken);
         result.IsSuccess.ShouldBeTrue();
         await _unitOfWorkMock.Received(1).CommitAsync();
     }
 
     [Theory]
     [MemberData(nameof(InvalidInputData.InvalidValues), MemberType = typeof(InvalidInputData))]
-    public async Task Perform_WhenNameIsInvalid_ShouldThrowExceptionAndNotCallRepository(string invalidName)
+    public async Task Perform_WhenNameIsInvalid_ShouldThrowExceptionAndNotCallRepository(
+        string invalidName
+    )
     {
         // Arrange
-        CreateCategoryCommand commandWithInvalidName = new (invalidName, _description);
-        
+        CreateCategoryCommand commandWithInvalidName = new(invalidName, _description);
+
         // Act & Assert
         await Should.ThrowAsync<DomainException>(() => _sut.Perform(commandWithInvalidName));
-        
+
         // Assert
         await _categoryRepositoryMock
             .DidNotReceive()
@@ -118,8 +132,6 @@ public class CreateCategoryUseCaseTests
             .DidNotReceive()
             .AddAsync(Arg.Any<Category>(), Arg.Any<CancellationToken>());
 
-        await _unitOfWorkMock
-            .DidNotReceive()
-            .CommitAsync();
+        await _unitOfWorkMock.DidNotReceive().CommitAsync();
     }
 }

@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+﻿using Infrastructure.Persistence.Data;
+using NSubstitute;
 
 namespace TestUtilities.Common;
 

@@ -1,30 +1,26 @@
 using Infrastructure.Persistence.Data;
 using Microsoft.Extensions.DependencyInjection;
+using TestUtilities.Common;
 using WebApi.Tests.Abstractions;
 
 namespace WebApi.Tests;
 
-public abstract class BaseIntegrationTest<TFactory> : IClassFixture<TFactory> where TFactory : class, ITestWebAppFactory
+public abstract class BaseIntegrationTest<TFactory> : TestCommon, IClassFixture<TFactory>
+    where TFactory : class, ITestWebAppFactory
 {
-    
+    protected HttpClient HttpClient { get; }
+    protected AppDbContext DbContext { get; init; }
+
     protected BaseIntegrationTest(TFactory factory)
     {
         IServiceScope scope = factory.CreateScope();
-        HttpClient = factory.CreateClient();
-        Faker = FakerHelper.Faker;
         DbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        HttpClient = factory.CreateClient();
     }
-   
-    protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
-    protected HttpClient HttpClient { get; }
-    protected Faker Faker { get; }
-    protected AppDbContext DbContext { get; }
-    
+
     protected async Task ResetDatabaseAsync()
     {
         await DbContext.Database.EnsureDeletedAsync();
         await DbContext.Database.EnsureCreatedAsync();
     }
-
 }
-

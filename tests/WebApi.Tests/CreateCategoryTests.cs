@@ -1,14 +1,14 @@
+using System.Net;
+using System.Net.Http.Json;
 using Application.Categories.Add;
 using Application.Tests.Categories.Mock;
 using Domain.Categories;
 using Domain.Extensions;
 using Domain.Resources;
-using System.Net;
-using System.Net.Http.Json;
 using WebApi.Controllers.Categories.Add;
-using WebApi.Tests.Extensions;
 using WebApi.Responses.Errors;
 using WebApi.Responses.Success;
+using WebApi.Tests.Extensions;
 using WebApi.Tests.Factories;
 
 namespace WebApi.Tests;
@@ -24,13 +24,11 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
 
     private async Task<HttpResponseMessage> AddCategory(CreateCategoryRequest request)
     {
-        return await HttpClient
-            .PostAsJsonAsync(CategoriesRoutes.Add, request, CancellationToken);
+        return await HttpClient.PostAsJsonAsync(CategoriesRoutes.Add, request, CancellationToken);
     }
 
     public CreateCategoryTests(SqliteTestWebAppFactory factory)
-        : base(factory)
-    { }
+        : base(factory) { }
 
     [Fact]
     public async Task PostCategory_WithInvalidData_ShouldReturnBadRequest()
@@ -45,7 +43,8 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
         _sut = await AddCategory(invalidRequest);
         //Assert
         _sut.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-        ApiValidationErrorsResponse problemDetails = await _sut.GetErrorResponse<ApiValidationErrorsResponse>();
+        ApiValidationErrorsResponse problemDetails =
+            await _sut.GetErrorResponse<ApiValidationErrorsResponse>();
 
         problemDetails.ShouldSatisfyAllConditions(
             () => problemDetails.Errors.ShouldNotBeNull(),
@@ -56,9 +55,9 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
 
         List<string> actualErrors =
         [
-            ..from errorGroup in problemDetails.Errors.Values
+            .. from errorGroup in problemDetails.Errors.Values
             from error in errorGroup
-            select error
+            select error,
         ];
 
         actualErrors.ShouldSatisfyAllConditions(
@@ -70,7 +69,6 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     [Fact]
     public async Task PostCategory_WithExistingName_ShouldReturnConflict()
     {
-
         //Add a category to the database
         HttpResponseMessage addCategory = await AddCategory(CreateMockInstance);
         addCategory.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -95,15 +93,16 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
         _sut = await AddCategory(CreateMockInstance);
         //Assert
         _sut.StatusCode.ShouldBe(HttpStatusCode.OK);
-        ApiSuccessResponse<CreateCategoryResult> result = await _sut.GetApiResponse<CreateCategoryResult>();
+        ApiSuccessResponse<CreateCategoryResult> result =
+            await _sut.GetApiResponse<CreateCategoryResult>();
         result.IsSuccess.ShouldBeTrue();
         result.Payload?.Id.ShouldNotBe(Guid.Empty);
     }
 
     private static List<string> GetExpectedErrors() =>
-    [
-        ValidationMessages.RequiredField.FormatInvariant(Name),
-        ValidationMessages.StringLengthRangeMessage.FormatInvariant(Name, 4, 150),
-        ValidationMessages.WhiteSpaceOnly.FormatInvariant(Description)
-    ];
+        [
+            ValidationMessages.RequiredField.FormatInvariant(Name),
+            ValidationMessages.StringLengthRangeMessage.FormatInvariant(Name, 4, 150),
+            ValidationMessages.WhiteSpaceOnly.FormatInvariant(Description),
+        ];
 }

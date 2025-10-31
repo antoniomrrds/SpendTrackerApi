@@ -11,7 +11,8 @@ public class CategoryTests
     private readonly Faker _faker = new();
     private const string FieldName = nameof(Category.Name);
 
-    private static string ExpectedNameMessage => ValidationMessages.RequiredField.FormatInvariant(FieldName);
+    private static string ExpectedNameMessage =>
+        ValidationMessages.RequiredField.FormatInvariant(FieldName);
 
     private string RandomValidName => _faker.Name.FirstName();
     private string RandomValidDescription => _faker.Lorem.Sentence();
@@ -34,7 +35,9 @@ public class CategoryTests
 
     [Theory]
     [MemberData(nameof(InvalidInputData.InvalidValues), MemberType = typeof(InvalidInputData))]
-    public void ConstructorOrSetName_GivenInvalidName_ThenShouldThrowDomainException(string? invalidName)
+    public void ConstructorOrSetName_GivenInvalidName_ThenShouldThrowDomainException(
+        string? invalidName
+    )
     {
         // Arrange
         Category category = CreateValidCategory();
@@ -70,9 +73,11 @@ public class CategoryTests
     {
         // Arrange
         string? expectedDescription = _faker.Lorem.Letter(201);
-     
 
-        string expectedMessage = ValidationMessages.MaxChars.FormatInvariant(nameof(Category.Description), 200);
+        string expectedMessage = ValidationMessages.MaxChars.FormatInvariant(
+            nameof(Category.Description),
+            200
+        );
 
         // Act & Assert constructor
         Action callMoreThan200Chars = () => _ = new Category(RandomValidName, expectedDescription);
@@ -97,5 +102,4 @@ public class CategoryTests
         //Assert
         typeof(Category).ShouldHavePrivateConstructor();
     }
-
 }

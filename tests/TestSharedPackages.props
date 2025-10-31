@@ -1,25 +1,28 @@
 <Project>
-    <PropertyGroup>
-        <OutputType>Exe</OutputType> 
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Bogus"/>
-        <PackageReference Include="Shouldly"/>
-        <PackageReference Include="xunit.v3"/>
-        <PackageReference Include="NSubstitute" />
-    </ItemGroup>
-    <ItemGroup Condition="'$(IsTestProject)' == 'true'">
-        <PackageReference Include="xunit.runner.visualstudio"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="coverlet.collector"/>
-    </ItemGroup>
-    <!-- new feature to avoid file global -->
-    <ItemGroup>
-        <Using Include="Xunit" />
-        <using Include="Bogus" />
-        <using Include="Shouldly" />
-        <using Include="TestUtilities.Extensions" />
-        <using Include="TestUtilities.Helpers" />
-    </ItemGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="NSubstitute" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="coverlet.collector" />
+  </ItemGroup>
+  <!-- new feature to avoid file global -->
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <using Include="Bogus" />
+    <using Include="Shouldly" />
+    <using Include="TestUtilities.Extensions" />
+    <using Include="TestUtilities.Helpers" />
+  </ItemGroup>
 </Project>

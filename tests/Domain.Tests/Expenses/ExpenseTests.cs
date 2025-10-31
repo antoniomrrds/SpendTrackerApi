@@ -4,6 +4,7 @@ using Domain.Extensions;
 using Domain.Resources;
 
 namespace Domain.Tests.Expenses;
+
 internal static class ExpenseMock
 {
     public static Expense CreateFakeExpense()
@@ -19,6 +20,7 @@ internal static class ExpenseMock
             .Generate();
     }
 }
+
 [Trait("Type", "Unit")]
 public class ExpenseTests
 {
@@ -57,10 +59,13 @@ public class ExpenseTests
 
         // Act & Assert constructor
         string expectedMessage = ValidationMessages.GreaterThan.FormatInvariant("Amount", minValue);
-        Action callGreaterThan0 = () => _ = new Expense(ExpenseMockInstance.Description,
-            expectedIncorrectValue,
-            ExpenseMockInstance.Date,
-            ExpenseMockInstance.IdCategory);
+        Action callGreaterThan0 = () =>
+            _ = new Expense(
+                ExpenseMockInstance.Description,
+                expectedIncorrectValue,
+                ExpenseMockInstance.Date,
+                ExpenseMockInstance.IdCategory
+            );
 
         callGreaterThan0.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
@@ -72,7 +77,7 @@ public class ExpenseTests
     [Fact]
     public void ConstructorAndSetAmount_GivenGreaterThan0_ThenShouldSetAmountCorrectly()
     {
-        //Arrange 
+        //Arrange
         const decimal expectedAmount = 1;
         // Act & Assert constructor
         _expenseCorrectlyValues.Amount.ShouldBe(ExpenseMockInstance.Amount);
@@ -83,14 +88,19 @@ public class ExpenseTests
 
     [Theory]
     [MemberData(nameof(InvalidInputData.InvalidValues), MemberType = typeof(InvalidInputData))]
-    public void ConstructorAndSetDescription_GivenIsEmptyOrNull_ThenShouldThrow(string? invalidValues)
+    public void ConstructorAndSetDescription_GivenIsEmptyOrNull_ThenShouldThrow(
+        string? invalidValues
+    )
     {
         string expectedMessage = ValidationMessages.RequiredField.FormatInvariant("Description");
         // Act & Assert constructor
-        Action callIsEmptyOrNull = () => _ = new Expense(invalidValues!,
-            ExpenseMockInstance.Amount,
-            ExpenseMockInstance.Date,
-            ExpenseMockInstance.IdCategory);
+        Action callIsEmptyOrNull = () =>
+            _ = new Expense(
+                invalidValues!,
+                ExpenseMockInstance.Amount,
+                ExpenseMockInstance.Date,
+                ExpenseMockInstance.IdCategory
+            );
         callIsEmptyOrNull.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
         // Act & Assert setter
@@ -101,7 +111,7 @@ public class ExpenseTests
     [Fact]
     public void ConstructorAndSetDescription_GivenIsNotNullAndNotEmpty_ThenShouldSetDescriptionCorrectly()
     {
-        //Arrange 
+        //Arrange
         string expectedDescription = ExpenseMockInstance.Description;
         // Act & Assert constructor
         _expenseCorrectlyValues.Description.ShouldBe(expectedDescription);
@@ -114,12 +124,18 @@ public class ExpenseTests
     [InlineData(0)]
     [InlineData(-7)]
     [InlineData(-30)]
-    public void ConstructorAndSetDate_GivenDateIsNowOrPast_ThenShouldSetDateCorrectly(int daysOffset)
+    public void ConstructorAndSetDate_GivenDateIsNowOrPast_ThenShouldSetDateCorrectly(
+        int daysOffset
+    )
     {
         DateTime expectedDate = DateTime.Today.AddDays(daysOffset);
         // Act & Assert constructor
-        Expense expense = new(ExpenseMockInstance.Description, ExpenseMockInstance.Amount, expectedDate,
-            ExpenseMockInstance.IdCategory);
+        Expense expense = new(
+            ExpenseMockInstance.Description,
+            ExpenseMockInstance.Amount,
+            expectedDate,
+            ExpenseMockInstance.IdCategory
+        );
         expense.Date.ShouldBe(expectedDate);
         // Act & Assert setter
         expense.SetDate(expectedDate);
@@ -131,13 +147,17 @@ public class ExpenseTests
     {
         DateTime futureDate = DateTime.Today.AddDays(1);
         // Act & Assert constructor
-        string expectedMessage =
-            ValidationMessages.DateIsFuture.FormatInvariant(futureDate.ToShortDateString());
+        string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(
+            futureDate.ToShortDateString()
+        );
 
-        Action callDateIsFuture = () => _ = new Expense(ExpenseMockInstance.Description,
-            ExpenseMockInstance.Amount,
-            futureDate,
-            ExpenseMockInstance.IdCategory);
+        Action callDateIsFuture = () =>
+            _ = new Expense(
+                ExpenseMockInstance.Description,
+                ExpenseMockInstance.Amount,
+                futureDate,
+                ExpenseMockInstance.IdCategory
+            );
         callDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
         // Act & Assert setter

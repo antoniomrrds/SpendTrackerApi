@@ -10,14 +10,17 @@ using WebApi.Tests.Abstractions;
 
 namespace WebApi.Tests.Factories;
 
-public class MySqlTestWebAppFactory: WebApplicationFactory<Program>, ITestWebAppFactory , IAsyncLifetime
+public class MySqlTestWebAppFactory
+    : WebApplicationFactory<Program>,
+        ITestWebAppFactory,
+        IAsyncLifetime
 {
     private const string MySqlVersionString = "8.0.43";
     private readonly MySqlContainer _mySqlContainer;
 
     public MySqlTestWebAppFactory()
     {
-        _mySqlContainer  = new MySqlBuilder()
+        _mySqlContainer = new MySqlBuilder()
             .WithImage("mysql:8.0.43-debian")
             .WithUsername("test")
             .WithPassword("test")
@@ -32,7 +35,6 @@ public class MySqlTestWebAppFactory: WebApplicationFactory<Program>, ITestWebApp
         IServiceProvider scopedServices = scope.ServiceProvider;
         AppDbContext cntx = scopedServices.GetRequiredService<AppDbContext>();
         await cntx.Database.EnsureCreatedAsync();
-
     }
 
     public new async Task DisposeAsync()
@@ -47,7 +49,7 @@ public class MySqlTestWebAppFactory: WebApplicationFactory<Program>, ITestWebApp
         base.ConfigureWebHost(builder);
         builder.ConfigureTestServices(services =>
         {
-           MySqlServerVersion serverVersion = new(new Version(MySqlVersionString));
+            MySqlServerVersion serverVersion = new(new Version(MySqlVersionString));
 
             services.RemoveAll<DbContextOptions<AppDbContext>>();
             services.AddDbContext<AppDbContext>(options =>
@@ -56,5 +58,6 @@ public class MySqlTestWebAppFactory: WebApplicationFactory<Program>, ITestWebApp
             });
         });
     }
+
     public IServiceScope CreateScope() => Services.CreateScope();
 }

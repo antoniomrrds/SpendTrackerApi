@@ -4,6 +4,7 @@ using Domain.Resources;
 using Domain.Validation;
 
 namespace Domain.Tests.Validation;
+
 [Trait("Type", "Unit")]
 public class DomainValidationTests
 {
@@ -51,11 +52,11 @@ public class DomainValidationTests
     {
         //Arrange
         string inputExceedingMaxLengthExpected = new('a', 201);
-        string expectedMessage = ValidationMessages.MaxChars.FormatInvariant("Field",200);
+        string expectedMessage = ValidationMessages.MaxChars.FormatInvariant("Field", 200);
         //Act && Assert
-        Action callMaxLengthWithTooLongInput = () => DomainValidation.MaxLength(inputExceedingMaxLengthExpected, "Field", 200);
+        Action callMaxLengthWithTooLongInput = () =>
+            DomainValidation.MaxLength(inputExceedingMaxLengthExpected, "Field", 200);
         callMaxLengthWithTooLongInput.ShouldThrowWithMessage<DomainException>(expectedMessage);
-
     }
 
     [Fact]
@@ -64,7 +65,7 @@ public class DomainValidationTests
         //Arrange
         const decimal value = 10;
         const decimal minValue = 0;
-        //Act   
+        //Act
         decimal result = DomainValidation.GreaterThan(value, "Field", minValue);
         //Assert
         result.ShouldBe(value);
@@ -102,7 +103,9 @@ public class DomainValidationTests
     {
         //Arrange
         DateTime expectedDate = DateTime.Today.AddDays(1);
-        string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(expectedDate.ToShortDateString()); 
+        string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(
+            expectedDate.ToShortDateString()
+        );
         //Act && Assert
         Action callDateIsFuture = () => DomainValidation.DateIsFuture(expectedDate);
         callDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);

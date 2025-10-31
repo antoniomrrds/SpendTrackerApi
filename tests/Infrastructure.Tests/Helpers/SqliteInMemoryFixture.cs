@@ -6,11 +6,12 @@ namespace Infrastructure.Tests.Helpers;
 public class SqliteInMemoryFixture
 {
     public AppDbContext Context { get; }
+
     public SqliteInMemoryFixture()
     {
         DbContextOptionsBuilder<AppDbContext> options = new DbContextOptionsBuilder<AppDbContext>()
             .UseSqlite("DataSource=:memory:")
-            .EnableSensitiveDataLogging(); 
+            .EnableSensitiveDataLogging();
         Context = new AppDbContext(options.Options);
         Context.Database.OpenConnection();
         Context.Database.EnsureCreated();

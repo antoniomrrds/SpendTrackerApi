@@ -4,9 +4,10 @@ using WebApi.Responses.Success;
 
 namespace WebApi.Tests.Extensions;
 
-public static class  HttpResponseMessageExtensions
+public static class HttpResponseMessageExtensions
 {
-    internal static async Task<TError> GetErrorResponse<TError>(this HttpResponseMessage response) where TError : class
+    internal static async Task<TError> GetErrorResponse<TError>(this HttpResponseMessage response)
+        where TError : class
     {
         if (response.IsSuccessStatusCode)
         {
@@ -18,18 +19,19 @@ public static class  HttpResponseMessageExtensions
         return errorResponse;
     }
 
-
-    internal static async Task<ApiSuccessResponse<T>> GetApiResponse<T>(this HttpResponseMessage response)
+    internal static async Task<ApiSuccessResponse<T>> GetApiResponse<T>(
+        this HttpResponseMessage response
+    )
     {
         if (!response.IsSuccessStatusCode)
         {
             throw new InvalidOleVariantTypeException("Failed response");
         }
 
-        ApiSuccessResponse<T>? apiResponse = await response
-            .Content
-            .ReadFromJsonAsync<ApiSuccessResponse<T>>();
-        
+        ApiSuccessResponse<T>? apiResponse = await response.Content.ReadFromJsonAsync<
+            ApiSuccessResponse<T>
+        >();
+
         apiResponse.ShouldNotBeNull();
         return apiResponse;
     }
