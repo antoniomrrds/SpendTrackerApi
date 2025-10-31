@@ -1,4 +1,5 @@
 using Application.Categories.Add;
+using Application.Categories.GetById;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +12,8 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
         services.AddScoped<ICreateCategoryUseCase, CreateCategoryUseCase>();
-        
+        services.AddScoped<IGetByIdUseCase, GetByIdUseCase>();
+
         return services;
     }
 }

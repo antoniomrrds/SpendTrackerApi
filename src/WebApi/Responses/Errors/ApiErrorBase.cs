@@ -7,7 +7,7 @@ public abstract class ApiErrorBase : ApiResponseBase
 {
     public string Title { get; set; } = string.Empty;
     public string Instance { get; set; } = string.Empty;
-    
+
     protected void InitializeFromDetails(CustomProblemDetails details)
     {
         IsSuccess = false;

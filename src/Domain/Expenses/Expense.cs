@@ -18,6 +18,7 @@ public sealed class Expense
         Date = ValidateDate(date);
         IdCategory = idCategory;
     }
+
     //ef constructor
     private Expense() { }
 

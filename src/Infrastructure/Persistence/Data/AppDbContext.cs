@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using Domain.Categories;
 using Domain.Expenses;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Data;
 

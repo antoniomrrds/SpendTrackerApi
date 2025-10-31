@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "csharpier": {
+      "version": "1.1.2",
+      "commands": [
+        "csharpier"
+      ],
+      "rollForward": false
+    },
+    "commitlint.net": {
+      "version": "0.8.0",
+      "commands": [
+        "commit-lint"
+      ],
+      "rollForward": false
+    },
+    "husky": {
+      "version": "0.7.2",
+      "commands": [
+        "husky"
+      ],
+      "rollForward": false
+    }
+  }
+}

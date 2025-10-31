@@ -30,14 +30,15 @@ public sealed class Category
         Description = ValidateDescription(description);
     }
 
-    private static string? ValidateDescription(string? description) {
-        
+    private static string? ValidateDescription(string? description)
+    {
         string? trimmed = description?.Trim();
 
-        return string.IsNullOrWhiteSpace(trimmed) 
-            ? null 
+        return string.IsNullOrWhiteSpace(trimmed)
+            ? null
             : DomainValidation.MaxLength(trimmed, nameof(Description), 200);
     }
 
-    private static string ValidateName(string name) => DomainValidation.RequiredAndTrim(name, nameof(Name));
+    private static string ValidateName(string name) =>
+        DomainValidation.RequiredAndTrim(name, nameof(Name));
 }

@@ -1,16 +1,14 @@
+using System.Globalization;
 using Application;
 using Infrastructure;
 using Microsoft.AspNetCore.Localization;
 using Scalar.AspNetCore;
-using System.Globalization;
 using WebApi.Exceptions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services
-    .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
 builder.Services.AddExceptionHandler<DomainExceptionHandler>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
@@ -22,8 +20,6 @@ builder.Services.AddProblemDetails(configure =>
     };
 });
 
-
-
 // Add services to the container.
 // var config = TypeAdapterConfig.GlobalSettings;
 //
@@ -33,8 +29,12 @@ builder.Services.AddProblemDetails(configure =>
 //
 // builder.Services.AddScoped<IMapper, ServiceMapper>();
 
-builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options => { options.SuppressModelStateInvalidFilter = true; });
+builder
+    .Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
 WebApplication app = builder.Build();
 
 CultureInfo cultureInfo = new("pt-BR");
@@ -46,7 +46,7 @@ RequestLocalizationOptions localizationOptions = new()
 {
     DefaultRequestCulture = new RequestCulture(cultureInfo),
     SupportedCultures = [cultureInfo],
-    SupportedUICultures = [cultureInfo]
+    SupportedUICultures = [cultureInfo],
 };
 
 // Configure the HTTP request pipeline.

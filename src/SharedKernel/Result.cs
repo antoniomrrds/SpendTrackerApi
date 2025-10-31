@@ -6,8 +6,7 @@ public class Result
 {
     protected internal Result(bool isSuccess, FailureReason error)
     {
-        if (isSuccess && error != FailureReason.None ||
-            !isSuccess && error == FailureReason.None)
+        if (isSuccess && error != FailureReason.None || !isSuccess && error == FailureReason.None)
         {
             throw new ArgumentException("Invalid error", nameof(error));
         }
@@ -24,7 +23,8 @@ public class Result
 
     public static Result Success() => new(true, FailureReason.None);
 
-    public static Result<TValue> Success<TValue>(TValue value) => new(value, true, FailureReason.None);
+    public static Result<TValue> Success<TValue>(TValue value) =>
+        new(value, true, FailureReason.None);
 
     public static Result Failure(FailureReason error) => new(false, error);
 
@@ -42,16 +42,17 @@ public class Result<TValue> : Result
     }
 
     [NotNull]
-    public TValue Value => IsSuccess
-        ? _value!
-        : throw new InvalidOperationException("The value of a failure result can't be accessed.");
+    public TValue Value =>
+        IsSuccess
+            ? _value!
+            : throw new InvalidOperationException(
+                "The value of a failure result can't be accessed."
+            );
 
 #pragma warning disable CA2225
     public static implicit operator Result<TValue>(TValue? value) =>
         value is not null ? Success(value) : Failure<TValue>(FailureReason.NullValue);
-    
-    public static implicit operator Result<TValue>(FailureReason error) =>
-        Failure<TValue>(error);
+
+    public static implicit operator Result<TValue>(FailureReason error) => Failure<TValue>(error);
 #pragma warning restore CA2225
 }
-

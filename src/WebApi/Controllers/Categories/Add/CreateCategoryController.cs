@@ -14,7 +14,10 @@ public class CreateCategoryController : ControllerBase
     private readonly ICreateCategoryUseCase _useCase;
     private readonly IValidator<CreateCategoryCommand> _validator;
 
-    public CreateCategoryController(ICreateCategoryUseCase useCase, IValidator<CreateCategoryCommand> validator)
+    public CreateCategoryController(
+        ICreateCategoryUseCase useCase,
+        IValidator<CreateCategoryCommand> validator
+    )
     {
         _useCase = useCase;
         _validator = validator;
@@ -34,4 +37,3 @@ public class CreateCategoryController : ControllerBase
             : this.ToOkResponse(result.Value, "Categoria criada com sucesso");
     }
 }
-

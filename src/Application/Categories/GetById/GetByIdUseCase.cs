@@ -14,16 +14,14 @@ internal class GetByIdUseCase : IGetByIdUseCase
         _repo = repo;
     }
 
-    public async Task<Result<Category?>> Perform(Guid id)
+    public async Task<Result<CategoryDto?>> Perform(Guid id)
     {
         if (id == Guid.Empty)
         {
             return CommonErrors.GuidInvalid;
         }
 
-        Category? result = await _repo.GetByIdAsync(id);
-        return result is null 
-            ? CategoryErrors.NotFound(id.ToString())
-               : result;
+        CategoryDto? result = await _repo.GetByIdAsync(id);
+        return result is null ? CategoryErrors.NotFound(id.ToString()) : result;
     }
 }

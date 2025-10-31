@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="..\SrcSharedPackages.props"/>
-    <ItemGroup>
-        <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
-    </ItemGroup>
+  <Import Project="..\SrcSharedPackages.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Remove="SonarAnalyzer.CSharp" />
+  </ItemGroup>
 </Project>

@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="..\SrcSharedPackages.props"/>
-    <ItemGroup>
-        <ProjectReference Include="..\Application\Application.csproj"/>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
-        <PackageReference Include="Microsoft.Data.Sqlite"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql"/>
-    </ItemGroup>
-    <ItemGroup>
-      <Reference Include="Microsoft.AspNetCore">
-        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.10\Microsoft.AspNetCore.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
-        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.10\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
-      </Reference>
-    </ItemGroup>
+  <Import Project="..\SrcSharedPackages.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+    <PackageReference Remove="SonarAnalyzer.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore">
+      <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.10\Microsoft.AspNetCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
+      <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.10\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

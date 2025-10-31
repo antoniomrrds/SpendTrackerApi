@@ -2,7 +2,7 @@ using Application.Abstractions.Data;
 
 namespace Infrastructure.Persistence.Data;
 
-internal class UnitOfWork:IUnitOfWork
+internal class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
 
@@ -15,5 +15,4 @@ internal class UnitOfWork:IUnitOfWork
     {
         await _context.SaveChangesAsync();
     }
-
 }
