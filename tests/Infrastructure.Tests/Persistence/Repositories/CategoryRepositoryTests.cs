@@ -60,10 +60,7 @@ public class CategoryRepositoryTests : BaseSqliteIntegrationTest
     public async Task GetByIdAsync_WhenCategoryExists_ShouldReturnCategoryDto()
     {
         await SeedCategoryAsync();
-        CategoryDto? categoryResponse = await _sut.GetByIdAsync(
-            _category.Id,
-            TestContext.Current.CancellationToken
-        );
+        CategoryDto? categoryResponse = await _sut.GetByIdAsync(_category.Id, CancellationToken);
 
         categoryResponse.ShouldNotBeNull();
         categoryResponse.ShouldSatisfyAllConditions(
@@ -72,5 +69,13 @@ public class CategoryRepositoryTests : BaseSqliteIntegrationTest
             c => c.Name.ShouldBe(_category.Name),
             c => c.Description.ShouldBe(_category.Description)
         );
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_WhenCategoryDoesNotExist_ShouldReturnNull()
+    {
+        CategoryDto? categoryResponse = await _sut.GetByIdAsync(_category.Id, CancellationToken);
+
+        categoryResponse.ShouldBeNull();
     }
 }
