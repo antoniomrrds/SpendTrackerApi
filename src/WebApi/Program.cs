@@ -20,21 +20,13 @@ builder.Services.AddProblemDetails(configure =>
     };
 });
 
-// Add services to the container.
-// var config = TypeAdapterConfig.GlobalSettings;
-//
-// config.Scan(typeof(Program).Assembly);
-//
-// builder.Services.AddSingleton(config);
-//
-// builder.Services.AddScoped<IMapper, ServiceMapper>();
-
 builder
     .Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
         options.SuppressModelStateInvalidFilter = true;
     });
+
 WebApplication app = builder.Build();
 
 CultureInfo cultureInfo = new("pt-BR");

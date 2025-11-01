@@ -1,15 +1,12 @@
 ﻿using Application.Categories.Add;
+using Application.Categories.Common;
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc;
-using SharedKernel;
 using WebApi.Extensions;
 
 namespace WebApi.Controllers.Categories.Add;
 
-[ApiController]
-[Route("api/categories")]
-public class CreateCategoryController : ControllerBase
+public class CreateCategoryController : CategoriesBaseController
 {
     private readonly ICreateCategoryUseCase _useCase;
     private readonly IValidator<CreateCategoryCommand> _validator;
@@ -31,7 +28,7 @@ public class CreateCategoryController : ControllerBase
         if (!validation.IsValid)
             return this.ToValidationProblem(validation);
 
-        Result<CreateCategoryResult> result = await _useCase.Perform(command);
+        Result<CategoryDto> result = await _useCase.Perform(command);
         return result.IsFailure
             ? this.ToConflictProblem(result.Error.Description, "Erro ao criar categoria")
             : this.ToOkResponse(result.Value, "Categoria criada com sucesso");

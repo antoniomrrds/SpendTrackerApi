@@ -1,6 +1,4 @@
-﻿using SharedKernel;
-
-namespace Domain.Errors;
+﻿namespace Domain.Errors;
 
 public static class CommonErrors
 {

@@ -1,5 +1,4 @@
 ﻿using Application.Categories.Common;
-using SharedKernel;
 
 namespace Application.Categories.GetById;
 

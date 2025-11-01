@@ -1,5 +1,3 @@
-using SharedKernel;
-
 namespace Domain.Categories;
 
 public static class CategoryErrors

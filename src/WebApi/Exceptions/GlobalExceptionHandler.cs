@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+using WebApi.Factories;
 
 namespace WebApi.Exceptions;
 
@@ -23,13 +23,13 @@ internal sealed partial class GlobalExceptionHandler(
             {
                 HttpContext = httpContext,
                 Exception = exception,
-                ProblemDetails = new ProblemDetails
-                {
-                    Type = exception.GetType().Name,
-                    Title = "An error occurred",
-                    Detail = exception.Message,
-                    Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}",
-                },
+                ProblemDetails = ProblemDetailsFactory.Create(
+                    statusCode: StatusCodes.Status500InternalServerError,
+                    title: "An error occurred",
+                    detail: exception.Message,
+                    instance: $"{httpContext.Request.Method} {httpContext.Request.Path}",
+                    type: exception.GetType().Name
+                ),
             }
         );
     }

@@ -1,16 +1,8 @@
-﻿using WebApi.Responses.Base;
+﻿namespace WebApi.Responses.Success;
 
-namespace WebApi.Responses.Success;
-
-public sealed class ApiSuccessResponse<T> : ApiResponse
+public sealed class ApiSuccessResponse<T>(T payload, string message = "OK", int status = 200)
 {
-    public T? Payload { get; init; }
-
-    public ApiSuccessResponse(T payload, string message = "OK", int statusCode = 200)
-    {
-        IsSuccess = true;
-        Payload = payload;
-        Message = message;
-        StatusCode = statusCode;
-    }
+    public string Message { get; init; } = message;
+    public int Status { get; init; } = status;
+    public T? Payload { get; init; } = payload;
 }
