@@ -1,6 +1,6 @@
 ﻿using Application.Categories.Common;
 using Application.Categories.GetById;
-using Application.Tests.Categories.Mock;
+using Application.Tests.Categories.Common;
 using Domain.Categories;
 using Domain.Errors;
 using Domain.Tests.Categories;
@@ -17,7 +17,7 @@ public class GetByIdUseCaseTests : TestCommon
     private readonly GetByIdUseCase _sut;
     private readonly ICategoryRepository _categoryRepositoryMock;
     private readonly Category _expectedCategory = MockCategory.Valid();
-    private readonly CategoryDto _categoryDto = MockCategoryDto.Valid();
+    private readonly CategoryDto _categoryDto = CategoryDtoMock.Valid();
 
     public GetByIdUseCaseTests()
     {

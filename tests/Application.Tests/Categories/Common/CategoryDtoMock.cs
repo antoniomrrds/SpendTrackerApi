@@ -2,9 +2,9 @@
 using Domain.Categories;
 using Domain.Tests.Categories;
 
-namespace Application.Tests.Categories.Mock;
+namespace Application.Tests.Categories.Common;
 
-public static class MockCategoryDto
+public static class CategoryDtoMock
 {
     public static CategoryDto Valid()
     {

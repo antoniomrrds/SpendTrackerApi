@@ -14,4 +14,8 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
     <PackageReference Remove="SonarAnalyzer.CSharp" />
   </ItemGroup>
+    <ItemGroup>
+        <Using Include="System.Net"/>
+        <Using Include="System.Net.Http.Json"/>
+    </ItemGroup>
 </Project>

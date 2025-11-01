@@ -42,7 +42,7 @@ public class CreateCategoryUseCaseTests
     public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnSuccessResult()
     {
         //Act
-        Result<CreateCategoryResult> result = await _sut.Perform(_command);
+        Result<CategoryDto> result = await _sut.Perform(_command);
 
         //Assert
         await _categoryRepositoryMock
@@ -63,7 +63,7 @@ public class CreateCategoryUseCaseTests
             .Returns(Task.FromResult(true));
 
         //Act
-        Result<CreateCategoryResult> result = await _sut.Perform(_command);
+        Result<CategoryDto> result = await _sut.Perform(_command);
 
         //Assert
         await _categoryRepositoryMock
@@ -80,7 +80,7 @@ public class CreateCategoryUseCaseTests
         string name = $"  {_name}  ";
         CreateCategoryCommand command = new(name, _description);
         // Act
-        Result<CreateCategoryResult> result = await _sut.Perform(command);
+        Result<CategoryDto> result = await _sut.Perform(command);
         string expectedName = command.Name.Trim();
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -101,7 +101,7 @@ public class CreateCategoryUseCaseTests
     public async Task Perform_WhenCategoryIsCreatedSuccessfully_ShouldCommitIUnitOfWork()
     {
         //Act
-        Result<CreateCategoryResult> result = await _sut.Perform(_command);
+        Result<CategoryDto> result = await _sut.Perform(_command);
 
         //Assert
         await _categoryRepositoryMock

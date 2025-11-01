@@ -1,7 +1,5 @@
-﻿using System.Net;
-using System.Net.Http.Json;
-using Application.Categories.Add;
-using Application.Tests.Categories.Mock;
+﻿using Application.Categories.Add;
+using Application.Tests.Categories.Add;
 using Domain.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using WebApi.Constants;
 using WebApi.Controllers.Categories.Add;
 using WebApi.Exceptions;
+using WebApi.Tests.Categories;
 using WebApi.Tests.Extensions;
 using WebApi.Tests.Factories;
 
@@ -19,7 +19,8 @@ namespace WebApi.Tests.Exceptions;
 public class DomainExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
 {
     private readonly HttpClient _client;
-    private static readonly CreateCategoryRequest CreateMockInstance = CategoriesMock.Create();
+    private static readonly CreateCategoryRequest CreateMockInstance =
+        CreateCategoryRequestMock.Valid();
 
     public DomainExceptionHandlerTests(NoDbTestWebAppFactory factory)
     {
@@ -73,7 +74,7 @@ public class DomainExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
         ValidationProblemDetails problem =
             await response.GetErrorResponse<ValidationProblemDetails>();
         problem.Title.ShouldBe("Business rule violation");
-        problem.Type.ShouldBe("https://tools.ietf.org/html/rfc7231#section-6.5.1");
+        problem.Type.ShouldBe(ProblemDetailsTypes.BadRequest);
         problem.Detail.ShouldBe("domain_exception_occurred");
         problem.Instance.ShouldBe("POST /api/categories");
     }

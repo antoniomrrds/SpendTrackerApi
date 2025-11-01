@@ -1,12 +1,11 @@
-﻿using System.Net;
-using System.Net.Http.Json;
-using Application.Categories.Add;
-using Application.Tests.Categories.Mock;
+﻿using Application.Categories.Add;
+using Application.Tests.Categories.Add;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using WebApi.Controllers.Categories.Add;
+using WebApi.Tests.Categories;
 using WebApi.Tests.Extensions;
 using WebApi.Tests.Factories;
 
@@ -15,7 +14,8 @@ namespace WebApi.Tests.Exceptions;
 public class GlobalExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
 {
     private readonly HttpClient _client;
-    private static readonly CreateCategoryRequest CreateMockInstance = CategoriesMock.Create();
+    private static readonly CreateCategoryRequest CreateMockInstance =
+        CreateCategoryRequestMock.Valid();
 
     public GlobalExceptionHandlerTests(NoDbTestWebAppFactory factory)
     {
