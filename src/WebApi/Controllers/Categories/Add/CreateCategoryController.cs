@@ -32,7 +32,7 @@ public class CreateCategoryController : CategoriesBaseController
 
         Result<CategoryDto> result = await _useCase.Perform(command);
         return result.IsSuccess
-            ? Ok(ApiResult.Success(result.Value, "Categoria criada com sucesso"))
+            ? Ok(ApiResult.SuccessWithMessage(result.Value, "Categoria criada com sucesso"))
             : Conflict(ApiResult.Conflict(HttpContext, result.Error.Description));
     }
 }

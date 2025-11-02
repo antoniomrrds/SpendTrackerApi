@@ -7,11 +7,14 @@ namespace WebApi.Factories;
 
 public static class ApiResult
 {
-    public static ApiSuccessResponse<T> Success<T>(
+    public static ApiSuccessResponseWithMessage<T> SuccessWithMessage<T>(
         T data,
         string message = "Sucesso",
         int statusCode = 200
     ) => new(data, message, statusCode);
+
+    public static ApiSuccessResponse<T> Success<T>(T data, int statusCode = 200) =>
+        new(data, statusCode);
 
     public static ProblemDetails NotFound(
         HttpContext context,
