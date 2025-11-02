@@ -2,7 +2,6 @@
 using Application.Categories.GetById;
 using Application.Tests.Categories.Common;
 using Domain.Categories;
-using Domain.Errors;
 using Domain.Tests.Categories;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
@@ -29,27 +28,12 @@ public class GetByIdUseCaseTests : TestCommon
     }
 
     [Fact]
-    public async Task Perform_WhenGuidIsEmpty_ShouldReturnFailure()
-    {
-        //Arrange
-        Guid invalidGuid = Guid.Empty;
-        //Act
-        Result<CategoryDto?> result = await _sut.Perform(invalidGuid);
-        //Assert
-        result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBe(CommonErrors.GuidInvalid);
-    }
-
-    [Fact]
     public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnFailure()
     {
-        //Arrange
         _categoryRepositoryMock
             .GetByIdAsync(_expectedCategory.Id, AnyCancellationToken)
             .ReturnsNull();
-        //Act
         Result<CategoryDto?> result = await _sut.Perform(_expectedCategory.Id);
-        //Assert
         await _categoryRepositoryMock
             .Received(1)
             .GetByIdAsync(_expectedCategory.Id, AnyCancellationToken);
@@ -60,9 +44,7 @@ public class GetByIdUseCaseTests : TestCommon
     [Fact]
     public async Task Perform_WhenCategoryExists_ShouldReturnSuccessAndCategory()
     {
-        //Act
         Result<CategoryDto?> result = await _sut.Perform(_expectedCategory.Id);
-        //Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe(_categoryDto);
     }

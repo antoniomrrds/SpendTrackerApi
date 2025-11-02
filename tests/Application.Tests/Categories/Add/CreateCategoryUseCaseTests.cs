@@ -37,14 +37,11 @@ public class CreateCategoryUseCaseTests
         _sut = new CreateCategoryUseCase(_categoryRepositoryMock, _unitOfWorkMock);
     }
 
-    //🧩 standard "Given_When_Then"
     [Fact]
     public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnSuccessResult()
     {
-        //Act
         Result<CategoryDto> result = await _sut.Perform(_command);
 
-        //Assert
         await _categoryRepositoryMock
             .Received(1)
             .HasCategoryWithNameAsync(_command.Name, _cancellationToken);
@@ -57,32 +54,26 @@ public class CreateCategoryUseCaseTests
     [Fact]
     public async Task Perform_WhenCategoryAlreadyExists_ShouldReturnFailureWithProperError()
     {
-        // Arrange
         _categoryRepositoryMock
             .HasCategoryWithNameAsync(_command.Name, _cancellationToken)
             .Returns(Task.FromResult(true));
 
-        //Act
         Result<CategoryDto> result = await _sut.Perform(_command);
 
-        //Assert
         await _categoryRepositoryMock
             .Received(1)
             .HasCategoryWithNameAsync(_command.Name, _cancellationToken);
         result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBe(CategoryErrors.CategoryNameAlreadyExists);
+        result.Error.ShouldBe(CategoryErrors.NameAlreadyExists);
     }
 
     [Fact]
     public async Task Perform_WhenCommandIsValid_ShouldAddTrimmedCategoryToRepository()
     {
-        // Arrange
         string name = $"  {_name}  ";
         CreateCategoryCommand command = new(name, _description);
-        // Act
         Result<CategoryDto> result = await _sut.Perform(command);
         string expectedName = command.Name.Trim();
-        // Assert
         result.IsSuccess.ShouldBeTrue();
 
         await _categoryRepositoryMock
@@ -100,10 +91,8 @@ public class CreateCategoryUseCaseTests
     [Fact]
     public async Task Perform_WhenCategoryIsCreatedSuccessfully_ShouldCommitIUnitOfWork()
     {
-        //Act
         Result<CategoryDto> result = await _sut.Perform(_command);
 
-        //Assert
         await _categoryRepositoryMock
             .Received(1)
             .HasCategoryWithNameAsync(_command.Name, _cancellationToken);
@@ -117,13 +106,10 @@ public class CreateCategoryUseCaseTests
         string invalidName
     )
     {
-        // Arrange
         CreateCategoryCommand commandWithInvalidName = new(invalidName, _description);
 
-        // Act & Assert
         await Should.ThrowAsync<DomainException>(() => _sut.Perform(commandWithInvalidName));
 
-        // Assert
         await _categoryRepositoryMock
             .DidNotReceive()
             .HasCategoryWithNameAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());

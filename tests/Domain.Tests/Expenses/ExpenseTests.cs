@@ -24,13 +24,6 @@ internal static class ExpenseMock
 [Trait("Type", "Unit")]
 public class ExpenseTests
 {
-    // serve para printar e outras coisas no tests
-    // private readonly ITestOutputHelper _output;
-    // public ExpenseTests(ITestOutputHelper output)
-    // {
-    //     _output = output;
-    // }
-
     private static readonly Expense ExpenseMockInstance = ExpenseMock.CreateFakeExpense();
 
     private readonly Expense _expenseCorrectlyValues = new(
@@ -53,11 +46,9 @@ public class ExpenseTests
     [Fact]
     public void ConstructorAndSetAmount_GivenValueLessThanOrEqualToMin_ThenShouldThrow()
     {
-        //Arrange
         const decimal expectedIncorrectValue = 0;
         const decimal minValue = 0;
 
-        // Act & Assert constructor
         string expectedMessage = ValidationMessages.GreaterThan.FormatInvariant("Amount", minValue);
         Action callGreaterThan0 = () =>
             _ = new Expense(
@@ -70,18 +61,14 @@ public class ExpenseTests
         callGreaterThan0.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
         Action callSetAmount = () => _expenseCorrectlyValues.SetAmount(expectedIncorrectValue);
-        // Act & Assert setter
         callSetAmount.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 
     [Fact]
     public void ConstructorAndSetAmount_GivenGreaterThan0_ThenShouldSetAmountCorrectly()
     {
-        //Arrange
         const decimal expectedAmount = 1;
-        // Act & Assert constructor
         _expenseCorrectlyValues.Amount.ShouldBe(ExpenseMockInstance.Amount);
-        // Act & Assert setter
         _expenseCorrectlyValues.SetAmount(expectedAmount);
         _expenseCorrectlyValues.Amount.ShouldBe(expectedAmount);
     }
@@ -93,7 +80,6 @@ public class ExpenseTests
     )
     {
         string expectedMessage = ValidationMessages.RequiredField.FormatInvariant("Description");
-        // Act & Assert constructor
         Action callIsEmptyOrNull = () =>
             _ = new Expense(
                 invalidValues!,
@@ -103,7 +89,6 @@ public class ExpenseTests
             );
         callIsEmptyOrNull.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
-        // Act & Assert setter
         Action callSetIsNullOrEmpty = () => _expenseCorrectlyValues.SetDescription(invalidValues!);
         callSetIsNullOrEmpty.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
@@ -111,11 +96,8 @@ public class ExpenseTests
     [Fact]
     public void ConstructorAndSetDescription_GivenIsNotNullAndNotEmpty_ThenShouldSetDescriptionCorrectly()
     {
-        //Arrange
         string expectedDescription = ExpenseMockInstance.Description;
-        // Act & Assert constructor
         _expenseCorrectlyValues.Description.ShouldBe(expectedDescription);
-        // Act & Assert setter
         _expenseCorrectlyValues.SetDescription(expectedDescription);
         _expenseCorrectlyValues.Description.ShouldBe(expectedDescription);
     }
@@ -129,7 +111,6 @@ public class ExpenseTests
     )
     {
         DateTime expectedDate = DateTime.Today.AddDays(daysOffset);
-        // Act & Assert constructor
         Expense expense = new(
             ExpenseMockInstance.Description,
             ExpenseMockInstance.Amount,
@@ -137,7 +118,6 @@ public class ExpenseTests
             ExpenseMockInstance.IdCategory
         );
         expense.Date.ShouldBe(expectedDate);
-        // Act & Assert setter
         expense.SetDate(expectedDate);
         expense.Date.ShouldBe(expectedDate);
     }
@@ -146,7 +126,6 @@ public class ExpenseTests
     public void ConstructorAndSetDate_GivenDateIsFuture_ThenShouldThrow()
     {
         DateTime futureDate = DateTime.Today.AddDays(1);
-        // Act & Assert constructor
         string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(
             futureDate.ToShortDateString()
         );
@@ -160,7 +139,6 @@ public class ExpenseTests
             );
         callDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
-        // Act & Assert setter
         Action callSetDateIsFuture = () => _expenseCorrectlyValues.SetDate(futureDate);
         callSetDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
@@ -168,14 +146,12 @@ public class ExpenseTests
     [Fact]
     public void CheckSealAndPublic_GivenClass_ThenShouldReturnTrue()
     {
-        //Assert
         typeof(Expense).ShouldBeSealedAndPublic();
     }
 
     [Fact]
     public void HasPrivateConstructor_GivenOnePrivateConstructor_ThenShouldReturnTrue()
     {
-        //Assert
         typeof(Expense).ShouldHavePrivateConstructor();
     }
 }

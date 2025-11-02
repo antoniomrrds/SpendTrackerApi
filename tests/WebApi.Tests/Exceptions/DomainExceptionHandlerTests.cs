@@ -41,7 +41,6 @@ public class DomainExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
     [Trait("Type", "Unit")]
     public async Task TryHandleAsync_ShouldReturnFalse_WhenNotDomainException()
     {
-        // Arrange
         IProblemDetailsService? problemDetailsService = Substitute.For<IProblemDetailsService>();
         ILogger<DomainExceptionHandler>? logger = Substitute.For<ILogger<DomainExceptionHandler>>();
         DefaultHttpContext httpContext = new();
@@ -49,10 +48,8 @@ public class DomainExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
 
         DomainExceptionHandler handler = new(problemDetailsService, logger);
 
-        // Act
         bool result = await handler.TryHandleAsync(httpContext, exception, CancellationToken.None);
 
-        // Assert
         result.ShouldBeFalse();
         await problemDetailsService.DidNotReceive().TryWriteAsync(Arg.Any<ProblemDetailsContext>());
     }
@@ -61,14 +58,12 @@ public class DomainExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
     [Trait("Type", "Integration")]
     public async Task PostCategory_WhenDomainExceptionThrown_ShouldReturn400WithValidationProblemDetails()
     {
-        // Act
         HttpResponseMessage response = await _client.PostAsJsonAsync(
             CategoriesRoutes.Add,
             CreateMockInstance,
             cancellationToken: TestContext.Current.CancellationToken
         );
 
-        // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
         ValidationProblemDetails problem =

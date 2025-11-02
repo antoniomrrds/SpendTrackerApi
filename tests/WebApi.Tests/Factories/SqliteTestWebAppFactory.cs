@@ -72,7 +72,6 @@ public class SqliteTestWebAppFactory
         using IServiceScope scope = Services.CreateScope();
         AppDbContext ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await ctx.Database.EnsureCreatedAsync();
-        // await ctx.Database.MigrateAsync();
     }
 
     public new async Task DisposeAsync()

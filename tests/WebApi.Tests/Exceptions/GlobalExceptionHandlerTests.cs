@@ -36,14 +36,12 @@ public class GlobalExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
     [Trait("Type", "Integration")]
     public async Task PostCategory_WhenUnhandledExceptionThrown_ShouldReturn500WithProblemDetails()
     {
-        // Act
         HttpResponseMessage response = await _client.PostAsJsonAsync(
             CategoriesRoutes.Add,
             CreateMockInstance,
             cancellationToken: TestContext.Current.CancellationToken
         );
 
-        // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
 
         ProblemDetails problem = await response.GetErrorResponse<ProblemDetails>();

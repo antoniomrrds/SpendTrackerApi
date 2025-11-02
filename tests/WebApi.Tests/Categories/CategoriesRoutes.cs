@@ -2,7 +2,7 @@
 
 public static class CategoriesRoutes
 {
-    private const string BasePath = "/api/categories";
+    public const string BasePath = "/api/categories";
 
     public static Uri Add => new(BasePath, UriKind.Relative);
 

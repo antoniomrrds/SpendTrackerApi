@@ -7,7 +7,4 @@
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
     <ProjectReference Include="..\TestUtilities\TestUtilities.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Remove="SonarAnalyzer.CSharp" />
-  </ItemGroup>
 </Project>

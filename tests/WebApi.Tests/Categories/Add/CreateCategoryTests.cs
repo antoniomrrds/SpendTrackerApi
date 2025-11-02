@@ -21,15 +21,12 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     [Fact]
     public async Task PostCategory_WithInvalidData_ShouldReturnBadRequest()
     {
-        //Arrange
         CreateCategoryRequest invalidRequest = CreateCategoryRequestMock.Invalid();
 
-        //Act
         HttpResponseMessage response = await HttpClient.AddCategory(
             invalidRequest,
             CancellationToken
         );
-        //Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         ValidationCustomProblemDetails problemDetails =
             await response.GetErrorResponse<ValidationCustomProblemDetails>();
@@ -40,18 +37,15 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     [Fact]
     public async Task PostCategory_WithExistingName_ShouldReturnConflict()
     {
-        //Add a category to the database
         await HttpClient.AddCategoryAndReturnDto(CreateMockInstance, CancellationToken);
 
-        //Act
         HttpResponseMessage response = await HttpClient.AddCategory(
             CreateMockInstance,
             CancellationToken
         );
-        //Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
         ProblemDetails errorResponse = await response.GetErrorResponse<ProblemDetails>();
-        errorResponse.Detail.ShouldBe(CategoryErrors.CategoryNameAlreadyExists.Description);
+        errorResponse.Detail.ShouldBe(CategoryErrors.NameAlreadyExists.Description);
     }
 
     [Fact]
@@ -59,12 +53,10 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     {
         await ResetDatabaseAsync();
 
-        //Act
         CategoryDto createdCategory = await HttpClient.AddCategoryAndReturnDto(
             CreateMockInstance,
             CancellationToken
         );
-        //Assert
         createdCategory.Id.ShouldNotBe(Guid.Empty);
         createdCategory.Name.ShouldBe(CreateMockInstance.Name);
         createdCategory.Description.ShouldBe(CreateMockInstance.Description);

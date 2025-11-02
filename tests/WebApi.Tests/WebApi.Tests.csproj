@@ -12,7 +12,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Testcontainers.MySql" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
-    <PackageReference Remove="SonarAnalyzer.CSharp" />
   </ItemGroup>
     <ItemGroup>
         <Using Include="System.Net"/>

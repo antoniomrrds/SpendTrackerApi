@@ -16,7 +16,6 @@ internal static class CategoryGetHelper
             CategoriesRoutes.GetById(id),
             cancellationToken
         );
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
         return response;
     }
 
@@ -27,6 +26,7 @@ internal static class CategoryGetHelper
     )
     {
         HttpResponseMessage response = await client.GetCategoryById(id, cancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
         ApiSuccessResponse<CategoryDto> apiResponse = await response.GetApiResponse<CategoryDto>();
         apiResponse.Payload.ShouldNotBeNull();
         return apiResponse.Payload;

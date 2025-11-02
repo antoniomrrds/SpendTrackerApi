@@ -8,7 +8,4 @@
     <ProjectReference Include="..\TestUtilities\TestUtilities.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Remove="SonarAnalyzer.CSharp" />
-  </ItemGroup>
 </Project>

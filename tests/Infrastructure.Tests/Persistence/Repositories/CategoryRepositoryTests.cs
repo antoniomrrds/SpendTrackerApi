@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Tests.Persistence.Repositories;
 
-//run the command to execute the integration test
-//dotnet test --filter Type=Integration
 [Trait("Type", "Integration")]
 public class CategoryRepositoryTests : BaseSqliteIntegrationTest
 {
