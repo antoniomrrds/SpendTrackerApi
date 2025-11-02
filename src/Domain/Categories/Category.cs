@@ -10,7 +10,6 @@ public sealed class Category
 
     public string? Description { get; private set; }
 
-    //ef constructor
     private Category() { }
 
     public Category(string name, string? description = null)

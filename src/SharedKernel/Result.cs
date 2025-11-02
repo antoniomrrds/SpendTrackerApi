@@ -49,10 +49,8 @@ public class Result<TValue> : Result
                 "The value of a failure result can't be accessed."
             );
 
-#pragma warning disable CA2225
     public static implicit operator Result<TValue>(TValue? value) =>
         value is not null ? Success(value) : Failure<TValue>(FailureReason.NullValue);
 
     public static implicit operator Result<TValue>(FailureReason error) => Failure<TValue>(error);
-#pragma warning restore CA2225
 }

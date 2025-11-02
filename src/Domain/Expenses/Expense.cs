@@ -19,7 +19,6 @@ public sealed class Expense
         IdCategory = idCategory;
     }
 
-    //ef constructor
     private Expense() { }
 
     public void SetAmount(decimal newAmount)

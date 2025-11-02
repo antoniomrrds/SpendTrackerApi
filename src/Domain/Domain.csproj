@@ -3,7 +3,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Remove="SonarAnalyzer.CSharp" />
-  </ItemGroup>
 </Project>

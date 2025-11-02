@@ -10,10 +10,8 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         builder.ToTable("tbl_category");
 
-        //primary key
         builder.HasKey(c => c.Id).HasName("pk_ID_CATEGORY");
 
-        //property id
         builder.Property(c => c.Id).HasColumnName("ID").IsRequired();
 
         builder

@@ -11,7 +11,6 @@ public class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
     {
         builder.ToTable("tbl_expense");
 
-        //primary id
         builder.HasKey(c => c.Id).HasName("pk_ID_EXPENSE");
 
         builder

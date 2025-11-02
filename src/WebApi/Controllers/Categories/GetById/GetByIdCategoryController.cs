@@ -1,18 +1,28 @@
 ﻿using Application.Categories.Common;
 using Application.Categories.GetById;
-using WebApi.Extensions;
+using WebApi.Controllers.Common;
+using WebApi.Factories;
+using WebApi.Filters;
 
 namespace WebApi.Controllers.Categories.GetById;
 
-public class GetByIdCategoryController(IGetByIdUseCase useCase) : CategoriesBaseController
+public class GetByIdCategoryController : CategoriesBaseController
 {
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById([FromRoute] Guid id)
-    {
-        Result<CategoryDto?> result = await useCase.Perform(id);
+    private readonly IGetByIdUseCase _useCase;
 
-        return result.IsFailure
-            ? this.ToNotFoundProblem(result.Error.Description)
-            : this.ToOkResponse(result.Value);
+    public GetByIdCategoryController(IGetByIdUseCase useCase)
+    {
+        _useCase = useCase;
+    }
+
+    [HttpGet("{id}")]
+    [ServiceFilter(typeof(ModelBindingEnvelopeFilter))]
+    public async Task<IActionResult> GetById([FromRoute] SafeGuid id)
+    {
+        Result<CategoryDto?> result = await _useCase.Perform(id);
+
+        return result.IsSuccess
+            ? Ok(ApiResult.Success(result.Value))
+            : NotFound(ApiResult.NotFound(HttpContext, result.Error.Description));
     }
 }

@@ -29,11 +29,11 @@ internal sealed partial class DomainExceptionHandler(
             {
                 HttpContext = httpContext,
                 Exception = exception,
-                ProblemDetails = ProblemDetailsFactory.Create(
+                ProblemDetails = CustomProblemDetailsFactory.Create(
+                    httpContext,
                     statusCode: StatusCodes.Status400BadRequest,
                     title: "Business rule violation",
-                    detail: exception.Message,
-                    instance: $"{httpContext.Request.Method} {httpContext.Request.Path}"
+                    detail: exception.Message
                 ),
             }
         );

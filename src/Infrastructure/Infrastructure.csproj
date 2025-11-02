@@ -8,7 +8,6 @@
     <PackageReference Include="Microsoft.Data.Sqlite" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
-    <PackageReference Remove="SonarAnalyzer.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore">

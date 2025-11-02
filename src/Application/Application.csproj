@@ -5,6 +5,5 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
-    <PackageReference Remove="SonarAnalyzer.CSharp" />
   </ItemGroup>
 </Project>

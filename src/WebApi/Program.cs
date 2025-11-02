@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Localization;
 using Scalar.AspNetCore;
 using WebApi.Exceptions;
+using WebApi.Filters;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
@@ -11,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
 builder.Services.AddExceptionHandler<DomainExceptionHandler>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddScoped<ModelBindingEnvelopeFilter>();
 
 builder.Services.AddProblemDetails(configure =>
 {
@@ -41,7 +43,6 @@ RequestLocalizationOptions localizationOptions = new()
     SupportedUICultures = [cultureInfo],
 };
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

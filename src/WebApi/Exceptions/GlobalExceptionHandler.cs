@@ -23,11 +23,11 @@ internal sealed partial class GlobalExceptionHandler(
             {
                 HttpContext = httpContext,
                 Exception = exception,
-                ProblemDetails = ProblemDetailsFactory.Create(
+                ProblemDetails = CustomProblemDetailsFactory.Create(
+                    httpContext,
                     statusCode: StatusCodes.Status500InternalServerError,
                     title: "An error occurred",
                     detail: exception.Message,
-                    instance: $"{httpContext.Request.Method} {httpContext.Request.Path}",
                     type: exception.GetType().Name
                 ),
             }

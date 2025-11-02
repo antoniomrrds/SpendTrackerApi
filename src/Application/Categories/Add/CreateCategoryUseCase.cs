@@ -23,7 +23,7 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
         );
         if (categoryAlreadyExists)
         {
-            return CategoryErrors.CategoryNameAlreadyExists;
+            return CategoryErrors.NameAlreadyExists;
         }
 
         await _categoryRepository.AddAsync(category);
