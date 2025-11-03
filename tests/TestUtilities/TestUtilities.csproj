@@ -4,8 +4,5 @@
     <IsTestProject>false</IsTestProject>
     <EnableTestProject>false</EnableTestProject>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
-  </ItemGroup>
   <Import Project="..\TestSharedPackages.props" />
 </Project>

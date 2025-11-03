@@ -1,15 +1,18 @@
 using System.Globalization;
-using Application;
-using Infrastructure;
 using Microsoft.AspNetCore.Localization;
 using Scalar.AspNetCore;
-using WebApi.Exceptions;
-using WebApi.Filters;
+using WebApi.Common.Web.Filters;
+using WebApi.Features;
+using WebApi.Infrastructure;
+using DomainExceptionHandler = WebApi.Common.Web.Exceptions.DomainExceptionHandler;
+using GlobalExceptionHandler = WebApi.Common.Web.Exceptions.GlobalExceptionHandler;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
+
+builder.Services.AddInfrastructure(builder.Configuration).AddAllFeatures();
+
 builder.Services.AddExceptionHandler<DomainExceptionHandler>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddScoped<ModelBindingEnvelopeFilter>();
@@ -60,4 +63,7 @@ app.MapControllers();
 
 await app.RunAsync();
 
-public abstract partial class Program;
+namespace WebApi
+{
+    public abstract partial class Program;
+}
