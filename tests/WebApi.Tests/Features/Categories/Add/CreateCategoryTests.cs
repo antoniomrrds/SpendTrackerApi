@@ -1,4 +1,3 @@
-using Application.Tests.Categories.Add;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Common.Web.Responses.Errors;
 using WebApi.Domain.Categories;
@@ -13,7 +12,7 @@ namespace WebApi.Tests.Features.Categories.Add;
 public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
 {
     private static readonly CreateCategoryRequest CreateMockInstance =
-        CreateCategoryRequestMock.Valid();
+        CreateCategoryRequestFixture.Valid();
 
     public CreateCategoryTests(SqliteTestWebAppFactory factory)
         : base(factory) { }
@@ -21,7 +20,7 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     [Fact]
     public async Task PostCategory_WithInvalidData_ShouldReturnBadRequest()
     {
-        CreateCategoryRequest invalidRequest = CreateCategoryRequestMock.Invalid();
+        CreateCategoryRequest invalidRequest = CreateCategoryRequestFixture.Invalid();
 
         HttpResponseMessage response = await HttpClient.AddCategory(
             invalidRequest,

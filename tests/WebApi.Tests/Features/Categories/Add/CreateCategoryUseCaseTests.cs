@@ -3,11 +3,10 @@ using SharedKernel;
 using SharedKernel.Abstractions.Data;
 using WebApi.Domain.Categories;
 using WebApi.Domain.Errors;
-using WebApi.Features.Categories;
 using WebApi.Features.Categories.Common;
 using WebApi.Features.Categories.Create;
 
-namespace Application.Tests.Categories.Add;
+namespace WebApi.Tests.Features.Categories.Add;
 
 [Trait("Type", "Unit")]
 public class CreateCategoryUseCaseTests

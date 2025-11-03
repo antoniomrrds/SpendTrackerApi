@@ -3,19 +3,9 @@ using WebApi.Features.Categories.Common;
 
 namespace WebApi.Features.Categories.GetAll;
 
-public interface IGetAllCategoriesUseCase : IUseCaseWithoutInput<Task<IEnumerable<CategoryDto>>>;
+public interface IGetAllCategoriesUseCase : IUseCaseWithoutInput<Task<IReadOnlyList<CategoryDto>>>;
 
-internal class GetAllCategoriesUseCase : IGetAllCategoriesUseCase
+internal class GetAllCategoriesUseCase(ICategoryRepository repo) : IGetAllCategoriesUseCase
 {
-    private readonly ICategoryRepository _repo;
-
-    public GetAllCategoriesUseCase(ICategoryRepository repo)
-    {
-        _repo = repo;
-    }
-
-    public async Task<IEnumerable<CategoryDto>> Perform()
-    {
-        return await _repo.GetAllAsync();
-    }
+    public async Task<IReadOnlyList<CategoryDto>> Perform() => [.. await repo.GetAllAsync()];
 }

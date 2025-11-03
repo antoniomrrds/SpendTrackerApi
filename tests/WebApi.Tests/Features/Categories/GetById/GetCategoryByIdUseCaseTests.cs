@@ -15,8 +15,8 @@ public class GetCategoryByIdUseCaseTests : TestCommon
 {
     private readonly GetCategoryByIdUseCase _sut;
     private readonly ICategoryRepository _categoryRepositoryMock;
-    private readonly Category _expectedCategory = MockCategory.Valid();
-    private readonly CategoryDto _categoryDto = CategoryDtoMock.Valid();
+    private readonly Category _expectedCategory = CategoryFixture.GetCategory();
+    private readonly CategoryDto _categoryDto = CategoryDtoFixture.GetCategoryDto();
     private readonly GetCategoryByIdInput _input;
 
     public GetCategoryByIdUseCaseTests()

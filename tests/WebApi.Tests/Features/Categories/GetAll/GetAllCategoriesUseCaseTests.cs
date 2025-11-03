@@ -9,15 +9,15 @@ namespace WebApi.Tests.Features.Categories.GetAll;
 [Trait("Type", "Unit")]
 public class GetAllCategoriesUseCaseTests : TestCommon
 {
-    private readonly IEnumerable<CategoryDto> _categoryDto = CategoryDtoMock.ValidList();
-    private readonly IEnumerable<CategoryDto> _emptyCategory = CategoryDtoMock.EmptyList();
+    private readonly IEnumerable<CategoryDto> _getCategoriesDto =
+        CategoryDtoFixture.GetCategoriesDto();
+    private readonly IEnumerable<CategoryDto> _emptyCategory = CategoryDtoFixture.EmptyList();
     private readonly GetAllCategoriesUseCase _sut;
     private readonly ICategoryRepository _categoryRepositoryMock;
 
     public GetAllCategoriesUseCaseTests()
     {
         _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        _categoryRepositoryMock.GetAllAsync(AnyCancellationToken).Returns(_categoryDto);
         _sut = new GetAllCategoriesUseCase(_categoryRepositoryMock);
     }
 
@@ -29,6 +29,20 @@ public class GetAllCategoriesUseCaseTests : TestCommon
         //Action
         IEnumerable<CategoryDto> result = await _sut.Perform();
         //Assert
-        result.ShouldBe([]);
+        await _categoryRepositoryMock.Received(1).GetAllAsync(AnyCancellationToken);
+        result.ShouldBe(_emptyCategory);
+    }
+
+    [Fact]
+    public async Task Perform_WhenCategoryExists_ShouldReturnCategoryDtoList()
+    {
+        //Action
+        IEnumerable<CategoryDto> result = await _sut.Perform();
+        //Assert
+
+        await _categoryRepositoryMock.Received(1).GetAllAsync(AnyCancellationToken);
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(_getCategoriesDto.Count());
+        result.Select(x => x.Id).ShouldBe(_getCategoriesDto.Select(x => x.Id));
     }
 }

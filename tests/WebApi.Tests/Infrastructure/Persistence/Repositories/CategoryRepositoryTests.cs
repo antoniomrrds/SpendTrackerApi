@@ -22,7 +22,7 @@ public class CategoryRepositoryTests : BaseSqliteIntegrationTest
     public CategoryRepositoryTests(SqliteInMemoryFixture fixture)
         : base(fixture)
     {
-        _category = MockCategory.Valid();
+        _category = CategoryFixture.GetCategory(true);
         _sut = new CategoryRepository(DbContext);
     }
 
@@ -57,6 +57,7 @@ public class CategoryRepositoryTests : BaseSqliteIntegrationTest
     [Fact]
     public async Task GetByIdAsync_WhenCategoryExists_ShouldReturnCategoryDto()
     {
+        await ResetDatabaseAsync();
         await SeedCategoryAsync();
         CategoryDto? categoryResponse = await _sut.GetByIdAsync(_category.Id, CancellationToken);
 
