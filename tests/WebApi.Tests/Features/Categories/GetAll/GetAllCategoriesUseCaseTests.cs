@@ -18,6 +18,7 @@ public class GetAllCategoriesUseCaseTests : TestCommon
     public GetAllCategoriesUseCaseTests()
     {
         _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
+        _categoryRepositoryMock.GetAllAsync(AnyCancellationToken).Returns(_getCategoriesDto);
         _sut = new GetAllCategoriesUseCase(_categoryRepositoryMock);
     }
 
@@ -37,12 +38,10 @@ public class GetAllCategoriesUseCaseTests : TestCommon
     public async Task Perform_WhenCategoryExists_ShouldReturnCategoryDtoList()
     {
         //Action
-        IEnumerable<CategoryDto> result = await _sut.Perform();
+        IReadOnlyList<CategoryDto> result = await _sut.Perform();
         //Assert
-
         await _categoryRepositoryMock.Received(1).GetAllAsync(AnyCancellationToken);
-        result.ShouldNotBeNull();
-        result.Count().ShouldBe(_getCategoriesDto.Count());
         result.Select(x => x.Id).ShouldBe(_getCategoriesDto.Select(x => x.Id));
+        result.ShouldBeAssignableTo<IReadOnlyList<CategoryDto>>();
     }
 }
