@@ -2,7 +2,6 @@
 using FluentValidation.Results;
 using WebApi.Common.Web.Factories;
 using WebApi.Features.Categories.Common;
-using WebApi.Features.Categories.GetById;
 
 namespace WebApi.Features.Categories.Create;
 
@@ -36,4 +35,5 @@ public class CreateCategoryController : CategoriesBaseController
             : Conflict(ApiResult.Conflict(HttpContext, result.Error.Description));
     }
 }
+
 public record CreateCategoryRequest(string Name, string Description);

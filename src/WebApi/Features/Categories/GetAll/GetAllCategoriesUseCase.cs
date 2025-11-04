@@ -7,5 +7,5 @@ public interface IGetAllCategoriesUseCase : IUseCaseWithoutInput<Task<IReadOnlyL
 
 internal class GetAllCategoriesUseCase(ICategoryRepository repo) : IGetAllCategoriesUseCase
 {
-    public async Task<IReadOnlyList<CategoryDto>> Perform() => [.. await repo.GetAllAsync()];
+    public async Task<IReadOnlyList<CategoryDto>> Perform() => await repo.GetAllAsync();
 }
