@@ -31,5 +31,5 @@ internal static class CategoryDtoFixture
         ];
     }
 
-    public static IEnumerable<CategoryDto> EmptyList() => [];
+    public static IReadOnlyList<CategoryDto> EmptyList() => [];
 }

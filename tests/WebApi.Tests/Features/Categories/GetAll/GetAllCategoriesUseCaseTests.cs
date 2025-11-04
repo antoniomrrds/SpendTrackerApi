@@ -9,9 +9,9 @@ namespace WebApi.Tests.Features.Categories.GetAll;
 [Trait("Type", "Unit")]
 public class GetAllCategoriesUseCaseTests : TestCommon
 {
-    private readonly IEnumerable<CategoryDto> _getCategoriesDto =
+    private readonly IReadOnlyList<CategoryDto> _getCategoriesDto =
         CategoryDtoFixture.GetCategoriesDto();
-    private readonly IEnumerable<CategoryDto> _emptyCategory = CategoryDtoFixture.EmptyList();
+    private readonly IReadOnlyList<CategoryDto> _emptyCategory = CategoryDtoFixture.EmptyList();
     private readonly GetAllCategoriesUseCase _sut;
     private readonly ICategoryRepository _categoryRepositoryMock;
 

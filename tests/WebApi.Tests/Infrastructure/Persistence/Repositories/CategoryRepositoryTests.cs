@@ -12,6 +12,7 @@ public class CategoryRepositoryTests : BaseSqliteIntegrationTest
 {
     private readonly CategoryRepository _sut;
     private readonly Category _category;
+    private readonly List<Category> _categories;
 
     private async Task SeedCategoryAsync()
     {
@@ -19,9 +20,16 @@ public class CategoryRepositoryTests : BaseSqliteIntegrationTest
         await DbContext.SaveChangesAsync();
     }
 
+    private async Task SeedCategoriesAsync()
+    {
+        await DbContext.Categories.AddRangeAsync(_categories);
+        await DbContext.SaveChangesAsync();
+    }
+
     public CategoryRepositoryTests(SqliteInMemoryFixture fixture)
         : base(fixture)
     {
+        _categories = CategoryFixture.GetCategories(3, true);
         _category = CategoryFixture.GetCategory(true);
         _sut = new CategoryRepository(DbContext);
     }
@@ -76,5 +84,34 @@ public class CategoryRepositoryTests : BaseSqliteIntegrationTest
         CategoryDto? categoryResponse = await _sut.GetByIdAsync(_category.Id, CancellationToken);
 
         categoryResponse.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetAllAsync_WhenCategoriesDoesNotExist_ShouldReturnEmptyList()
+    {
+        //Arrange
+        await ResetDatabaseAsync();
+        //Action
+        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(CancellationToken);
+        //Assert
+        categories.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task GetAllAsync_WhenCategoriesExists_ShouldReturnCategoriesDto()
+    {
+        //Arrange
+        await ResetDatabaseAsync();
+        await SeedCategoriesAsync();
+        //Action
+        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(CancellationToken);
+        //Assert
+        List<CategoryDto> categoryList = [.. categories];
+        categoryList.Count.ShouldBe(_categories.Count);
+        categoryList.ShouldAllBe(dto =>
+            _categories.Any(c =>
+                c.Id == dto.Id && c.Name == dto.Name && c.Description == dto.Description
+            )
+        );
     }
 }

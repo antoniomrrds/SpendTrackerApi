@@ -14,7 +14,7 @@ internal static class ExpenseMock
             .CustomInstantiator(f => new Expense(
                 description: f.Commerce.ProductName(),
                 amount: f.Finance.Amount(10, 5000),
-                date: f.Date.Recent(30),
+                date: f.Date.Past(30),
                 idCategory: f.Random.Guid()
             ))
             .Generate();
