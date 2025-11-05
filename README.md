@@ -8,39 +8,22 @@
 ![Tests](https://img.shields.io/badge/Tests-xUnit-512BD4?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)
 
-## ✨ Vertical Slice Architecture
-
-> 🏗️ API moderna construída com **Vertical Slice Architecture**, **princípios SOLID** e **organização por features**.
-
-Esta versão implementa uma arquitetura completamente desacoplada e escalável, seguindo as melhores práticas de desenvolvimento:
-
-- 🎯 **Vertical Slice Architecture**: Organização por features, onde cada funcionalidade é independente e coesa
-- 📁 **Feature-Based Organization**: Código organizado por casos de uso, não por camadas técnicas
-- 🧪 **Testes Automatizados**: Cobertura completa com testes unitários, de integração e E2E
-- 🔐 **Validação Robusta**: FluentValidation com mensagens localizadas
-- 📦 **Domain-Driven Design**: Modelagem rica de domínio com Value Objects e Entities
-- ⚡ **Alta Coesão, Baixo Acoplamento**: Cada feature contém tudo que precisa para funcionar
-
----
-
 </div>
 
 ## 📖 Sobre o Projeto
 
-A **SpendTrack API** é uma solução completa para gerenciamento de gastos pessoais, desenvolvida com ASP.NET Core 9.0. A API oferece funcionalidades para criar, gerenciar categorias de gastos e registrar despesas de forma organizada e eficiente, seguindo os princípios de Vertical Slice Architecture.
+API para gerenciamento de gastos pessoais desenvolvida com ASP.NET Core 9.0. 
 
-### ✨ Características Principais
+**Este é meu primeiro projeto com testes em C#**. Estou aprendendo sobre o ecossistema .NET, arquitetura de software e boas práticas de desenvolvimento. O foco é simplicidade e aprendizado gradual.
 
-- 🎯 **Vertical Slice Architecture**: Cada feature é independente, contendo controller, use case, validação e DTOs
-- 📁 **Organização por Features**: Código agrupado por funcionalidade, não por tipo técnico
-- ✅ **Validação Robusta**: FluentValidation com mensagens localizadas em pt-BR
-- 📊 **Documentação Automática**: OpenAPI/Swagger integrado com Scalar UI
-- 🌐 **Localização**: Configuração completa para cultura pt-BR
-- 🔄 **Entity Framework Core**: ORM moderno com suporte a MySQL e SQLite
-- 🧪 **Testes Automatizados**: Cobertura com xUnit, testes unitários, de integração e E2E
-- 🔒 **Result Pattern**: Tratamento de erros tipado e seguro
-- 📦 **Shared Kernel**: Código compartilhado entre agregados do domínio
-- 🚀 **Alta Manutenibilidade**: Fácil de entender, modificar e escalar
+### ✨ O que tem aqui
+
+- 📁 **Organização por Features**: Código separado por funcionalidade
+- ✅ **Validação**: FluentValidation com mensagens em pt-BR
+- 📊 **Documentação**: Swagger/OpenAPI com Scalar UI
+- 💾 **Banco de Dados**: Entity Framework Core com MySQL
+- 🧪 **Testes**: Unitários, integração e E2E com xUnit (meu primeiro projeto testado!)
+- 🐺 **Git Hooks**: Husky.NET com CSharpier (formatação) e validação de commits
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -165,7 +148,7 @@ POST /api/expenses
 {
   "description": "Almoço no restaurante",
   "value": 45.90,
-  "date": "2024-01-15T12:00:00Z",
+  "date": "2025-01-15T12:00:00Z",
   "categoryId": 1
 }
 ```
@@ -177,7 +160,7 @@ POST /api/expenses
   "id": 1,
   "description": "Almoço no restaurante",
   "value": 45.90,
-  "date": "2024-01-15T12:00:00Z",
+  "date": "2025-01-15T12:00:00Z",
   "categoryId": 1,
   "category": {
     "id": 1,
@@ -251,22 +234,14 @@ SpendTrackerApi/
 └── SpendTracker.slnx             # Solution do projeto
 ```
 
-### 🎯 Sobre a Arquitetura
+### 🎯 Arquitetura
 
-**Monolito Modular com Vertical Slice Architecture:**
+Projeto organizado em um único monolito com separação por features:
 
-- 📦 **Um único projeto**: Tudo em `WebApi.csproj` para simplificar desenvolvimento
-- 🎯 **Organização por Features**: Código agrupado por funcionalidade em `Features/`
-- 📁 **Cada feature contém**: Controller, UseCase, Validator, DTOs e Repository
-- 🏗️ **Domínio próprio**: Entidades e regras de negócio em `Domain/`
-- 🔧 **Infraestrutura integrada**: Persistência em `Infrastructure/`
-
-**Vantagens desta abordagem:**
-- ✅ **Simplicidade**: Menos projetos, menos complexidade
-- ✅ **Velocidade**: Builds rápidos, desenvolvimento ágil
-- ✅ **Modularidade**: Features isoladas e fáceis de entender
-- ✅ **Manutenibilidade**: Tudo relacionado a uma feature em um lugar
-- ✅ **Evolução**: Pode ser quebrado em microserviços depois se necessário
+- 📁 **Features/**: Cada funcionalidade com seu controller, use case e validação
+- 🏛️ **Domain/**: Entidades de negócio (Category, Expense)
+- 🔧 **Infrastructure/**: Configurações do banco de dados
+- 🧩 **SharedKernel**: Código compartilhado entre módulos
 
 ## 🔧 Comandos Úteis
 
@@ -358,6 +333,26 @@ O projeto possui uma cobertura completa de testes em múltiplas camadas:
 - **Bogus**: Geração de dados fake
 - **Testcontainers**: Containers MySQL para testes de integração
 - **Coverlet**: Cobertura de código
+
+## 🐺 Husky.NET - Git Hooks
+
+O projeto usa **Husky.NET** para automatizar verificações antes de commits e pushes:
+
+### Hooks Configurados
+
+- **pre-commit**: Formata o código automaticamente com **CSharpier**
+- **commit-msg**: Valida mensagens de commit usando **commit-message-linter** (Conventional Commits)
+- **pre-push**: Executa `dotnet test` para garantir que todos os testes passam antes do push
+
+### Como Funciona
+
+Toda vez que você faz um commit ou push, o Husky executa automaticamente:
+
+1. 🎨 **Formatação automática** do código com CSharpier
+2. ✅ **Validação** da mensagem de commit (feat:, fix:, etc)
+3. 🧪 **Execução dos testes** antes do push
+
+Isso garante que o código sempre está formatado e testado!
 
 ## 🤝 Contribuindo
 
