@@ -3,4 +3,4 @@
 namespace WebApi.Features.Categories.Common;
 
 [Route("api/categories")]
-public class CategoriesBaseController : BaseApiController;
+public class CategoryBaseController : BaseApiController;

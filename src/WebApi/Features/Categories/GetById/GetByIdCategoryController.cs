@@ -5,7 +5,7 @@ using WebApi.Features.Categories.Common;
 
 namespace WebApi.Features.Categories.GetById;
 
-public class GetByIdCategoryController : CategoriesBaseController
+public class GetByIdCategoryController : CategoryBaseController
 {
     private readonly IGetCategoryByIdUseCase _useCase;
 

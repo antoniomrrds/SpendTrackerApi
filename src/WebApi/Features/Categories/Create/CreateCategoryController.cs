@@ -5,7 +5,7 @@ using WebApi.Features.Categories.Common;
 
 namespace WebApi.Features.Categories.Create;
 
-public class CreateCategoryController : CategoriesBaseController
+public class CreateCategoryController : CategoryBaseController
 {
     private readonly ICreateCategoryUseCase _useCase;
     private readonly IValidator<CreateCategoryInput> _validator;
