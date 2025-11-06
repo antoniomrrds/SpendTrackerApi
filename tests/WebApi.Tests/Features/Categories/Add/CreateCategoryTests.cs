@@ -12,7 +12,7 @@ namespace WebApi.Tests.Features.Categories.Add;
 public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
 {
     private static readonly CreateCategoryRequest CreateMockInstance =
-        CreateCategoryRequestFixture.Valid();
+        CreateCategoryFixture.ValidRequest();
 
     public CreateCategoryTests(SqliteTestWebAppFactory factory)
         : base(factory) { }
@@ -20,7 +20,7 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     [Fact]
     public async Task PostCategory_WithInvalidData_ShouldReturnBadRequest()
     {
-        CreateCategoryRequest invalidRequest = CreateCategoryRequestFixture.Invalid();
+        CreateCategoryRequest invalidRequest = CreateCategoryFixture.Invalid();
 
         HttpResponseMessage response = await HttpClient.AddCategory(
             invalidRequest,

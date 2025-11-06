@@ -19,7 +19,7 @@ public class DomainExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
 {
     private readonly HttpClient _client;
     private static readonly CreateCategoryRequest CreateMockInstance =
-        CreateCategoryRequestMock.Valid();
+        CreateCategoryFixture.ValidRequest();
 
     public DomainExceptionHandlerTests(NoDbTestWebAppFactory factory)
     {

@@ -14,7 +14,7 @@ public class GlobalExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
 {
     private readonly HttpClient _client;
     private static readonly CreateCategoryRequest CreateMockInstance =
-        CreateCategoryRequestMock.Valid();
+        CreateCategoryFixture.ValidRequest();
 
     public GlobalExceptionHandlerTests(NoDbTestWebAppFactory factory)
     {

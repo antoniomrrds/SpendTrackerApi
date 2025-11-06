@@ -4,9 +4,9 @@ using WebApi.Tests.Domain.Categories;
 
 namespace WebApi.Tests.Features.Categories.Add;
 
-public static class CreateCategoryRequestFixture
+public static class CreateCategoryFixture
 {
-    public static CreateCategoryRequest Valid(bool useNewSeed = false)
+    public static CreateCategoryRequest ValidRequest(bool useNewSeed = false)
     {
         Category category = CategoryFixture.GetCategory(useNewSeed);
 
@@ -15,4 +15,10 @@ public static class CreateCategoryRequestFixture
 
     public static CreateCategoryRequest Invalid() =>
         new(Name: string.Empty, Description: "             ");
+
+    public static CreateCategoryInput CategoryInput(bool useNewSeed = false)
+    {
+        Category category = CategoryFixture.GetCategory(useNewSeed);
+        return new CreateCategoryInput() { Name = category.Name, Description = category.Description };
+    }
 }

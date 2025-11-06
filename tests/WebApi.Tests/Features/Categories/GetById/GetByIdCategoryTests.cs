@@ -15,7 +15,7 @@ public class GetByIdCategoryTests(SqliteTestWebAppFactory factory)
     private CategoryDto? _sut;
 
     private static readonly CreateCategoryRequest CreateMockInstance =
-        CreateCategoryRequestMock.Valid();
+        CreateCategoryFixture.ValidRequest();
 
     [Fact]
     public async Task GetCategoryById_WithCorrectId_ShouldReturnCorrectData()

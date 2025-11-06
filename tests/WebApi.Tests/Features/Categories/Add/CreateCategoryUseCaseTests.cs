@@ -21,7 +21,8 @@ public class CreateCategoryUseCaseTests
     private readonly string _description;
     private readonly CreateCategoryInput _input;
 
-    private CreateCategoryInput GenerateCommand() => new(_name, _description);
+    private CreateCategoryInput GenerateCommand() =>
+        new() { Name = _name, Description = _description };
 
     public CreateCategoryUseCaseTests()
     {
@@ -71,7 +72,8 @@ public class CreateCategoryUseCaseTests
     public async Task Perform_WhenCommandIsValid_ShouldAddTrimmedCategoryToRepository()
     {
         string name = $"  {_name}  ";
-        CreateCategoryInput input = new(name, _description);
+        CreateCategoryInput input = new() { Name = name, Description = _description };
+
         Result<CategoryDto> result = await _sut.Perform(input);
         string expectedName = input.Name.Trim();
         result.IsSuccess.ShouldBeTrue();
@@ -106,7 +108,11 @@ public class CreateCategoryUseCaseTests
         string invalidName
     )
     {
-        CreateCategoryInput inputWithInvalidName = new(invalidName, _description);
+        CreateCategoryInput inputWithInvalidName = new()
+        {
+            Name = invalidName,
+            Description = _description,
+        };
 
         await Should.ThrowAsync<DomainException>(() => _sut.Perform(inputWithInvalidName));
 

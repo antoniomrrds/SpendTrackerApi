@@ -22,7 +22,12 @@ public class CreateCategoryController : CategoryBaseController
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCategoryRequest request)
     {
-        CreateCategoryInput input = new(request.Name, request.Description);
+        CreateCategoryInput input = new()
+        {
+            Name = request.Name,
+            Description = request.Description,
+        };
+
         ValidationResult? validation = await _validator.ValidateAsync(input);
         if (!validation.IsValid)
         {
