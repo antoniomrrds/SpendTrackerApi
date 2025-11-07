@@ -22,7 +22,11 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
 
     public async Task<Result<CategoryDto>> Perform(CreateCategoryInput input)
     {
-        Category category = new(name: input.Name, description: input.Description);
+        Category category = new(
+            id: Guid.NewGuid(),
+            name: input.Name,
+            description: input.Description
+        );
         bool categoryAlreadyExists = await _categoryRepository.HasCategoryWithNameAsync(input.Name);
         if (categoryAlreadyExists)
         {

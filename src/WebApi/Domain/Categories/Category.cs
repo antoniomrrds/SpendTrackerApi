@@ -12,9 +12,9 @@ public sealed class Category
 
     private Category() { }
 
-    public Category(string name, string? description = null)
+    public Category(Guid id, string name, string? description = null)
     {
-        Id = Guid.NewGuid();
+        Id = id;
         Name = ValidateName(name);
         Description = ValidateDescription(description);
     }

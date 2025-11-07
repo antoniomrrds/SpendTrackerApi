@@ -16,6 +16,7 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<bool> HasCategoryWithNameAsync(
         string name,
+        Guid? excludeId = null,
         CancellationToken cancellationToken = default
     )
     {
@@ -56,5 +57,10 @@ public class CategoryRepository : ICategoryRepository
                 Description = c.Description,
             })
             .ToListAsync(cancellationToken);
+    }
+
+    public Task<bool> UpdateAsync(Category category, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 }
