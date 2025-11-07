@@ -1,33 +1,34 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Domain.Categories;
 using WebApi.Infrastructure.Persistence.Data;
+using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Data;
 
 [Trait("Type", "Integration")]
-public class UnitOfWorkTests : IClassFixture<SqliteInMemoryFixture>
+public class UnitOfWorkTests : BaseSqliteIntegrationTest
 {
-    private readonly AppDbContext _context;
     private readonly UnitOfWork _sut;
+    private readonly Category _getCategory;
 
     public UnitOfWorkTests(SqliteInMemoryFixture fixture)
+        : base(fixture)
     {
-        _context = fixture.Context;
-        _sut = new UnitOfWork(_context);
+        _sut = new UnitOfWork(DbContext);
+        _getCategory = CategoryFixture.GetCategory();
     }
 
     [Fact]
     public async Task CommitAsync_WhenCalled_ShouldPersistChanges()
     {
-        Category category = new("Test", "Descrição");
-        await _context.Categories.AddAsync(category, TestContext.Current.CancellationToken);
+        await DbContext.Categories.AddAsync(_getCategory, CancellationToken);
         await _sut.CommitAsync();
-        Category? saved = await _context.Categories.FirstOrDefaultAsync(
-            c => c.Id == category.Id,
+        Category? saved = await DbContext.Categories.FirstOrDefaultAsync(
+            c => c.Id == _getCategory.Id,
             TestContext.Current.CancellationToken
         );
         saved.ShouldNotBeNull();
-        saved.Name.ShouldBe("Test");
+        saved.Name.ShouldBe(_getCategory.Name);
     }
 }

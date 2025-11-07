@@ -51,14 +51,20 @@ public class CategoryRepositoryTests : BaseSqliteIntegrationTest
     public async Task HasCategoryWithNameAsync_WhenCategoryNameExists_ShouldReturnTrue()
     {
         await SeedCategoryAsync();
-        bool saved = await _sut.HasCategoryWithNameAsync(_category.Name, CancellationToken);
+        bool saved = await _sut.HasCategoryWithNameAsync(
+            _category.Name,
+            cancellationToken: CancellationToken
+        );
         saved.ShouldBeTrue();
     }
 
     [Fact]
     public async Task HasCategoryWithNameAsync_WhenCategoryNameDoesNotExist_ShouldReturnFalse()
     {
-        bool exists = await _sut.HasCategoryWithNameAsync("NameDoesNotExit", CancellationToken);
+        bool exists = await _sut.HasCategoryWithNameAsync(
+            "NameDoesNotExit",
+            cancellationToken: CancellationToken
+        );
         exists.ShouldBeFalse();
     }
 

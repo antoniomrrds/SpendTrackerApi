@@ -6,6 +6,6 @@ public abstract class TestCommon
 {
     protected static CancellationToken AnyCancellationToken => Arg.Any<CancellationToken>();
 
-    protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
+    protected static CancellationToken CancellationToken => CancellationToken.None;
     protected Faker Faker { get; } = FakerHelper.Faker;
 }

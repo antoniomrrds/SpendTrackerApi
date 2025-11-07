@@ -2,7 +2,7 @@
 using WebApi.Features.Categories.Create;
 using WebApi.Tests.Domain.Categories;
 
-namespace WebApi.Tests.Features.Categories.Add;
+namespace WebApi.Tests.Features.Categories.Create;
 
 public static class CreateCategoryFixture
 {

@@ -13,21 +13,24 @@ public class CategoryTests
 
     private static string ExpectedNameMessage =>
         ValidationMessages.RequiredField.FormatInvariant(FieldName);
+    private readonly Category _getCategory = CategoryFixture.GetCategory();
+    private readonly Category _sut;
 
-    private string RandomValidName => _faker.Name.FirstName();
-    private string RandomValidDescription => _faker.Lorem.Sentence();
-
-    private Category CreateValidCategory() => new(RandomValidName);
+    public CategoryTests()
+    {
+        _sut = new Category(
+            id: _getCategory.Id,
+            name: _getCategory.Name,
+            description: _getCategory.Description
+        );
+    }
 
     [Fact]
     public void Constructor_GivenValidParameters_ShouldSetPropertiesCorrectly()
     {
-        string expectedName = RandomValidName;
-        string expectedDescription = RandomValidDescription;
-        Category category = new(expectedName, expectedDescription);
-        category.Id.ShouldNotBe(Guid.Empty);
-        category.Name.ShouldBe(expectedName);
-        category.Description.ShouldBe(expectedDescription);
+        _sut.Id.ShouldBe(_getCategory.Id);
+        _sut.Name.ShouldBe(_getCategory.Name);
+        _sut.Description.ShouldBe(_getCategory.Description);
     }
 
     [Theory]
@@ -36,26 +39,24 @@ public class CategoryTests
         string? invalidName
     )
     {
-        Category category = CreateValidCategory();
-
-        Action callInvalidName = () => _ = new Category(invalidName!);
+        Action callInvalidName = () => _ = new Category(_getCategory.Id, invalidName!);
         callInvalidName.ShouldThrowWithMessage<DomainException>(ExpectedNameMessage);
 
-        Action callSetInvalidName = () => category.SetName(invalidName!);
+        Action callSetInvalidName = () => _sut.SetName(invalidName!);
         callSetInvalidName.ShouldThrowWithMessage<DomainException>(ExpectedNameMessage);
     }
 
     [Fact]
     public void ConstructorAndSetName_GivenNameWithSpaces_ThenShouldTrimSpacesFromName()
     {
-        string nameWithoutSpaces = RandomValidName;
+        string nameWithoutSpaces = _getCategory.Name;
         string nameWithSpaces = $"  {nameWithoutSpaces}  ";
 
-        Category category = new(nameWithoutSpaces);
+        Category category = new(_getCategory.Id, nameWithoutSpaces);
         category.SetName(nameWithSpaces);
         category.Name.ShouldBe(nameWithoutSpaces);
 
-        Category categoryFromConstructor = new(nameWithSpaces);
+        Category categoryFromConstructor = new(_getCategory.Id, nameWithSpaces);
         categoryFromConstructor.Name.ShouldBe(nameWithoutSpaces);
     }
 
@@ -69,11 +70,11 @@ public class CategoryTests
             200
         );
 
-        Action callMoreThan200Chars = () => _ = new Category(RandomValidName, expectedDescription);
+        Action callMoreThan200Chars = () =>
+            _ = new Category(_getCategory.Id, _getCategory.Name, expectedDescription);
         callMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
 
-        Category category = CreateValidCategory();
-        Action callSetMoreThan200Chars = () => category.SetDescription(expectedDescription);
+        Action callSetMoreThan200Chars = () => _sut.SetDescription(expectedDescription);
         callSetMoreThan200Chars.ShouldThrowWithMessage<DomainException>(expectedMessage);
     }
 

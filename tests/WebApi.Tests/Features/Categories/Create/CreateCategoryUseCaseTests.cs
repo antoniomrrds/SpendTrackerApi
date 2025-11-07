@@ -1,35 +1,23 @@
 using NSubstitute;
 using SharedKernel;
 using SharedKernel.Abstractions.Data;
+using TestUtilities.Common;
 using WebApi.Domain.Categories;
 using WebApi.Domain.Errors;
 using WebApi.Features.Categories.Common;
 using WebApi.Features.Categories.Create;
 
-namespace WebApi.Tests.Features.Categories.Add;
+namespace WebApi.Tests.Features.Categories.Create;
 
 [Trait("Type", "Unit")]
-public class CreateCategoryUseCaseTests
+public class CreateCategoryUseCaseTests:TestCommon
 {
-    private readonly Faker _faker = FakerHelper.Faker;
     private readonly ICategoryRepository _categoryRepositoryMock;
     private readonly IUnitOfWork _unitOfWorkMock;
     private readonly CreateCategoryUseCase _sut;
-    private readonly CancellationToken _cancellationToken;
-
-    private readonly string _name;
-    private readonly string _description;
-    private readonly CreateCategoryInput _input;
-
-    private CreateCategoryInput GenerateCommand() =>
-        new() { Name = _name, Description = _description };
-
+    private readonly CreateCategoryInput _input = CreateCategoryFixture.CategoryInput();
     public CreateCategoryUseCaseTests()
     {
-        _name = _faker.Commerce.Categories(1)[0];
-        _description = _faker.Lorem.Sentence();
-        _input = GenerateCommand();
-        _cancellationToken = CancellationToken.None;
         _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
         _categoryRepositoryMock.HasCategoryWithNameAsync(_input.Name).Returns(false);
 
@@ -45,7 +33,11 @@ public class CreateCategoryUseCaseTests
 
         await _categoryRepositoryMock
             .Received(1)
-            .HasCategoryWithNameAsync(_input.Name, _cancellationToken);
+            .HasCategoryWithNameAsync(_input.Name, cancellationToken: CancellationToken);
+        await _categoryRepositoryMock
+            .Received(1)
+            .AddAsync(Arg.Any<Category>(), CancellationToken);
+        
         result.IsSuccess.ShouldBeTrue();
         result.Value.Id.ShouldNotBe(Guid.Empty);
         result.Value.Name.ShouldBe(_input.Name);
@@ -56,14 +48,14 @@ public class CreateCategoryUseCaseTests
     public async Task Perform_WhenCategoryAlreadyExists_ShouldReturnFailureWithProperError()
     {
         _categoryRepositoryMock
-            .HasCategoryWithNameAsync(_input.Name, _cancellationToken)
-            .Returns(Task.FromResult(true));
+            .HasCategoryWithNameAsync(_input.Name,cancellationToken: AnyCancellationToken)
+            .Returns(true);
 
         Result<CategoryDto> result = await _sut.Perform(_input);
 
         await _categoryRepositoryMock
             .Received(1)
-            .HasCategoryWithNameAsync(_input.Name, _cancellationToken);
+            .HasCategoryWithNameAsync(_input.Name,cancellationToken:  AnyCancellationToken);
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(CategoryErrors.NameAlreadyExists);
     }
@@ -71,8 +63,8 @@ public class CreateCategoryUseCaseTests
     [Fact]
     public async Task Perform_WhenCommandIsValid_ShouldAddTrimmedCategoryToRepository()
     {
-        string name = $"  {_name}  ";
-        CreateCategoryInput input = new() { Name = name, Description = _description };
+        string name = $"  {_input.Name}  ";
+        CreateCategoryInput input = new() { Name = name, Description = _input.Description };
 
         Result<CategoryDto> result = await _sut.Perform(input);
         string expectedName = input.Name.Trim();
@@ -86,7 +78,7 @@ public class CreateCategoryUseCaseTests
                     && category.Description == input.Description
                     && category.Id != Guid.Empty
                 ),
-                _cancellationToken
+                CancellationToken
             );
     }
 
@@ -97,7 +89,7 @@ public class CreateCategoryUseCaseTests
 
         await _categoryRepositoryMock
             .Received(1)
-            .HasCategoryWithNameAsync(_input.Name, _cancellationToken);
+            .HasCategoryWithNameAsync(_input.Name,cancellationToken:   CancellationToken);
         result.IsSuccess.ShouldBeTrue();
         await _unitOfWorkMock.Received(1).CommitAsync();
     }
@@ -111,18 +103,18 @@ public class CreateCategoryUseCaseTests
         CreateCategoryInput inputWithInvalidName = new()
         {
             Name = invalidName,
-            Description = _description,
+            Description = _input.Description,
         };
-
+        
         await Should.ThrowAsync<DomainException>(() => _sut.Perform(inputWithInvalidName));
 
         await _categoryRepositoryMock
             .DidNotReceive()
-            .HasCategoryWithNameAsync(Arg.Any<string>(), Arg.Any<CancellationToken>());
+            .HasCategoryWithNameAsync(Arg.Any<string>(),cancellationToken:  AnyCancellationToken);
 
         await _categoryRepositoryMock
             .DidNotReceive()
-            .AddAsync(Arg.Any<Category>(), Arg.Any<CancellationToken>());
+            .AddAsync(Arg.Any<Category>(), AnyCancellationToken);
 
         await _unitOfWorkMock.DidNotReceive().CommitAsync();
     }

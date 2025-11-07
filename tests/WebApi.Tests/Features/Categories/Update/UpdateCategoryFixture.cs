@@ -11,6 +11,7 @@ public static class UpdateCategoryFixture
         Category category = CategoryFixture.GetCategory(useNewSeed);
         return new UpdateCategoryInput()
         {
+            Id = category.Id,
             Name = category.Name,
             Description = category.Description,
         };

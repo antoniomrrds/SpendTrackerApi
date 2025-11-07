@@ -18,6 +18,7 @@ internal static class CategoryFixture
         int seed = useNewSeed ? SecureSeedGenerator.GetSecureSeed() : 0;
         return Faker
             .CustomInstantiator(f => new Category(
+                f.Random.Guid(),
                 f.Commerce.Department(),
                 f.Lorem.Paragraph().ClampLength(max: 200)
             ))

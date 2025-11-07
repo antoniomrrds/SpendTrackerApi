@@ -3,6 +3,7 @@ using WebApi.Common.Web.Responses.Errors;
 using WebApi.Domain.Categories;
 using WebApi.Features.Categories.Common;
 using WebApi.Features.Categories.Create;
+using WebApi.Tests.Features.Categories.Create;
 using WebApi.Tests.Helpers.Extensions;
 using WebApi.Tests.Helpers.Factories;
 

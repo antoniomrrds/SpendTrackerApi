@@ -18,7 +18,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Common\Web\" />
-      <Folder Include="Features\Common\" />
       <Folder Include="Helpers\" />
       <Folder Include="Infrastructure\" />
     </ItemGroup>
