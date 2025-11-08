@@ -9,7 +9,6 @@ using WebApi.Common.Web.Exceptions;
 using WebApi.Domain.Errors;
 using WebApi.Features.Categories.Create;
 using WebApi.Tests.Features.Categories;
-using WebApi.Tests.Features.Categories.Add;
 using WebApi.Tests.Features.Categories.Create;
 using WebApi.Tests.Helpers.Extensions;
 using WebApi.Tests.Helpers.Factories;
