@@ -28,11 +28,18 @@ internal class UpdateCategoryUseCase : IUpdateCategoryUseCase
             category.Name,
             excludeId: category.Id
         );
+
         if (nameAlreadyTaken)
         {
             return CategoryErrors.NameAlreadyExists;
         }
 
-        return false;
+        bool isUpdated = await _repo.UpdateAsync(category);
+        if (isUpdated)
+        {
+            return CategoryErrors.NotFound(category.Id.ToString());
+        }
+
+        return true;
     }
 }
