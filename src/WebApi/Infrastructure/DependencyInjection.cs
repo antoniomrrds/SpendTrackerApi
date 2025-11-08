@@ -25,7 +25,9 @@ public static class DependencyInjection
             o.UseMySql(connectionString, serverVersion).EnableDetailedErrors()
         );
 
-        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ICategoryCheckRepository, CategoryCheckRepository>();
+        services.AddScoped<ICategoryWriterRepository, CategoryWriterRepository>();
+        services.AddScoped<ICategoryReaderRepository, CategoryReaderRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }

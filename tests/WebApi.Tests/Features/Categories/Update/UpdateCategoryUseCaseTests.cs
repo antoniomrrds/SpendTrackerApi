@@ -11,15 +11,17 @@ namespace WebApi.Tests.Features.Categories.Update;
 [Trait("Type", "Unit")]
 public class UpdateCategoryUseCaseTests : TestCommon
 {
-    private readonly ICategoryRepository _categoryRepositoryMock;
+    private readonly ICategoryCheckRepository _categoryCheckRepository;
+    private readonly ICategoryWriterRepository _categoryWriterRepository;
     private readonly UpdateCategoryUseCase _sut;
     private readonly UpdateCategoryInput _input = UpdateCategoryFixture.UpdateInput();
 
     public UpdateCategoryUseCaseTests()
     {
-        _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        _categoryRepositoryMock.HasCategoryWithNameAsync(_input.Name).Returns(false);
-        _categoryRepositoryMock
+        _categoryCheckRepository = Substitute.For<ICategoryCheckRepository>();
+        _categoryWriterRepository = Substitute.For<ICategoryWriterRepository>();
+        _categoryCheckRepository.HasCategoryWithNameAsync(_input.Name).Returns(false);
+        _categoryWriterRepository
             .UpdateAsync(
                 Arg.Is<Category>(c =>
                     c.Id == _input.Id
@@ -28,14 +30,14 @@ public class UpdateCategoryUseCaseTests : TestCommon
                 )
             )
             .Returns(false);
-        _sut = new UpdateCategoryUseCase(_categoryRepositoryMock);
+        _sut = new UpdateCategoryUseCase(_categoryWriterRepository, _categoryCheckRepository);
     }
 
     [Fact]
     public async Task Perform_WhenNameIsTaken_ShouldReturnFailureWithProperError()
     {
         //Arrange
-        _categoryRepositoryMock
+        _categoryCheckRepository
             .HasCategoryWithNameAsync(
                 name: _input.Name,
                 excludeId: _input.Id,
@@ -47,7 +49,7 @@ public class UpdateCategoryUseCaseTests : TestCommon
         Result<bool> result = await _sut.Perform(_input);
 
         //Assert
-        await _categoryRepositoryMock
+        await _categoryCheckRepository
             .Received(1)
             .HasCategoryWithNameAsync(
                 name: _input.Name,
@@ -63,11 +65,13 @@ public class UpdateCategoryUseCaseTests : TestCommon
     public async Task Perform_WhenCategoryToUpdateIsNotFound_ShouldReturnFailure()
     {
         //Arrange
-        _categoryRepositoryMock.UpdateAsync(Arg.Any<Category>(), CancellationToken).Returns(true);
+        _categoryWriterRepository
+            .UpdateAsync(Arg.Any<Category>(), CancellationToken)
+            .Returns(true);
         //Act
         Result<bool> result = await _sut.Perform(_input);
         //Assert
-        await _categoryRepositoryMock
+        await _categoryWriterRepository
             .Received(1)
             .UpdateAsync(
                 Arg.Is<Category>(c =>
@@ -96,11 +100,11 @@ public class UpdateCategoryUseCaseTests : TestCommon
         //Act
         await Should.ThrowAsync<DomainException>(() => _sut.Perform(inputWithInvalidName));
         //Assert
-        await _categoryRepositoryMock
+        await _categoryCheckRepository
             .DidNotReceive()
             .HasCategoryWithNameAsync(Arg.Any<string>(), cancellationToken: AnyCancellationToken);
 
-        await _categoryRepositoryMock
+        await _categoryWriterRepository
             .DidNotReceive()
             .UpdateAsync(Arg.Any<Category>(), AnyCancellationToken);
     }

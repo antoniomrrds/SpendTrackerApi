@@ -13,18 +13,23 @@ public sealed record UpdateCategoryInput : CommonCategoryProperties
 
 internal class UpdateCategoryUseCase : IUpdateCategoryUseCase
 {
-    private readonly ICategoryRepository _repo;
+    private readonly ICategoryWriterRepository _writerRepository;
+    private readonly ICategoryCheckRepository _checkRepository;
 
-    public UpdateCategoryUseCase(ICategoryRepository repo)
+    public UpdateCategoryUseCase(
+        ICategoryWriterRepository writerRepository,
+        ICategoryCheckRepository checkRepository
+    )
     {
-        _repo = repo;
+        _writerRepository = writerRepository;
+        _checkRepository = checkRepository;
     }
 
     public async Task<Result<bool>> Perform(UpdateCategoryInput input)
     {
         Category category = new(id: input.Id, name: input.Name, description: input.Description);
 
-        bool nameAlreadyTaken = await _repo.HasCategoryWithNameAsync(
+        bool nameAlreadyTaken = await _checkRepository.HasCategoryWithNameAsync(
             category.Name,
             excludeId: category.Id
         );
@@ -34,7 +39,7 @@ internal class UpdateCategoryUseCase : IUpdateCategoryUseCase
             return CategoryErrors.NameAlreadyExists;
         }
 
-        bool isUpdated = await _repo.UpdateAsync(category);
+        bool isUpdated = await _writerRepository.UpdateAsync(category);
         if (isUpdated)
         {
             return CategoryErrors.NotFound(category.Id.ToString());

@@ -8,7 +8,7 @@ namespace WebApi.Features.Categories.GetById;
 public interface IGetCategoryByIdUseCase
     : IUseCase<GetCategoryByIdInput, Task<Result<CategoryDto?>>>;
 
-internal class GetCategoryByIdUseCase(ICategoryRepository repo) : IGetCategoryByIdUseCase
+internal class GetCategoryByIdUseCase(ICategoryReaderRepository repo) : IGetCategoryByIdUseCase
 {
     public async Task<Result<CategoryDto?>> Perform(GetCategoryByIdInput input)
     {

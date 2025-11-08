@@ -13,24 +13,24 @@ public class GetAllCategoriesUseCaseTests : TestCommon
         CategoryDtoFixture.GetCategoriesDto();
     private readonly IReadOnlyList<CategoryDto> _emptyCategory = CategoryDtoFixture.EmptyList();
     private readonly GetAllCategoriesUseCase _sut;
-    private readonly ICategoryRepository _categoryRepositoryMock;
+    private readonly ICategoryReaderRepository _categoryRepositoriesMock;
 
     public GetAllCategoriesUseCaseTests()
     {
-        _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        _categoryRepositoryMock.GetAllAsync(AnyCancellationToken).Returns(_getCategoriesDto);
-        _sut = new GetAllCategoriesUseCase(_categoryRepositoryMock);
+        _categoryRepositoriesMock = Substitute.For<ICategoryReaderRepository>();
+        _categoryRepositoriesMock.GetAllAsync(AnyCancellationToken).Returns(_getCategoriesDto);
+        _sut = new GetAllCategoriesUseCase(_categoryRepositoriesMock);
     }
 
     [Fact]
     public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnEmptyList()
     {
         //Arrange
-        _categoryRepositoryMock.GetAllAsync(AnyCancellationToken).Returns(_emptyCategory);
+        _categoryRepositoriesMock.GetAllAsync(AnyCancellationToken).Returns(_emptyCategory);
         //Action
         IEnumerable<CategoryDto> result = await _sut.Perform();
         //Assert
-        await _categoryRepositoryMock.Received(1).GetAllAsync(AnyCancellationToken);
+        await _categoryRepositoriesMock.Received(1).GetAllAsync(AnyCancellationToken);
         result.ShouldBe(_emptyCategory);
     }
 
@@ -40,7 +40,7 @@ public class GetAllCategoriesUseCaseTests : TestCommon
         //Action
         IReadOnlyList<CategoryDto> result = await _sut.Perform();
         //Assert
-        await _categoryRepositoryMock.Received(1).GetAllAsync(AnyCancellationToken);
+        await _categoryRepositoriesMock.Received(1).GetAllAsync(AnyCancellationToken);
         result.Select(x => x.Id).ShouldBe(_getCategoriesDto.Select(x => x.Id));
         result.ShouldBeAssignableTo<IReadOnlyList<CategoryDto>>();
     }

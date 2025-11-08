@@ -22,7 +22,7 @@ namespace Infrastructure.Persistence.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Categories.Category", b =>
+            modelBuilder.Entity("Domain.Categories.categories", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,7 +87,7 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Expenses.Expense", b =>
                 {
-                    b.HasOne("Domain.Categories.Category", null)
+                    b.HasOne("Domain.Categories.categories", null)
                         .WithMany()
                         .HasForeignKey("IdCategory")
                         .OnDelete(DeleteBehavior.Restrict)

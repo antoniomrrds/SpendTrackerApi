@@ -1,39 +1,19 @@
-using Microsoft.EntityFrameworkCore;
-using WebApi.Domain.Categories;
+﻿using Microsoft.EntityFrameworkCore;
 using WebApi.Features.Categories.Common;
 using WebApi.Infrastructure.Persistence.Data;
 
 namespace WebApi.Infrastructure.Persistence.Repositories;
 
-public class CategoryRepository : ICategoryRepository
+public class CategoryReaderRepository(AppDbContext context)
+    : BaseRepository(context),
+        ICategoryReaderRepository
 {
-    private readonly AppDbContext _context;
-
-    public CategoryRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<bool> HasCategoryWithNameAsync(
-        string name,
-        Guid? excludeId = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        return await _context.Categories.AnyAsync(c => c.Name == name, cancellationToken);
-    }
-
-    public async Task AddAsync(Category category, CancellationToken cancellationToken = default)
-    {
-        await _context.Categories.AddAsync(category, cancellationToken);
-    }
-
     public async Task<CategoryDto?> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default
     )
     {
-        return await _context
+        return await Context
             .Categories.AsNoTracking()
             .Select(c => new CategoryDto
             {
@@ -48,7 +28,7 @@ public class CategoryRepository : ICategoryRepository
         CancellationToken cancellationToken = default
     )
     {
-        return await _context
+        return await Context
             .Categories.AsNoTracking()
             .Select(c => new CategoryDto
             {
@@ -57,10 +37,5 @@ public class CategoryRepository : ICategoryRepository
                 Description = c.Description,
             })
             .ToListAsync(cancellationToken);
-    }
-
-    public Task<bool> UpdateAsync(Category category, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
     }
 }

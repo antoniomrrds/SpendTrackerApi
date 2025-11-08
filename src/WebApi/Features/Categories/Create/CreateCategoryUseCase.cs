@@ -11,12 +11,18 @@ public sealed record CreateCategoryInput : CommonCategoryProperties;
 
 internal class CreateCategoryUseCase : ICreateCategoryUseCase
 {
-    private readonly ICategoryRepository _categoryRepository;
+    private readonly ICategoryWriterRepository _writerRepo;
+    private readonly ICategoryCheckRepository _checkRepo;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateCategoryUseCase(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
+    public CreateCategoryUseCase(
+        ICategoryWriterRepository writerRepo,
+        ICategoryCheckRepository checkRepo,
+        IUnitOfWork unitOfWork
+    )
     {
-        _categoryRepository = categoryRepository;
+        _checkRepo = checkRepo;
+        _writerRepo = writerRepo;
         _unitOfWork = unitOfWork;
     }
 
@@ -27,13 +33,13 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
             name: input.Name,
             description: input.Description
         );
-        bool categoryAlreadyExists = await _categoryRepository.HasCategoryWithNameAsync(input.Name);
+        bool categoryAlreadyExists = await _checkRepo.HasCategoryWithNameAsync(input.Name);
         if (categoryAlreadyExists)
         {
             return CategoryErrors.NameAlreadyExists;
         }
 
-        await _categoryRepository.AddAsync(category);
+        await _writerRepo.AddAsync(category);
         await _unitOfWork.CommitAsync();
 
         return new CategoryDto
