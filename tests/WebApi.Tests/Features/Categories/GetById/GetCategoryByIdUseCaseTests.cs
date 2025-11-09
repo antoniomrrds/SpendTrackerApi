@@ -1,5 +1,4 @@
-﻿using NSubstitute;
-using NSubstitute.ReturnsExtensions;
+using NSubstitute;
 using SharedKernel;
 using TestUtilities.Common;
 using WebApi.Domain.Categories;
@@ -18,27 +17,24 @@ public class GetCategoryByIdUseCaseTests : TestCommon
     private readonly Category _expectedCategory = CategoryFixture.GetCategory();
     private readonly CategoryDto _categoryDto = CategoryDtoFixture.GetCategoryDto();
     private readonly GetCategoryByIdInput _input;
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public GetCategoryByIdUseCaseTests()
     {
         _input = new GetCategoryByIdInput(_expectedCategory.Id);
         _categoryRepositoriesMock = Substitute.For<ICategoryReaderRepository>();
-        _categoryRepositoriesMock
-            .GetByIdAsync(_expectedCategory.Id, AnyCancellationToken)
-            .Returns(_categoryDto);
         _sut = new GetCategoryByIdUseCase(_categoryRepositoriesMock);
     }
 
     [Fact]
     public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnFailure()
     {
-        _categoryRepositoriesMock
-            .GetByIdAsync(_expectedCategory.Id, AnyCancellationToken)
-            .ReturnsNull();
+        //Arrange
+        MakeGetByIdAsyncReturns(null);
+        //Act
         Result<CategoryDto?> result = await _sut.Perform(_input);
-        await _categoryRepositoriesMock
-            .Received(1)
-            .GetByIdAsync(_expectedCategory.Id, AnyCancellationToken);
+        //Assert
+        await _categoryRepositoriesMock.Received(1).GetByIdAsync(_expectedCategory.Id, _ct);
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(CategoryErrors.NotFound(_expectedCategory.Id.ToString()));
     }
@@ -46,8 +42,17 @@ public class GetCategoryByIdUseCaseTests : TestCommon
     [Fact]
     public async Task Perform_WhenCategoryExists_ShouldReturnSuccessAndCategory()
     {
+        //Arrange
+        MakeGetByIdAsyncReturns(_categoryDto);
+        //Act
         Result<CategoryDto?> result = await _sut.Perform(_input);
+        //Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe(_categoryDto);
+    }
+
+    private void MakeGetByIdAsyncReturns(CategoryDto? returnValue)
+    {
+        _categoryRepositoriesMock.GetByIdAsync(_expectedCategory.Id, _ct).Returns(returnValue);
     }
 }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using WebApi.Domain.Errors;
 using WebApi.Domain.Expenses;
 using WebApi.Domain.Extensions;
@@ -126,9 +127,9 @@ public class ExpenseTests
     public void ConstructorAndSetDate_GivenDateIsFuture_ThenShouldThrow()
     {
         DateTime futureDate = DateTime.Today.AddDays(1);
-        string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(
-            futureDate.ToShortDateString()
-        );
+        string formattedDate = futureDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+        string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(formattedDate);
 
         Action callDateIsFuture = () =>
             _ = new Expense(

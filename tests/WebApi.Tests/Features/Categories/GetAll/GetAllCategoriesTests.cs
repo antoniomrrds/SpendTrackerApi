@@ -2,6 +2,7 @@
 using WebApi.Features.Categories.Common;
 using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Helpers.Factories;
+using WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 
 namespace WebApi.Tests.Features.Categories.GetAll;
 
@@ -9,6 +10,7 @@ namespace WebApi.Tests.Features.Categories.GetAll;
 public class GetAllCategoriesTests : BaseIntegrationTest<SqliteTestWebAppFactory>
 {
     private readonly List<Category> _categories;
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public GetAllCategoriesTests(SqliteTestWebAppFactory factory)
         : base(factory)
@@ -16,21 +18,14 @@ public class GetAllCategoriesTests : BaseIntegrationTest<SqliteTestWebAppFactory
         _categories = CategoryFixture.GetCategories(3, true);
     }
 
-    private async Task SeedCategoriesAsync()
-    {
-        await DbContext.Categories.AddRangeAsync(_categories);
-        await DbContext.SaveChangesAsync();
-    }
-
     [Fact]
     public async Task GetAllCategories_WhenCategoryExists_ReturnsCategoryDto()
     {
         //Arrange
-        await SeedCategoriesAsync();
+        await ResetDatabaseAsync();
+        await CategorySeeder.AddRangeAsync(DbContext, _categories);
         //Action
-        IReadOnlyList<CategoryDto> response = await HttpClient.GetAllCategoriesAndReturnDto(
-            CancellationToken
-        );
+        IReadOnlyList<CategoryDto> response = await HttpClient.GetAllCategoriesAndReturnDto(_ct);
         //Assert
         response.Count.ShouldBe(_categories.Count);
         response.ShouldAllBe(dto =>

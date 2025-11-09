@@ -1,9 +1,8 @@
 using FluentValidation.TestHelper;
 using WebApi.Features.Categories.Create;
 using WebApi.Tests.Features.Categories.Common;
-using WebApi.Tests.Features.Categories.Create;
 
-namespace WebApi.Tests.Features.Categories.Add;
+namespace WebApi.Tests.Features.Categories.Create;
 
 [Trait("Type", "Unit")]
 public class CreateCategoryValidatorTests

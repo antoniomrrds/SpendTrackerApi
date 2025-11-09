@@ -11,6 +11,7 @@ public class UnitOfWorkTests : BaseSqliteIntegrationTest
 {
     private readonly UnitOfWork _sut;
     private readonly Category _getCategory;
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public UnitOfWorkTests(SqliteInMemoryFixture fixture)
         : base(fixture)
@@ -22,11 +23,11 @@ public class UnitOfWorkTests : BaseSqliteIntegrationTest
     [Fact]
     public async Task CommitAsync_WhenCalled_ShouldPersistChanges()
     {
-        await DbContext.Categories.AddAsync(_getCategory, CancellationToken);
+        await DbContext.Categories.AddAsync(_getCategory, _ct);
         await _sut.CommitAsync();
         Category? saved = await DbContext.Categories.FirstOrDefaultAsync(
             c => c.Id == _getCategory.Id,
-            TestContext.Current.CancellationToken
+            _ct
         );
         saved.ShouldNotBeNull();
         saved.Name.ShouldBe(_getCategory.Name);

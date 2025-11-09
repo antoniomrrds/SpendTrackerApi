@@ -1,24 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\TestSharedPackages.props" />
-  <PropertyGroup>
-    <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" />
-    <ProjectReference Include="..\TestUtilities\TestUtilities.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-    <PackageReference Include="Testcontainers.MySql" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
-  </ItemGroup>
+    <Import Project="..\TestSharedPackages.props"/>
+    <PropertyGroup>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\WebApi\WebApi.csproj"/>
+        <ProjectReference Include="..\TestUtilities\TestUtilities.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
+        <PackageReference Include="Testcontainers.MySql"/>
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="xunit.runner.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
     <ItemGroup>
         <Using Include="System.Net"/>
         <Using Include="System.Net.Http.Json"/>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Common\Web\" />
-      <Folder Include="Helpers\" />
-      <Folder Include="Infrastructure\" />
+        <Folder Include="Common\Web\"/>
+        <Folder Include="Helpers\"/>
+        <Folder Include="Infrastructure\"/>
     </ItemGroup>
 </Project>

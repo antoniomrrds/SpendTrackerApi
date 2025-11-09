@@ -3,17 +3,17 @@ using WebApi.Common.Web.Responses.Errors;
 using WebApi.Domain.Categories;
 using WebApi.Features.Categories.Common;
 using WebApi.Features.Categories.Create;
-using WebApi.Tests.Features.Categories.Create;
 using WebApi.Tests.Helpers.Extensions;
 using WebApi.Tests.Helpers.Factories;
 
-namespace WebApi.Tests.Features.Categories.Add;
+namespace WebApi.Tests.Features.Categories.Create;
 
 [Trait("Type", "E2E")]
 public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
 {
     private static readonly CreateCategoryRequest CreateMockInstance =
         CreateCategoryFixture.ValidRequest();
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public CreateCategoryTests(SqliteTestWebAppFactory factory)
         : base(factory) { }
@@ -23,10 +23,7 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     {
         CreateCategoryRequest invalidRequest = CreateCategoryFixture.Invalid();
 
-        HttpResponseMessage response = await HttpClient.AddCategory(
-            invalidRequest,
-            CancellationToken
-        );
+        HttpResponseMessage response = await HttpClient.AddCategory(invalidRequest, _ct);
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         ValidationCustomProblemDetails problemDetails =
             await response.GetErrorResponse<ValidationCustomProblemDetails>();
@@ -37,12 +34,10 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
     [Fact]
     public async Task PostCategory_WithExistingName_ShouldReturnConflict()
     {
-        await HttpClient.AddCategoryAndReturnDto(CreateMockInstance, CancellationToken);
+        await ResetDatabaseAsync();
+        await HttpClient.AddCategoryAndReturnDto(CreateMockInstance, _ct);
 
-        HttpResponseMessage response = await HttpClient.AddCategory(
-            CreateMockInstance,
-            CancellationToken
-        );
+        HttpResponseMessage response = await HttpClient.AddCategory(CreateMockInstance, _ct);
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
         ProblemDetails errorResponse = await response.GetErrorResponse<ProblemDetails>();
         errorResponse.Detail.ShouldBe(CategoryErrors.NameAlreadyExists.Description);
@@ -55,7 +50,7 @@ public class CreateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
 
         CategoryDto createdCategory = await HttpClient.AddCategoryAndReturnDto(
             CreateMockInstance,
-            CancellationToken
+            _ct
         );
         createdCategory.Id.ShouldNotBe(Guid.Empty);
         createdCategory.Name.ShouldBe(CreateMockInstance.Name);

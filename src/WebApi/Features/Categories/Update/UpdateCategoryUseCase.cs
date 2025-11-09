@@ -40,7 +40,7 @@ internal class UpdateCategoryUseCase : IUpdateCategoryUseCase
         }
 
         bool isUpdated = await _writerRepository.UpdateAsync(category);
-        if (isUpdated)
+        if (!isUpdated)
         {
             return CategoryErrors.NotFound(category.Id.ToString());
         }

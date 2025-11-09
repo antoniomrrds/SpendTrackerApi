@@ -4,10 +4,10 @@ using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 
-[Trait("Type", "Integration")]
-public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
+public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase, IAsyncLifetime
 {
     private readonly CategoryReaderRepository _sut;
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public CategoryReaderRepositoryTests(SqliteInMemoryFixture fixture)
         : base(fixture)
@@ -15,14 +15,24 @@ public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
         _sut = new CategoryReaderRepository(DbContext);
     }
 
+    public async ValueTask InitializeAsync()
+    {
+        await ResetDatabaseAsync();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+        return ValueTask.CompletedTask;
+    }
+
     [Fact]
     public async Task GetByIdAsync_WhenCategoryExists_ShouldReturnCategoryDto()
     {
         //Arrange
-        await ResetDatabaseAsync();
         await MakeCreateCategoryAsync();
         //Act
-        CategoryDto? categoryResponse = await _sut.GetByIdAsync(Category.Id, CancellationToken);
+        CategoryDto? categoryResponse = await _sut.GetByIdAsync(Category.Id, _ct);
         //Assert
         categoryResponse.ShouldNotBeNull();
         categoryResponse.ShouldSatisfyAllConditions(
@@ -37,7 +47,7 @@ public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
     public async Task GetByIdAsync_WhenCategoryDoesNotExist_ShouldReturnNull()
     {
         //Act
-        CategoryDto? categoryResponse = await _sut.GetByIdAsync(Category.Id, CancellationToken);
+        CategoryDto? categoryResponse = await _sut.GetByIdAsync(Category.Id, _ct);
         //Assert
         categoryResponse.ShouldBeNull();
     }
@@ -45,10 +55,8 @@ public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
     [Fact]
     public async Task GetAllAsync_WhenCategoriesDoesNotExist_ShouldReturnEmptyList()
     {
-        //Arrange
-        await ResetDatabaseAsync();
         //Act
-        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(CancellationToken);
+        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(_ct);
         //Assert
         categories.ShouldBeEmpty();
     }
@@ -57,10 +65,9 @@ public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
     public async Task GetAllAsync_WhenCategoriesExists_ShouldReturnCategoriesDto()
     {
         //Arrange
-        await ResetDatabaseAsync();
         await MakeCreateCategoriesAsync();
         //Act
-        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(CancellationToken);
+        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(_ct);
         //Assert
         List<CategoryDto> categoryList = [.. categories];
         categoryList.Count.ShouldBe(Categories.Count());

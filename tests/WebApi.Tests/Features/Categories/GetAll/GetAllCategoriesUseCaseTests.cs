@@ -1,4 +1,4 @@
-﻿using NSubstitute;
+using NSubstitute;
 using TestUtilities.Common;
 using WebApi.Features.Categories.Common;
 using WebApi.Features.Categories.GetAll;
@@ -14,11 +14,11 @@ public class GetAllCategoriesUseCaseTests : TestCommon
     private readonly IReadOnlyList<CategoryDto> _emptyCategory = CategoryDtoFixture.EmptyList();
     private readonly GetAllCategoriesUseCase _sut;
     private readonly ICategoryReaderRepository _categoryRepositoriesMock;
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public GetAllCategoriesUseCaseTests()
     {
         _categoryRepositoriesMock = Substitute.For<ICategoryReaderRepository>();
-        _categoryRepositoriesMock.GetAllAsync(AnyCancellationToken).Returns(_getCategoriesDto);
         _sut = new GetAllCategoriesUseCase(_categoryRepositoriesMock);
     }
 
@@ -26,22 +26,29 @@ public class GetAllCategoriesUseCaseTests : TestCommon
     public async Task Perform_WhenCategoryDoesNotExist_ShouldReturnEmptyList()
     {
         //Arrange
-        _categoryRepositoriesMock.GetAllAsync(AnyCancellationToken).Returns(_emptyCategory);
-        //Action
+        MakeGetAllAsyncReturns(_emptyCategory);
+        //Act
         IEnumerable<CategoryDto> result = await _sut.Perform();
         //Assert
-        await _categoryRepositoriesMock.Received(1).GetAllAsync(AnyCancellationToken);
+        await _categoryRepositoriesMock.Received(1).GetAllAsync(_ct);
         result.ShouldBe(_emptyCategory);
     }
 
     [Fact]
     public async Task Perform_WhenCategoryExists_ShouldReturnCategoryDtoList()
     {
-        //Action
+        //Arrange
+        MakeGetAllAsyncReturns(_getCategoriesDto);
+        //Act
         IReadOnlyList<CategoryDto> result = await _sut.Perform();
         //Assert
-        await _categoryRepositoriesMock.Received(1).GetAllAsync(AnyCancellationToken);
+        await _categoryRepositoriesMock.Received(1).GetAllAsync(_ct);
         result.Select(x => x.Id).ShouldBe(_getCategoriesDto.Select(x => x.Id));
         result.ShouldBeAssignableTo<IReadOnlyList<CategoryDto>>();
+    }
+
+    private void MakeGetAllAsyncReturns(IReadOnlyList<CategoryDto> returnValue)
+    {
+        _categoryRepositoriesMock.GetAllAsync(_ct).Returns(returnValue);
     }
 }

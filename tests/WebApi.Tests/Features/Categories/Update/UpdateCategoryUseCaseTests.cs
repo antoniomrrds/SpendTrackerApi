@@ -15,21 +15,12 @@ public class UpdateCategoryUseCaseTests : TestCommon
     private readonly ICategoryWriterRepository _categoryWriterRepository;
     private readonly UpdateCategoryUseCase _sut;
     private readonly UpdateCategoryInput _input = UpdateCategoryFixture.UpdateInput();
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public UpdateCategoryUseCaseTests()
     {
         _categoryCheckRepository = Substitute.For<ICategoryCheckRepository>();
         _categoryWriterRepository = Substitute.For<ICategoryWriterRepository>();
-        _categoryCheckRepository.HasCategoryWithNameAsync(_input.Name).Returns(false);
-        _categoryWriterRepository
-            .UpdateAsync(
-                Arg.Is<Category>(c =>
-                    c.Id == _input.Id
-                    && c.Name == _input.Name
-                    && c.Description == _input.Description
-                )
-            )
-            .Returns(false);
         _sut = new UpdateCategoryUseCase(_categoryWriterRepository, _categoryCheckRepository);
     }
 
@@ -37,24 +28,16 @@ public class UpdateCategoryUseCaseTests : TestCommon
     public async Task Perform_WhenNameIsTaken_ShouldReturnFailureWithProperError()
     {
         //Arrange
-        _categoryCheckRepository
-            .HasCategoryWithNameAsync(
-                name: _input.Name,
-                excludeId: _input.Id,
-                cancellationToken: CancellationToken
-            )
-            .Returns(true);
-
+        MakeHasCategoryWithNameAsyncReturns(true, _input.Id);
         //Act
         Result<bool> result = await _sut.Perform(_input);
-
         //Assert
         await _categoryCheckRepository
             .Received(1)
             .HasCategoryWithNameAsync(
                 name: _input.Name,
                 excludeId: _input.Id,
-                cancellationToken: CancellationToken
+                cancellationToken: _ct
             );
 
         result.IsFailure.ShouldBeTrue();
@@ -65,9 +48,7 @@ public class UpdateCategoryUseCaseTests : TestCommon
     public async Task Perform_WhenCategoryToUpdateIsNotFound_ShouldReturnFailure()
     {
         //Arrange
-        _categoryWriterRepository
-            .UpdateAsync(Arg.Any<Category>(), CancellationToken)
-            .Returns(true);
+        MakeHasCategoryWithNameAsyncReturns(false, _input.Id);
         //Act
         Result<bool> result = await _sut.Perform(_input);
         //Assert
@@ -79,7 +60,7 @@ public class UpdateCategoryUseCaseTests : TestCommon
                     && c.Name == _input.Name
                     && c.Description == _input.Description
                 ),
-                AnyCancellationToken
+                _ct
             );
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(CategoryErrors.NotFound(_input.Id.ToString()));
@@ -102,20 +83,59 @@ public class UpdateCategoryUseCaseTests : TestCommon
         //Assert
         await _categoryCheckRepository
             .DidNotReceive()
-            .HasCategoryWithNameAsync(Arg.Any<string>(), cancellationToken: AnyCancellationToken);
+            .HasCategoryWithNameAsync(Arg.Any<string>(), cancellationToken: _ct);
 
-        await _categoryWriterRepository
-            .DidNotReceive()
-            .UpdateAsync(Arg.Any<Category>(), AnyCancellationToken);
+        await _categoryWriterRepository.DidNotReceive().UpdateAsync(Arg.Any<Category>(), _ct);
     }
 
     [Fact]
     public async Task Perform_WhenCategoryIsValid_ShouldUpdate()
     {
+        //Arrange
+        MakeHasCategoryWithNameAsyncReturns(false, _input.Id);
+        MakeUpdateAsyncReturns(true);
         //Act
         Result<bool> result = await _sut.Perform(_input);
         //Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBeTrue();
+    }
+
+    private void MakeHasCategoryWithNameAsyncReturns(bool returnValue, Guid? excludeId = null)
+    {
+        if (excludeId.HasValue)
+        {
+            _categoryCheckRepository
+                .HasCategoryWithNameAsync(
+                    name: _input.Name,
+                    excludeId: excludeId.Value,
+                    cancellationToken: _ct
+                )
+                .Returns(returnValue);
+        }
+        else
+        {
+            _categoryCheckRepository
+                .HasCategoryWithNameAsync(
+                    name: _input.Name,
+                    excludeId: Arg.Any<Guid?>(),
+                    cancellationToken: _ct
+                )
+                .Returns(returnValue);
+        }
+    }
+
+    private void MakeUpdateAsyncReturns(bool returnValue)
+    {
+        _categoryWriterRepository
+            .UpdateAsync(
+                Arg.Is<Category>(c =>
+                    c.Id == _input.Id
+                    && c.Name == _input.Name
+                    && c.Description == _input.Description
+                ),
+                _ct
+            )
+            .Returns(returnValue);
     }
 }

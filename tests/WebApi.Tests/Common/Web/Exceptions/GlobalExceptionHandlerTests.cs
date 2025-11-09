@@ -20,11 +20,18 @@ public class GlobalExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
     {
         factory.ConfigureTestServicesAction = services =>
         {
+            ServiceDescriptor? descriptor = services.FirstOrDefault(d =>
+                d.ServiceType == typeof(ICreateCategoryUseCase)
+            );
+            if (descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
+
             ICreateCategoryUseCase? mockUseCase = Substitute.For<ICreateCategoryUseCase>();
             mockUseCase
                 .Perform(Arg.Any<CreateCategoryInput>())
                 .Throws(new InvalidOperationException("generic_error"));
-
             services.AddSingleton(mockUseCase);
         };
 

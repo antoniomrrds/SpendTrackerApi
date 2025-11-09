@@ -2,7 +2,6 @@
 using WebApi.Common.Web.Responses.Errors;
 using WebApi.Features.Categories.Common;
 using WebApi.Features.Categories.Create;
-using WebApi.Tests.Features.Categories.Add;
 using WebApi.Tests.Features.Categories.Create;
 using WebApi.Tests.Helpers.Extensions;
 using WebApi.Tests.Helpers.Factories;
@@ -14,7 +13,7 @@ public class GetByIdCategoryTests(SqliteTestWebAppFactory factory)
     : BaseIntegrationTest<SqliteTestWebAppFactory>(factory)
 {
     private CategoryDto? _sut;
-
+    private readonly CancellationToken _ct = CancellationToken.None;
     private static readonly CreateCategoryRequest CreateMockInstance =
         CreateCategoryFixture.ValidRequest();
 
@@ -24,10 +23,10 @@ public class GetByIdCategoryTests(SqliteTestWebAppFactory factory)
         //Arrange
         CategoryDto createdCategory = await HttpClient.AddCategoryAndReturnDto(
             CreateMockInstance,
-            CancellationToken
+            _ct
         );
         //Act
-        _sut = await HttpClient.GetCategoryByIdAndReturnDto(createdCategory.Id, CancellationToken);
+        _sut = await HttpClient.GetCategoryByIdAndReturnDto(createdCategory.Id, _ct);
         //Assert
         _sut.Id.ShouldBe(createdCategory.Id);
         _sut.Name.ShouldBe(createdCategory.Name);
@@ -39,7 +38,7 @@ public class GetByIdCategoryTests(SqliteTestWebAppFactory factory)
     public async Task GetCategoryById_WithIncorrectId_ShouldReturnBadRequest(string invalidGuid)
     {
         Uri requestUri = new($"{CategoriesRoutes.BasePath}/{invalidGuid}", UriKind.Relative);
-        HttpResponseMessage response = await HttpClient.GetAsync(requestUri, CancellationToken);
+        HttpResponseMessage response = await HttpClient.GetAsync(requestUri, _ct);
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         ValidationCustomProblemDetails problemDetails =
@@ -55,10 +54,7 @@ public class GetByIdCategoryTests(SqliteTestWebAppFactory factory)
         //Arrange
         Guid expectedGuid = Faker.Random.Guid();
         //Act
-        HttpResponseMessage response = await HttpClient.GetCategoryById(
-            expectedGuid,
-            CancellationToken
-        );
+        HttpResponseMessage response = await HttpClient.GetCategoryById(expectedGuid, _ct);
         //Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }

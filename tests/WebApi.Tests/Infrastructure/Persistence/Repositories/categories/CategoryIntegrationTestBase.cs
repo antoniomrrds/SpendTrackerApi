@@ -4,6 +4,7 @@ using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 
+// [Collection("IntegrationTests")]
 public abstract class CategoryIntegrationTestBase : BaseSqliteIntegrationTest
 {
     protected CategoryIntegrationTestBase(SqliteInMemoryFixture fixture)

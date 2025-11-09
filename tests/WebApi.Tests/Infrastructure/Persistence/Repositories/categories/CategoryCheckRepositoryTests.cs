@@ -7,6 +7,7 @@ namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 public class CategoryCheckRepositoryTests : CategoryIntegrationTestBase
 {
     private readonly CategoryCheckRepository _sut;
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public CategoryCheckRepositoryTests(SqliteInMemoryFixture fixture)
         : base(fixture)
@@ -20,10 +21,7 @@ public class CategoryCheckRepositoryTests : CategoryIntegrationTestBase
         //Arrange
         await MakeCreateCategoryAsync();
         //Act
-        bool saved = await _sut.HasCategoryWithNameAsync(
-            Category.Name,
-            cancellationToken: CancellationToken
-        );
+        bool saved = await _sut.HasCategoryWithNameAsync(Category.Name, cancellationToken: _ct);
         //Assert
         saved.ShouldBeTrue();
     }
@@ -34,7 +32,7 @@ public class CategoryCheckRepositoryTests : CategoryIntegrationTestBase
         //Act
         bool exists = await _sut.HasCategoryWithNameAsync(
             "NameDoesNotExit",
-            cancellationToken: CancellationToken
+            cancellationToken: _ct
         );
         //Assert
         exists.ShouldBeFalse();
@@ -49,7 +47,7 @@ public class CategoryCheckRepositoryTests : CategoryIntegrationTestBase
         bool exists = await _sut.HasCategoryWithNameAsync(
             Category.Name,
             excludeId: Category.Id,
-            cancellationToken: CancellationToken
+            cancellationToken: _ct
         );
         //Assert
         exists.ShouldBeFalse();

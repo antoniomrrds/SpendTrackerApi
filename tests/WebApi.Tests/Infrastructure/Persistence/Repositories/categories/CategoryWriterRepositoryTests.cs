@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Domain.Categories;
 using WebApi.Infrastructure.Persistence.Repositories;
-using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
@@ -10,6 +9,7 @@ namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
 {
     private readonly CategoryWriterRepository _sut;
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public CategoryWriterRepositoryTests(SqliteInMemoryFixture fixture)
         : base(fixture)
@@ -20,12 +20,12 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
     [Fact]
     public async Task AddAsync_WhenCategoryIsValid_ShouldPersistCategory()
     {
-        await _sut.AddAsync(Category, AnyCancellationToken);
-        await DbContext.SaveChangesAsync(AnyCancellationToken);
+        await _sut.AddAsync(Category, _ct);
+        await DbContext.SaveChangesAsync(_ct);
 
         Category? saved = await DbContext.Categories.FirstOrDefaultAsync(
             c => c.Id == Category.Id,
-            CancellationToken
+            _ct
         );
         saved.ShouldNotBeNull();
         saved.Name.ShouldBe(Category.Name);

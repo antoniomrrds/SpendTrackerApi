@@ -3,7 +3,7 @@ using WebApi.Features.Categories.Common;
 using WebApi.Features.Categories.Create;
 using WebApi.Tests.Helpers.Extensions;
 
-namespace WebApi.Tests.Features.Categories.Add;
+namespace WebApi.Tests.Features.Categories.Create;
 
 internal static class CategoryAddHelper
 {
@@ -28,7 +28,14 @@ internal static class CategoryAddHelper
     )
     {
         HttpResponseMessage response = await client.AddCategory(request, cancellationToken);
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        if (!response.IsSuccessStatusCode)
+        {
+            string errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            throw new HttpRequestException(
+                $"Category creation failed with status {response.StatusCode}. Content: {errorContent}"
+            );
+        }
+
         ApiSuccessResponse<CategoryDto> apiResponse = await response.GetApiResponse<CategoryDto>();
         apiResponse.Payload.ShouldNotBeNull();
         return apiResponse.Payload;
