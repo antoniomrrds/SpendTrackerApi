@@ -1,3 +1,4 @@
+using System.Globalization;
 using WebApi.Domain.Errors;
 using WebApi.Domain.Extensions;
 using WebApi.Domain.Resources;
@@ -39,7 +40,9 @@ internal static class DomainValidation
     {
         return expectedDate > DateTime.Today
             ? throw new DomainException(
-                ValidationMessages.DateIsFuture.FormatInvariant(expectedDate.ToShortDateString())
+                ValidationMessages.DateIsFuture.FormatInvariant(
+                    expectedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                )
             )
             : expectedDate;
     }

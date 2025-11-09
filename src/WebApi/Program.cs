@@ -9,7 +9,6 @@ using GlobalExceptionHandler = WebApi.Common.Web.Exceptions.GlobalExceptionHandl
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
 
 builder.Services.AddInfrastructure(builder.Configuration).AddAllFeatures();
 
@@ -31,6 +30,8 @@ builder
     {
         options.SuppressModelStateInvalidFilter = true;
     });
+
+builder.Services.AddControllers();
 
 WebApplication app = builder.Build();
 
@@ -63,7 +64,4 @@ app.MapControllers();
 
 await app.RunAsync();
 
-namespace WebApi
-{
-    public abstract partial class Program;
-}
+public abstract partial class Program;
