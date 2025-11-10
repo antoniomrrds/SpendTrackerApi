@@ -30,4 +30,13 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
         saved.ShouldNotBeNull();
         saved.Name.ShouldBe(Category.Name);
     }
+
+    [Fact]
+    public async Task UpdateAsync_WhenCategoryDoesNotExist_ShouldReturnFalse()
+    {
+        //Act
+        bool isUpdated = await _sut.UpdateAsync(Category, _ct);
+        //Assert
+        isUpdated.ShouldBeFalse();
+    }
 }
