@@ -1,4 +1,5 @@
-﻿using WebApi.Domain.Categories;
+﻿using Microsoft.EntityFrameworkCore;
+using WebApi.Domain.Categories;
 using WebApi.Features.Categories.Common;
 using WebApi.Infrastructure.Persistence.Data;
 
@@ -13,8 +14,20 @@ public class CategoryWriterRepository(AppDbContext context)
         await Context.Categories.AddAsync(category, cancellationToken);
     }
 
-    public Task<bool> UpdateAsync(Category category, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateAsync(
+        Category category,
+        CancellationToken cancellationToken = default
+    )
     {
-        throw new NotImplementedException();
+        int affectedRows = await Context
+            .Categories.Where(c => c.Id == category.Id)
+            .ExecuteUpdateAsync(
+                setters =>
+                    setters
+                        .SetProperty(c => c.Name, category.Name)
+                        .SetProperty(c => c.Description, category.Description),
+                cancellationToken
+            );
+        return affectedRows > 0;
     }
 }
