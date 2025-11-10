@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NSubstitute.ReturnsExtensions;
 using WebApi.Domain.Categories;
 using WebApi.Infrastructure.Persistence.Repositories;
 using WebApi.Tests.Infrastructure.Helpers;
@@ -20,13 +21,15 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
     [Fact]
     public async Task AddAsync_WhenCategoryIsValid_ShouldPersistCategory()
     {
+        //Arrange
         await _sut.AddAsync(Category, _ct);
         await DbContext.SaveChangesAsync(_ct);
-
+        //Act
         Category? saved = await DbContext.Categories.FirstOrDefaultAsync(
             c => c.Id == Category.Id,
             _ct
         );
+        //Assert
         saved.ShouldNotBeNull();
         saved.Name.ShouldBe(Category.Name);
     }
@@ -38,5 +41,25 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
         bool isUpdated = await _sut.UpdateAsync(Category, _ct);
         //Assert
         isUpdated.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WhenCategoryExists_ShouldReturnTrue()
+    {
+        //Arrange
+        await MakeCreateCategoryAsync();
+        Category updatedCategory = new(Category.Id, "Novo Nome Atualizado", "Nova Descrição");
+        string originalName = Category.Name;
+
+        //Act
+        bool isUpdated = await _sut.UpdateAsync(updatedCategory, _ct);
+        Category categoryFromDb = await DbContext
+            .Categories.AsNoTracking()
+            .FirstAsync(c => c.Id == Category.Id, _ct);
+        //Assert
+        isUpdated.ShouldBeTrue();
+        categoryFromDb.Name.ShouldBe("Novo Nome Atualizado");
+        categoryFromDb.Description.ShouldBe("Nova Descrição");
+        categoryFromDb.Name.ShouldNotBe(originalName);
     }
 }

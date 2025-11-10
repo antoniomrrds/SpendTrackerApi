@@ -4,7 +4,7 @@ using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 
-public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase, IAsyncLifetime
+public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
 {
     private readonly CategoryReaderRepository _sut;
     private readonly CancellationToken _ct = CancellationToken.None;
@@ -13,17 +13,6 @@ public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase, IAsync
         : base(fixture)
     {
         _sut = new CategoryReaderRepository(DbContext);
-    }
-
-    public async ValueTask InitializeAsync()
-    {
-        await ResetDatabaseAsync();
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        GC.SuppressFinalize(this);
-        return ValueTask.CompletedTask;
     }
 
     [Fact]

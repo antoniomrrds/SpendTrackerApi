@@ -4,13 +4,25 @@ using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 
-public abstract class CategoryIntegrationTestBase : BaseSqliteIntegrationTest
+public abstract class CategoryIntegrationTestBase : BaseSqliteIntegrationTest, IAsyncLifetime
 {
     protected CategoryIntegrationTestBase(SqliteInMemoryFixture fixture)
         : base(fixture)
     {
         Category = CategoryFixture.GetCategory(true);
         Categories = CategoryFixture.GetCategories(3, true);
+    }
+
+    public async ValueTask InitializeAsync()
+    {
+        await ResetDatabaseAsync();
+        DbContext.ChangeTracker.Clear();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+        return ValueTask.CompletedTask;
     }
 
     protected Category Category { get; set; }
