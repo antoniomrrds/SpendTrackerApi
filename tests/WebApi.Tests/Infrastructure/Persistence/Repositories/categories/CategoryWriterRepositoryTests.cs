@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using NSubstitute.ReturnsExtensions;
 using WebApi.Domain.Categories;
 using WebApi.Infrastructure.Persistence.Repositories;
 using WebApi.Tests.Infrastructure.Helpers;

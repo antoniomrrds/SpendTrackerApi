@@ -52,7 +52,7 @@ public class GetByIdCategoryTests(SqliteTestWebAppFactory factory)
     public async Task GetCategoryById_WhenCategoryDoesNotExist_ShouldReturnNotFound()
     {
         //Arrange
-        Guid expectedGuid = Faker.Random.Guid();
+        Guid expectedGuid = Guid.NewGuid();
         //Act
         HttpResponseMessage response = await HttpClient.GetCategoryById(expectedGuid, _ct);
         //Assert
