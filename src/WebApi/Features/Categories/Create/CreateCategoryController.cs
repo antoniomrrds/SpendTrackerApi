@@ -41,4 +41,4 @@ public class CreateCategoryController : CategoryBaseController
     }
 }
 
-public record CreateCategoryRequest(string Name, string Description);
+public record CreateCategoryRequest(string Name, string? Description);
