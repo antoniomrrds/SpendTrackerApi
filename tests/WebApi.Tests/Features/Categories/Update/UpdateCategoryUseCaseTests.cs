@@ -1,10 +1,12 @@
 ﻿using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using SharedKernel;
 using TestUtilities.Common;
 using WebApi.Domain.Categories;
 using WebApi.Domain.Errors;
 using WebApi.Features.Categories.Common;
 using WebApi.Features.Categories.Update;
+using WebApi.Tests.Features.Categories.Common;
 
 namespace WebApi.Tests.Features.Categories.Update;
 
@@ -13,15 +15,23 @@ public class UpdateCategoryUseCaseTests : TestCommon
 {
     private readonly ICategoryCheckRepository _categoryCheckRepository;
     private readonly ICategoryWriterRepository _categoryWriterRepository;
+    private readonly ICategoryReaderRepository _categoryReaderRepository;
     private readonly UpdateCategoryUseCase _sut;
     private readonly UpdateCategoryInput _input = UpdateCategoryFixture.UpdateInput();
     private readonly CancellationToken _ct = CancellationToken.None;
+    private readonly CategoryDto _getCategoryDto = CategoryDtoFixture.GetCategoryDto();
 
     public UpdateCategoryUseCaseTests()
     {
         _categoryCheckRepository = Substitute.For<ICategoryCheckRepository>();
         _categoryWriterRepository = Substitute.For<ICategoryWriterRepository>();
-        _sut = new UpdateCategoryUseCase(_categoryWriterRepository, _categoryCheckRepository);
+        _categoryReaderRepository = Substitute.For<ICategoryReaderRepository>();
+
+        _sut = new UpdateCategoryUseCase(
+            _categoryWriterRepository,
+            _categoryCheckRepository,
+            _categoryReaderRepository
+        );
     }
 
     [Fact]
@@ -30,7 +40,7 @@ public class UpdateCategoryUseCaseTests : TestCommon
         //Arrange
         MakeHasCategoryWithNameAsyncReturns(true, _input.Id);
         //Act
-        Result<bool> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input);
         //Assert
         await _categoryCheckRepository
             .Received(1)
@@ -50,7 +60,7 @@ public class UpdateCategoryUseCaseTests : TestCommon
         //Arrange
         MakeHasCategoryWithNameAsyncReturns(false, _input.Id);
         //Act
-        Result<bool> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input);
         //Assert
         await _categoryWriterRepository
             .Received(1)
@@ -89,16 +99,34 @@ public class UpdateCategoryUseCaseTests : TestCommon
     }
 
     [Fact]
-    public async Task Perform_WhenCategoryIsValid_ShouldUpdate()
+    public async Task Perform_WhenCategoryIsValidButNotFound_ShouldReturnFailure()
     {
         //Arrange
         MakeHasCategoryWithNameAsyncReturns(false, _input.Id);
         MakeUpdateAsyncReturns(true);
+        _categoryReaderRepository.GetByIdAsync(_input.Id, _ct).ReturnsNull();
         //Act
-        Result<bool> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input);
+
         //Assert
+        await _categoryReaderRepository.Received(1).GetByIdAsync(_input.Id, _ct);
+        result.IsFailure.ShouldBeTrue();
+        result.Error.ShouldBe(CategoryErrors.NotFound(_input.Id.ToString()));
+    }
+
+    [Fact]
+    public async Task Perform_WhenCategoryIsValid_ShouldUpdateAndReturnDto()
+    {
+        //Arrange
+        MakeHasCategoryWithNameAsyncReturns(false, _input.Id);
+        MakeUpdateAsyncReturns(true);
+        _categoryReaderRepository.GetByIdAsync(_input.Id, _ct).Returns(_getCategoryDto);
+        //Act
+        Result<CategoryDto> result = await _sut.Perform(_input);
+        //Assert
+        await _categoryReaderRepository.Received(1).GetByIdAsync(_input.Id, _ct);
         result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldBeTrue();
+        result.Value.ShouldBe(_getCategoryDto);
     }
 
     private void MakeHasCategoryWithNameAsyncReturns(bool returnValue, Guid? excludeId = null)

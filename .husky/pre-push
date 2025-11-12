@@ -26,5 +26,5 @@ if [ $? -ne 0 ]; then
     echo "❌ Tests failed! Push blocked."
     exit 1
 else
-    echo "✅ All tests passed!"c
+    echo "✅ All tests passed!"
 fi

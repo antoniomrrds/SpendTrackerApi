@@ -1,6 +1,8 @@
 ﻿using WebApi.Common.Web.Constants;
 using WebApi.Common.Web.Responses.Errors;
+using WebApi.Common.Web.Responses.Success;
 using WebApi.Domain.Categories;
+using WebApi.Features.Categories.Common;
 using WebApi.Features.Categories.Update;
 using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Helpers.Extensions;
@@ -110,8 +112,39 @@ public class UpdateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
     }
 
+    [Fact]
+    public async Task PUT_ApiCategories_Update_WhenValidData_ShouldReturn200AndCorrectData()
+    {
+        //Arrange
+        await MakeCreateCategoryAsync();
+        Guid expectedGuid = _category.Id;
+
+        UpdateCategoryRequest request = new()
+        {
+            Name = "Novo Nome Atualizado",
+            Description = "Nova Descrição",
+        };
+        //Act
+        HttpResponseMessage response = await HttpClient.PutAsJsonAsync(
+            CategoriesRoutes.Update(expectedGuid),
+            request,
+            _ct
+        );
+        //Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        ApiSuccessResponse<CategoryDto> apiResponse = await response.GetApiResponse<CategoryDto>();
+        apiResponse.Payload.ShouldNotBeNull();
+        apiResponse.Payload.Name.ShouldBe("Novo Nome Atualizado");
+        apiResponse.Payload.Description.ShouldBe("Nova Descrição");
+    }
+
     private async Task MakeCreateCategoriesAsync()
     {
         await CategorySeeder.AddRangeAsync(DbContext, _categories);
+    }
+
+    private async Task MakeCreateCategoryAsync()
+    {
+        await CategorySeeder.AddAsync(DbContext, _category);
     }
 }
