@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using WebApi.Common.Web.Factories;
 using WebApi.Features.Categories.Common;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace WebApi.Features.Categories.Create;
 

@@ -2,8 +2,8 @@
     <Import Project="..\SrcSharedPackages.props" />
     <ItemGroup>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-        <PackageReference Include="Scalar.AspNetCore" />
+<!--        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />-->
+        <PackageReference Include="Swashbuckle.AspNetCore" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />

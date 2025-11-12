@@ -5,7 +5,10 @@ using WebApi.Tests.Helpers.Abstractions;
 
 namespace WebApi.Tests;
 
-public abstract class BaseIntegrationTest<TFactory> : TestCommon, IClassFixture<TFactory>
+public abstract class BaseIntegrationTest<TFactory>
+    : TestCommon,
+        IAsyncLifetime,
+        IClassFixture<TFactory>
     where TFactory : class, ITestWebAppFactory
 {
     protected HttpClient HttpClient { get; }
@@ -22,5 +25,17 @@ public abstract class BaseIntegrationTest<TFactory> : TestCommon, IClassFixture<
     {
         await DbContext.Database.EnsureDeletedAsync();
         await DbContext.Database.EnsureCreatedAsync();
+    }
+
+    public async ValueTask InitializeAsync()
+    {
+        await ResetDatabaseAsync();
+        DbContext.ChangeTracker.Clear();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+        return ValueTask.CompletedTask;
     }
 }

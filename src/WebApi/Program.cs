@@ -1,6 +1,5 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Scalar.AspNetCore;
 using WebApi.Common.Web.Filters;
 using WebApi.Features;
 using WebApi.Infrastructure;
@@ -8,8 +7,8 @@ using DomainExceptionHandler = WebApi.Common.Web.Exceptions.DomainExceptionHandl
 using GlobalExceptionHandler = WebApi.Common.Web.Exceptions.GlobalExceptionHandler;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-builder.Services.AddOpenApi();
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration).AddAllFeatures();
 
 builder.Services.AddExceptionHandler<DomainExceptionHandler>();
@@ -49,8 +48,8 @@ RequestLocalizationOptions localizationOptions = new()
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseExceptionHandler();

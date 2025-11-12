@@ -4,9 +4,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- API -->
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.9" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.8.4" />
     <!-- EF Core -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9" />
     <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
