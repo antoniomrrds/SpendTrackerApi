@@ -42,7 +42,7 @@ public class UpdateCategoryController : CategoryBaseController
             return BadRequest(ApiResult.ValidationError(HttpContext, validation));
         }
 
-        Result<bool> result = await _useCase.Perform(input);
+        Result<CategoryDto> result = await _useCase.Perform(input);
         return result.IsSuccess
             ? Ok(ApiResult.Success(result.Value))
             : result.Error.Code switch
