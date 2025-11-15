@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Domain.Categories;
+using WebApi.Features.Categories.Delete;
 using WebApi.Infrastructure.Persistence.Repositories;
+using WebApi.Tests.Features.Categories.Delete;
 using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
@@ -60,5 +62,14 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
         categoryFromDb.Name.ShouldBe("Novo Nome Atualizado");
         categoryFromDb.Description.ShouldBe("Nova Descrição");
         categoryFromDb.Name.ShouldNotBe(originalName);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WhenCategoryToDeleteIsNotFound_ShouldReturnFalse()
+    {
+        //Act
+        bool isDeleted = await _sut.DeleteAsync(Category.Id, _ct);
+        //Assert
+        isDeleted.ShouldBeFalse();
     }
 }
