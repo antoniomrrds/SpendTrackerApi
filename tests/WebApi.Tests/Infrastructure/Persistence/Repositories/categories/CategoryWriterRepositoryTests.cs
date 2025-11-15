@@ -72,4 +72,19 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
         //Assert
         isDeleted.ShouldBeFalse();
     }
+
+    [Fact]
+    public async Task DeleteAsync_WhenCategoryExists_ShouldDeleteCategoryAndReturnTrue()
+    {
+        //Arrange
+        await MakeCreateCategoryAsync();
+        //Act
+        bool isDeleted = await _sut.DeleteAsync(Category.Id, _ct);
+        //Assert
+        isDeleted.ShouldBeTrue();
+        Category? categoryFromDb = await DbContext
+            .Categories.AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == Category.Id, _ct);
+        categoryFromDb.ShouldBeNull();
+    }
 }
