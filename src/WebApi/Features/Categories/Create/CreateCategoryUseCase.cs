@@ -26,21 +26,27 @@ internal class CreateCategoryUseCase : ICreateCategoryUseCase
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<CategoryDto>> Perform(CreateCategoryInput input)
+    public async Task<Result<CategoryDto>> Perform(
+        CreateCategoryInput input,
+        CancellationToken cancellationToken = default
+    )
     {
         Category category = new(
             id: Guid.NewGuid(),
             name: input.Name,
             description: input.Description
         );
-        bool categoryAlreadyExists = await _checkRepo.HasCategoryWithNameAsync(input.Name);
+        bool categoryAlreadyExists = await _checkRepo.HasCategoryWithNameAsync(
+            name: input.Name,
+            cancellationToken: cancellationToken
+        );
         if (categoryAlreadyExists)
         {
             return CategoryErrors.NameAlreadyExists;
         }
 
-        await _writerRepo.AddAsync(category);
-        await _unitOfWork.CommitAsync();
+        await _writerRepo.AddAsync(category: category, cancellationToken: cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken: cancellationToken);
 
         return new CategoryDto
         {

@@ -10,10 +10,16 @@ public interface IGetCategoryByIdUseCase
 
 internal class GetCategoryByIdUseCase(ICategoryReaderRepository repo) : IGetCategoryByIdUseCase
 {
-    public async Task<Result<CategoryDto?>> Perform(GetCategoryByIdInput input)
+    public async Task<Result<CategoryDto?>> Perform(
+        GetCategoryByIdInput input,
+        CancellationToken cancellationToken = default
+    )
     {
-        CategoryDto? result = await repo.GetByIdAsync(input.Id);
-        return result is null ? CategoryErrors.NotFound(input.Id.ToString()) : result;
+        CategoryDto? result = await repo.GetByIdAsync(
+            id: input.Id,
+            cancellationToken: cancellationToken
+        );
+        return result is null ? CategoryErrors.NotFound(id: input.Id.ToString()) : result;
     }
 }
 

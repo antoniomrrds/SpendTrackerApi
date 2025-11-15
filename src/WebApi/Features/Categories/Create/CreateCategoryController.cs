@@ -20,7 +20,10 @@ public class CreateCategoryController : CategoryBaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateCategoryRequest request)
+    public async Task<IActionResult> Create(
+        [FromBody] CreateCategoryRequest request,
+        CancellationToken ct
+    )
     {
         CreateCategoryInput input = new()
         {
@@ -28,13 +31,13 @@ public class CreateCategoryController : CategoryBaseController
             Description = request.Description,
         };
 
-        ValidationResult? validation = await _validator.ValidateAsync(input);
+        ValidationResult? validation = await _validator.ValidateAsync(input, ct);
         if (!validation.IsValid)
         {
             return BadRequest(ApiResult.ValidationError(HttpContext, validation));
         }
 
-        Result<CategoryDto> result = await _useCase.Perform(input);
+        Result<CategoryDto> result = await _useCase.Perform(input, ct);
         return result.IsSuccess
             ? Ok(ApiResult.SuccessWithMessage(result.Value, "Categoria criada com sucesso"))
             : Conflict(ApiResult.Conflict(HttpContext, result.Error.Description));

@@ -24,7 +24,7 @@ public class UnitOfWorkTests : BaseSqliteIntegrationTest
     public async Task CommitAsync_WhenCalled_ShouldPersistChanges()
     {
         await DbContext.Categories.AddAsync(_getCategory, _ct);
-        await _sut.CommitAsync();
+        await _sut.CommitAsync(_ct);
         Category? saved = await DbContext.Categories.FirstOrDefaultAsync(
             c => c.Id == _getCategory.Id,
             _ct

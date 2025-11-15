@@ -1,9 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
+
 using TestUtilities.Common;
+
 using WebApi.Infrastructure.Persistence.Data;
 using WebApi.Tests.Helpers.Abstractions;
 
-namespace WebApi.Tests;
+namespace WebApi.Tests.Infrastructure.Helpers;
 
 public abstract class BaseIntegrationTest<TFactory>
     : TestCommon,

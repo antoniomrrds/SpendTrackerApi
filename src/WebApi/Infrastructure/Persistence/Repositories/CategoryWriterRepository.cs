@@ -30,4 +30,9 @@ public class CategoryWriterRepository(AppDbContext context)
             );
         return affectedRows > 0;
     }
+
+    public Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }

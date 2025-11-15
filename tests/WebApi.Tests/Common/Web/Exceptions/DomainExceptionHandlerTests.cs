@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using NSubstitute.ClearExtensions;
-using NSubstitute.ExceptionExtensions;
 using WebApi.Common.Web.Constants;
 using WebApi.Common.Web.Exceptions;
 using WebApi.Domain.Errors;
@@ -13,62 +10,44 @@ using WebApi.Tests.Features.Categories;
 using WebApi.Tests.Features.Categories.Create;
 using WebApi.Tests.Helpers.Extensions;
 using WebApi.Tests.Helpers.Factories;
+using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Common.Web.Exceptions;
 
-public class DomainExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>, IAsyncLifetime
+public class DomainExceptionHandlerTests : BaseExceptionHandlerTest<NoDbTestWebAppFactory>
 {
-    private readonly HttpClient _client;
     private readonly ICreateCategoryUseCase _mockUseCase;
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     private static readonly CreateCategoryRequest CreateMockInstance =
         CreateCategoryFixture.ValidRequest();
 
     public DomainExceptionHandlerTests(NoDbTestWebAppFactory factory)
+        : base(factory)
     {
         _mockUseCase = Substitute.For<ICreateCategoryUseCase>();
-        factory.ConfigureTestServicesAction = services =>
-        {
-            ServiceDescriptor? descriptor = services.FirstOrDefault(d =>
-                d.ServiceType == typeof(ICreateCategoryUseCase)
-            );
-            if (descriptor != null)
-            {
-                services.Remove(descriptor);
-            }
-
-            _mockUseCase
-                .Perform(Arg.Any<CreateCategoryInput>())
-                .Throws(new DomainException("domain_exception_occurred"));
-            services.AddSingleton(_mockUseCase);
-        };
-
-        _client = factory.CreateClient();
     }
 
-    public async ValueTask InitializeAsync() => await Task.CompletedTask;
-
-    public ValueTask DisposeAsync()
+    protected override void ConfigureTestServices()
     {
-        _client?.Dispose();
-        _mockUseCase.ClearSubstitute();
-        GC.SuppressFinalize(this);
-        return ValueTask.CompletedTask;
+        ConfigureMockUseCase(
+            _mockUseCase,
+            _ =>
+            {
+                SetupUseCaseToThrow(_mockUseCase, new DomainException("domain_exception_occurred"));
+            }
+        );
     }
 
     [Fact]
     [Trait("Type", "Integration")]
     public async Task PostCategory_WhenDomainExceptionThrown_ShouldReturn400WithValidationProblemDetails()
     {
-        //Arrange
-        _mockUseCase
-            .Perform(Arg.Any<CreateCategoryInput>())
-            .Throws(new DomainException("domain_exception_occurred"));
         //Act
-        HttpResponseMessage response = await _client.PostAsJsonAsync(
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync(
             CategoriesRoutes.Add,
             CreateMockInstance,
-            CancellationToken.None
+            _ct
         );
         //Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -92,9 +71,11 @@ public class DomainExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>,
 
         DomainExceptionHandler handler = new(problemDetailsService, logger);
 
-        bool result = await handler.TryHandleAsync(httpContext, exception, CancellationToken.None);
+        bool result = await handler.TryHandleAsync(httpContext, exception, _ct);
 
         result.ShouldBeFalse();
-        await problemDetailsService.DidNotReceive().TryWriteAsync(Arg.Any<ProblemDetailsContext>());
+        await problemDetailsService
+            .DidNotReceive()
+            .TryWriteAsync(AnyParameterForMock<ProblemDetailsContext>());
     }
 }

@@ -5,10 +5,11 @@ using WebApi.Features.Categories.Create;
 using WebApi.Tests.Features.Categories.Create;
 using WebApi.Tests.Helpers.Extensions;
 using WebApi.Tests.Helpers.Factories;
+using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Features.Categories.GetById;
 
-[Trait("Type", "E2E")]
+[Trait("Type", "Integration")]
 public class GetByIdCategoryTests(SqliteTestWebAppFactory factory)
     : BaseIntegrationTest<SqliteTestWebAppFactory>(factory)
 {

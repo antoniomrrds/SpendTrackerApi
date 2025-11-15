@@ -18,8 +18,8 @@ public class UpdateCategoryUseCaseTests : TestCommon
     private readonly ICategoryReaderRepository _categoryReaderRepository;
     private readonly UpdateCategoryUseCase _sut;
     private readonly UpdateCategoryInput _input = UpdateCategoryFixture.UpdateInput();
-    private readonly CancellationToken _ct = CancellationToken.None;
     private readonly CategoryDto _getCategoryDto = CategoryDtoFixture.GetCategoryDto();
+    private readonly CancellationToken _ct = CancellationToken.None;
 
     public UpdateCategoryUseCaseTests()
     {
@@ -40,15 +40,11 @@ public class UpdateCategoryUseCaseTests : TestCommon
         //Arrange
         MakeHasCategoryWithNameAsyncReturns(true, _input.Id);
         //Act
-        Result<CategoryDto> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input, _ct);
         //Assert
         await _categoryCheckRepository
             .Received(1)
-            .HasCategoryWithNameAsync(
-                name: _input.Name,
-                excludeId: _input.Id,
-                cancellationToken: _ct
-            );
+            .HasCategoryWithNameAsync(name: _input.Name, excludeId: _input.Id, _ct);
 
         result.IsFailure.ShouldBeTrue();
         result.Error.ShouldBe(CategoryErrors.NameAlreadyExists);
@@ -60,7 +56,7 @@ public class UpdateCategoryUseCaseTests : TestCommon
         //Arrange
         MakeHasCategoryWithNameAsyncReturns(false, _input.Id);
         //Act
-        Result<CategoryDto> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input, _ct);
         //Assert
         await _categoryWriterRepository
             .Received(1)
@@ -89,7 +85,7 @@ public class UpdateCategoryUseCaseTests : TestCommon
             Description = _input.Description,
         };
         //Act
-        await Should.ThrowAsync<DomainException>(() => _sut.Perform(inputWithInvalidName));
+        await Should.ThrowAsync<DomainException>(() => _sut.Perform(inputWithInvalidName, _ct));
         //Assert
         await _categoryCheckRepository
             .DidNotReceive()
@@ -106,7 +102,7 @@ public class UpdateCategoryUseCaseTests : TestCommon
         MakeUpdateAsyncReturns(true);
         _categoryReaderRepository.GetByIdAsync(_input.Id, _ct).ReturnsNull();
         //Act
-        Result<CategoryDto> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input, _ct);
 
         //Assert
         await _categoryReaderRepository.Received(1).GetByIdAsync(_input.Id, _ct);
@@ -122,7 +118,7 @@ public class UpdateCategoryUseCaseTests : TestCommon
         MakeUpdateAsyncReturns(true);
         _categoryReaderRepository.GetByIdAsync(_input.Id, _ct).Returns(_getCategoryDto);
         //Act
-        Result<CategoryDto> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input, _ct);
         //Assert
         await _categoryReaderRepository.Received(1).GetByIdAsync(_input.Id, _ct);
         result.IsSuccess.ShouldBeTrue();

@@ -1,53 +1,49 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using WebApi.Features.Categories.Create;
 using WebApi.Tests.Features.Categories;
 using WebApi.Tests.Features.Categories.Create;
 using WebApi.Tests.Helpers.Extensions;
 using WebApi.Tests.Helpers.Factories;
+using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Common.Web.Exceptions;
 
-public class GlobalExceptionHandlerTests : IClassFixture<NoDbTestWebAppFactory>
+public class GlobalExceptionHandlerTests : BaseExceptionHandlerTest<NoDbTestWebAppFactory>
 {
-    private readonly HttpClient _client;
     private static readonly CreateCategoryRequest CreateMockInstance =
         CreateCategoryFixture.ValidRequest();
+    private readonly CancellationToken _ct = CancellationToken.None;
+    private readonly ICreateCategoryUseCase _mockUseCase;
 
     public GlobalExceptionHandlerTests(NoDbTestWebAppFactory factory)
+        : base(factory)
     {
-        factory.ConfigureTestServicesAction = services =>
-        {
-            ServiceDescriptor? descriptor = services.FirstOrDefault(d =>
-                d.ServiceType == typeof(ICreateCategoryUseCase)
-            );
-            if (descriptor != null)
+        _mockUseCase = Substitute.For<ICreateCategoryUseCase>();
+    }
+
+    protected override void ConfigureTestServices()
+    {
+        ConfigureMockUseCase(
+            _mockUseCase,
+            _ =>
             {
-                services.Remove(descriptor);
+                SetupUseCaseToThrow(_mockUseCase, new InvalidOperationException("generic_error"));
             }
-
-            ICreateCategoryUseCase? mockUseCase = Substitute.For<ICreateCategoryUseCase>();
-            mockUseCase
-                .Perform(Arg.Any<CreateCategoryInput>())
-                .Throws(new InvalidOperationException("generic_error"));
-            services.AddSingleton(mockUseCase);
-        };
-
-        _client = factory.CreateClient();
+        );
     }
 
     [Fact]
     [Trait("Type", "Integration")]
     public async Task PostCategory_WhenUnhandledExceptionThrown_ShouldReturn500WithProblemDetails()
     {
-        HttpResponseMessage response = await _client.PostAsJsonAsync(
+        //Act
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync(
             CategoriesRoutes.Add,
             CreateMockInstance,
-            cancellationToken: TestContext.Current.CancellationToken
+            cancellationToken: _ct
         );
-
+        //Assert
         response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
 
         ProblemDetails problem = await response.GetErrorResponse<ProblemDetails>();

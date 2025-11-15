@@ -1,18 +1,17 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using WebApi.Common.Web.Exceptions;
 using WebApi.Common.Web.Filters;
 using WebApi.Features;
 using WebApi.Infrastructure;
-using DomainExceptionHandler = WebApi.Common.Web.Exceptions.DomainExceptionHandler;
-using GlobalExceptionHandler = WebApi.Common.Web.Exceptions.GlobalExceptionHandler;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Services.AddExceptionHandler<DomainExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration).AddAllFeatures();
 
-builder.Services.AddExceptionHandler<DomainExceptionHandler>();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddScoped<ModelBindingEnvelopeFilter>();
 
 builder.Services.AddProblemDetails(configure =>
@@ -52,15 +51,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler();
-
 app.UseHttpsRedirection();
 app.UseRequestLocalization(localizationOptions);
 
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseExceptionHandler();
 
 await app.RunAsync();
 
-public abstract partial class Program;
+namespace WebApi
+{
+    public abstract partial class Program;
+}

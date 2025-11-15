@@ -32,7 +32,7 @@ public class GetCategoryByIdUseCaseTests : TestCommon
         //Arrange
         MakeGetByIdAsyncReturns(null);
         //Act
-        Result<CategoryDto?> result = await _sut.Perform(_input);
+        Result<CategoryDto?> result = await _sut.Perform(_input, cancellationToken: _ct);
         //Assert
         await _categoryRepositoriesMock.Received(1).GetByIdAsync(_expectedCategory.Id, _ct);
         result.IsFailure.ShouldBeTrue();
@@ -45,7 +45,7 @@ public class GetCategoryByIdUseCaseTests : TestCommon
         //Arrange
         MakeGetByIdAsyncReturns(_categoryDto);
         //Act
-        Result<CategoryDto?> result = await _sut.Perform(_input);
+        Result<CategoryDto?> result = await _sut.Perform(_input, cancellationToken: _ct);
         //Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe(_categoryDto);

@@ -4,6 +4,7 @@ using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 
+[Trait("Type", "Integration")]
 public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
 {
     private readonly CategoryReaderRepository _sut;

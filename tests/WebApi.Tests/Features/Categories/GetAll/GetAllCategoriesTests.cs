@@ -2,11 +2,12 @@
 using WebApi.Features.Categories.Common;
 using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Helpers.Factories;
+using WebApi.Tests.Infrastructure.Helpers;
 using WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 
 namespace WebApi.Tests.Features.Categories.GetAll;
 
-[Trait("Type", "E2E")]
+[Trait("Type", "Integration")]
 public class GetAllCategoriesTests : BaseIntegrationTest<SqliteTestWebAppFactory>
 {
     private readonly List<Category> _categories;

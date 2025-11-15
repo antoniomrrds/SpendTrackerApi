@@ -38,7 +38,7 @@ public class CreateCategoryUseCaseTests : TestCommon
         //Arrange
         MakeHasCategoryWithNameAsyncReturns(false);
         //Act
-        Result<CategoryDto> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input, cancellationToken: _ct);
         //Assert
         await _categoryCheckRepository
             .Received(1)
@@ -57,7 +57,7 @@ public class CreateCategoryUseCaseTests : TestCommon
         //Arrange
         MakeHasCategoryWithNameAsyncReturns(true);
         //Act
-        Result<CategoryDto> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input, cancellationToken: _ct);
         //Assert
         await _categoryCheckRepository
             .Received(1)
@@ -74,7 +74,7 @@ public class CreateCategoryUseCaseTests : TestCommon
         string name = $"  {_input.Name}  ";
         CreateCategoryInput input = new() { Name = name, Description = _input.Description };
         //Act
-        Result<CategoryDto> result = await _sut.Perform(input);
+        Result<CategoryDto> result = await _sut.Perform(input, cancellationToken: _ct);
         string expectedName = input.Name.Trim();
         //Assert
         result.IsSuccess.ShouldBeTrue();
@@ -96,13 +96,13 @@ public class CreateCategoryUseCaseTests : TestCommon
         //Arrange
         MakeHasCategoryWithNameAsyncReturns(false);
         //Act
-        Result<CategoryDto> result = await _sut.Perform(_input);
+        Result<CategoryDto> result = await _sut.Perform(_input, cancellationToken: _ct);
         //Assert
         await _categoryCheckRepository
             .Received(1)
             .HasCategoryWithNameAsync(_input.Name, Arg.Any<Guid?>(), _ct);
         result.IsSuccess.ShouldBeTrue();
-        await _unitOfWorkMock.Received(1).CommitAsync();
+        await _unitOfWorkMock.Received(1).CommitAsync(cancellationToken: _ct);
     }
 
     [Theory]
@@ -118,7 +118,9 @@ public class CreateCategoryUseCaseTests : TestCommon
             Description = _input.Description,
         };
         //Act
-        await Should.ThrowAsync<DomainException>(() => _sut.Perform(inputWithInvalidName));
+        await Should.ThrowAsync<DomainException>(() =>
+            _sut.Perform(inputWithInvalidName, cancellationToken: _ct)
+        );
         //Assert
         await _categoryCheckRepository
             .DidNotReceive()
@@ -126,7 +128,7 @@ public class CreateCategoryUseCaseTests : TestCommon
 
         await _categoryWriterRepository.DidNotReceive().AddAsync(Arg.Any<Category>(), _ct);
 
-        await _unitOfWorkMock.DidNotReceive().CommitAsync();
+        await _unitOfWorkMock.DidNotReceive().CommitAsync(cancellationToken: _ct);
     }
 
     private void MakeHasCategoryWithNameAsyncReturns(bool returnValue)

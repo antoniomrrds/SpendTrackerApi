@@ -28,7 +28,7 @@ public class GetAllCategoriesUseCaseTests : TestCommon
         //Arrange
         MakeGetAllAsyncReturns(_emptyCategory);
         //Act
-        IEnumerable<CategoryDto> result = await _sut.Perform();
+        IEnumerable<CategoryDto> result = await _sut.Perform(cancellationToken: _ct);
         //Assert
         await _categoryRepositoriesMock.Received(1).GetAllAsync(_ct);
         result.ShouldBe(_emptyCategory);
@@ -40,7 +40,7 @@ public class GetAllCategoriesUseCaseTests : TestCommon
         //Arrange
         MakeGetAllAsyncReturns(_getCategoriesDto);
         //Act
-        IReadOnlyList<CategoryDto> result = await _sut.Perform();
+        IReadOnlyList<CategoryDto> result = await _sut.Perform(cancellationToken: _ct);
         //Assert
         await _categoryRepositoriesMock.Received(1).GetAllAsync(_ct);
         result.Select(x => x.Id).ShouldBe(_getCategoriesDto.Select(x => x.Id));

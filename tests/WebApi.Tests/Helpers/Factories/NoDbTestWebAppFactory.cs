@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using WebApi.Tests.Helpers.Abstractions;
 
 namespace WebApi.Tests.Helpers.Factories;
 
-public class NoDbTestWebAppFactory : WebApplicationFactory<Program>
+public class NoDbTestWebAppFactory : WebApplicationFactory<Program>, IExceptionTestWebAppFactory
 {
     public Action<IServiceCollection>? ConfigureTestServicesAction { get; set; }
 
@@ -16,5 +17,10 @@ public class NoDbTestWebAppFactory : WebApplicationFactory<Program>
         });
 
         builder.UseEnvironment("Development");
+    }
+
+    public void ConfigureTestServices(Action<IServiceCollection> configureAction)
+    {
+        ConfigureTestServicesAction = configureAction;
     }
 }

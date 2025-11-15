@@ -11,8 +11,8 @@ internal class UnitOfWork : IUnitOfWork
         _context = context;
     }
 
-    public async Task CommitAsync()
+    public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

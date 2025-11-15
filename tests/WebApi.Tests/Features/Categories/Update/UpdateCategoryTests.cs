@@ -7,11 +7,12 @@ using WebApi.Features.Categories.Update;
 using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Helpers.Extensions;
 using WebApi.Tests.Helpers.Factories;
+using WebApi.Tests.Infrastructure.Helpers;
 using WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 
 namespace WebApi.Tests.Features.Categories.Update;
 
-[Trait("Type", "E2E")]
+[Trait("Type", "Integration")]
 public class UpdateCategoryTests : BaseIntegrationTest<SqliteTestWebAppFactory>
 {
     private readonly Category _category;

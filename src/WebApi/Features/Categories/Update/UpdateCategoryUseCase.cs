@@ -28,13 +28,17 @@ internal class UpdateCategoryUseCase : IUpdateCategoryUseCase
         _readerRepository = readerRepository;
     }
 
-    public async Task<Result<CategoryDto>> Perform(UpdateCategoryInput input)
+    public async Task<Result<CategoryDto>> Perform(
+        UpdateCategoryInput input,
+        CancellationToken cancellationToken = default
+    )
     {
         Category category = new(id: input.Id, name: input.Name, description: input.Description);
 
         bool nameAlreadyTaken = await _checkRepository.HasCategoryWithNameAsync(
             category.Name,
-            excludeId: category.Id
+            excludeId: category.Id,
+            cancellationToken
         );
 
         if (nameAlreadyTaken)
@@ -42,13 +46,16 @@ internal class UpdateCategoryUseCase : IUpdateCategoryUseCase
             return CategoryErrors.NameAlreadyExists;
         }
 
-        bool isUpdated = await _writerRepository.UpdateAsync(category);
+        bool isUpdated = await _writerRepository.UpdateAsync(category, cancellationToken);
         if (!isUpdated)
         {
             return CategoryErrors.NotFound(category.Id.ToString());
         }
 
-        CategoryDto? updated = await _readerRepository.GetByIdAsync(category.Id);
+        CategoryDto? updated = await _readerRepository.GetByIdAsync(
+            id: category.Id,
+            cancellationToken
+        );
         return updated is null ? CategoryErrors.NotFound(category.Id.ToString()) : updated;
     }
 }
