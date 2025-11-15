@@ -31,6 +31,6 @@ internal class DeleteCategoryUseCase : IDeleteCategoryUseCase
             return CategoryErrors.NotFound(input.Id.ToString());
         }
 
-        return true;
+        return isDeleted;
     }
 }

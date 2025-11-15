@@ -31,8 +31,12 @@ public class CategoryWriterRepository(AppDbContext context)
         return affectedRows > 0;
     }
 
-    public Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        int affectedRows = await Context
+            .Categories.Where(c => c.Id == id)
+            .ExecuteDeleteAsync(cancellationToken: cancellationToken);
+
+        return affectedRows > 0;
     }
 }
