@@ -36,6 +36,15 @@ public class DeleteCategoryUseCaseTests
         result.Error.ShouldBe(CategoryErrors.NotFound(_input.Id.ToString()));
     }
 
+    [Fact]
+    public async Task Perform_WhenCategoryExists_ShouldDeleteCategory()
+    {
+        MakeDeleteAsyncReturns();
+        Result<bool> result = await _sut.Perform(input: _input, cancellationToken: _ct);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldBeTrue();
+    }
+
     private void MakeDeleteAsyncReturns(bool returnValue = true)
     {
         _categoryWriterRepository
