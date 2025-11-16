@@ -1,5 +1,6 @@
 using FluentValidation;
 using WebApi.Features.Categories.Create;
+using WebApi.Features.Categories.Delete;
 using WebApi.Features.Categories.GetAll;
 using WebApi.Features.Categories.GetById;
 using WebApi.Features.Categories.Update;
@@ -14,6 +15,7 @@ public static class DependencyInjection
 
         services.AddScoped<ICreateCategoryUseCase, CreateCategoryUseCase>();
         services.AddScoped<IGetCategoryByIdUseCase, GetCategoryByIdUseCase>();
+        services.AddScoped<IDeleteCategoryUseCase, DeleteCategoryUseCase>();
         services.AddScoped<IUpdateCategoryUseCase, UpdateCategoryUseCase>();
         services.AddScoped<IGetAllCategoriesUseCase, GetAllCategoriesUseCase>();
 
