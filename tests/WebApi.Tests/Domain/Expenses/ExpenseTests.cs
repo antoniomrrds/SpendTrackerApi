@@ -6,26 +6,10 @@ using WebApi.Domain.Resources;
 
 namespace WebApi.Tests.Domain.Expenses;
 
-internal static class ExpenseMock
-{
-    public static Expense CreateFakeExpense()
-    {
-        Faker<Expense> faker = new("pt_BR");
-        return faker
-            .CustomInstantiator(f => new Expense(
-                description: f.Commerce.ProductName(),
-                amount: f.Finance.Amount(10, 5000),
-                date: f.Date.Past(30),
-                idCategory: f.Random.Guid()
-            ))
-            .Generate();
-    }
-}
-
 [Trait("Type", "Unit")]
 public class ExpenseTests
 {
-    private static readonly Expense ExpenseMockInstance = ExpenseMock.CreateFakeExpense();
+    private static readonly Expense ExpenseMockInstance = ExpenseFixture.GetExpense();
 
     private readonly Expense _expenseCorrectlyValues = new(
         ExpenseMockInstance.Description,
