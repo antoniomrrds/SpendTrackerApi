@@ -24,4 +24,9 @@ public class CategoryCheckRepository(AppDbContext context)
 
         return await query.AnyAsync(cancellationToken);
     }
+
+    public Task<bool> CategoryExists(Guid categoryId, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }

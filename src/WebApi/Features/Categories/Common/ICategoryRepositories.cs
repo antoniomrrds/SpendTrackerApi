@@ -22,4 +22,6 @@ public interface ICategoryCheckRepository
         Guid? excludeId = null,
         CancellationToken cancellationToken = default
     );
+
+    Task<bool> CategoryExists(Guid categoryId, CancellationToken cancellationToken);
 }
