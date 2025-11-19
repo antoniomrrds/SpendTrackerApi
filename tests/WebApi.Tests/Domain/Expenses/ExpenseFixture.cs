@@ -17,6 +17,7 @@ internal static class ExpenseFixture
         int seed = useNewSeed ? SecureSeedGenerator.GetSecureSeed() : 0;
         return Faker
             .CustomInstantiator(f => new Expense(
+                id: f.Random.Guid(),
                 description: f.Commerce.ProductName(),
                 amount: f.Finance.Amount(10, 5000),
                 date: f.Date.Past(30),

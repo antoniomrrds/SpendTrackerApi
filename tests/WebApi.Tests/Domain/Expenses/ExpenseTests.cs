@@ -12,6 +12,7 @@ public class ExpenseTests
     private static readonly Expense ExpenseMockInstance = ExpenseFixture.GetExpense();
 
     private readonly Expense _expenseCorrectlyValues = new(
+        ExpenseMockInstance.Id,
         ExpenseMockInstance.Description,
         ExpenseMockInstance.Amount,
         ExpenseMockInstance.Date,
@@ -37,6 +38,7 @@ public class ExpenseTests
         string expectedMessage = ValidationMessages.GreaterThan.FormatInvariant("Amount", minValue);
         Action callGreaterThan0 = () =>
             _ = new Expense(
+                ExpenseMockInstance.Id,
                 ExpenseMockInstance.Description,
                 expectedIncorrectValue,
                 ExpenseMockInstance.Date,
@@ -67,7 +69,8 @@ public class ExpenseTests
         string expectedMessage = ValidationMessages.RequiredField.FormatInvariant("Description");
         Action callIsEmptyOrNull = () =>
             _ = new Expense(
-                invalidValues!,
+                ExpenseMockInstance.Id,
+                description: invalidValues!,
                 ExpenseMockInstance.Amount,
                 ExpenseMockInstance.Date,
                 ExpenseMockInstance.IdCategory
@@ -97,6 +100,7 @@ public class ExpenseTests
     {
         DateTime expectedDate = DateTime.Today.AddDays(daysOffset);
         Expense expense = new(
+            ExpenseMockInstance.Id,
             ExpenseMockInstance.Description,
             ExpenseMockInstance.Amount,
             expectedDate,
@@ -117,9 +121,10 @@ public class ExpenseTests
 
         Action callDateIsFuture = () =>
             _ = new Expense(
+                ExpenseMockInstance.Id,
                 ExpenseMockInstance.Description,
                 ExpenseMockInstance.Amount,
-                futureDate,
+                date: futureDate,
                 ExpenseMockInstance.IdCategory
             );
         callDateIsFuture.ShouldThrowWithMessage<DomainException>(expectedMessage);
