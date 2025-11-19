@@ -1,5 +1,3 @@
-using System.Globalization;
-using Microsoft.AspNetCore.Localization;
 using WebApi.Common.Web.Exceptions;
 using WebApi.Common.Web.Filters;
 using WebApi.Features;
@@ -33,18 +31,6 @@ builder.Services.AddControllers();
 
 WebApplication app = builder.Build();
 
-CultureInfo cultureInfo = new("pt-BR");
-
-CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-RequestLocalizationOptions localizationOptions = new()
-{
-    DefaultRequestCulture = new RequestCulture(cultureInfo),
-    SupportedCultures = [cultureInfo],
-    SupportedUICultures = [cultureInfo],
-};
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -52,7 +38,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseRequestLocalization(localizationOptions);
 
 app.UseAuthorization();
 
@@ -63,5 +48,5 @@ await app.RunAsync();
 
 namespace WebApi
 {
-    public abstract partial class Program;
+    public abstract class Program;
 }

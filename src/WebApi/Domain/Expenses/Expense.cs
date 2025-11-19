@@ -4,15 +4,15 @@ namespace WebApi.Domain.Expenses;
 
 public sealed class Expense
 {
-    public Guid Id { get; private set; }
+    public Guid Id { get; init; }
     public string Description { get; private set; } = string.Empty;
     public decimal Amount { get; private set; }
     public DateTime Date { get; private set; }
     public Guid IdCategory { get; private set; }
 
-    public Expense(string description, decimal amount, DateTime date, Guid idCategory)
+    public Expense(Guid id, string description, decimal amount, DateTime date, Guid idCategory)
     {
-        Id = Guid.NewGuid();
+        Id = id;
         Description = ValidateDescription(description);
         Amount = ValidateAmount(amount);
         Date = ValidateDate(date);
