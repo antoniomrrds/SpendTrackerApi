@@ -1,4 +1,5 @@
 ﻿using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using SharedKernel;
 using SharedKernel.Abstractions.Data;
 using TestUtilities.Common;
@@ -54,6 +55,7 @@ public class CreateExpenseUseCaseTests : TestCommon
     {
         //Arrange
         MakeCategoryExistsAsyncReturns();
+        MakeGetByIdAsyncReturns();
         //Act
         var result = await PerformUseCase();
         //Assert
@@ -66,6 +68,8 @@ public class CreateExpenseUseCaseTests : TestCommon
     {
         //Arrange
         MakeCategoryExistsAsyncReturns();
+        MakeGetByIdAsyncReturns();
+
         //Act
         var result = await PerformUseCase();
         //Assert
@@ -79,7 +83,7 @@ public class CreateExpenseUseCaseTests : TestCommon
     {
         //Arrange
         MakeCategoryExistsAsyncReturns();
-        _expenseReaderRepo.GetByIdAsync(AnyParameterForMock<Guid>(), Ct).Returns(_getExpenseDto);
+        MakeGetByIdAsyncReturns();
         //Act
         var result = await PerformUseCase();
         //Assert
@@ -87,6 +91,26 @@ public class CreateExpenseUseCaseTests : TestCommon
         await _expenseReaderRepo.Received(1).GetByIdAsync(AnyParameterForMock<Guid>(), Ct);
         result.Value.Id.ShouldBe(_getExpenseDto.Id);
         result.Value.CategoryId.ShouldBe(_getExpenseDto.CategoryId);
+    }
+
+    [Fact]
+    public async Task Perform_WhenExpenseIsPersistedButNotFound_ShouldReturnFailure()
+    {
+        //Arrange
+        MakeCategoryExistsAsyncReturns();
+        Guid? capturedExpenseId = null;
+        _expenseReaderRepo
+            .GetByIdAsync(Arg.Do<Guid>(id => capturedExpenseId = id), Ct)
+            .ReturnsNull();
+
+        //Act
+        var result = await PerformUseCase();
+        //Assert
+        result.IsFailure.ShouldBeTrue();
+        await _expenseReaderRepo.Received(1).GetByIdAsync(AnyParameterForMock<Guid>(), Ct);
+        result.IsFailure.ShouldBeTrue();
+        capturedExpenseId.ShouldNotBeNull();
+        result.Error.ShouldBe(ExpenseErrors.NotFound(capturedExpenseId.Value));
     }
 
     private async Task<Result<ExpenseDto>> PerformUseCase()
@@ -97,5 +121,10 @@ public class CreateExpenseUseCaseTests : TestCommon
     private void MakeCategoryExistsAsyncReturns(bool returnValue = true)
     {
         _categoryCheckRepo.CategoryExistsAsync(_input.IdCategory, Ct).Returns(returnValue);
+    }
+
+    private void MakeGetByIdAsyncReturns()
+    {
+        _expenseReaderRepo.GetByIdAsync(AnyParameterForMock<Guid>(), Ct).Returns(_getExpenseDto);
     }
 }
