@@ -23,5 +23,5 @@ public interface ICategoryCheckRepository
         CancellationToken cancellationToken = default
     );
 
-    Task<bool> CategoryExists(Guid categoryId, CancellationToken cancellationToken);
+    Task<bool> CategoryExistsAsync(Guid categoryId, CancellationToken cancellationToken);
 }

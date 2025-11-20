@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using SharedKernel.Abstractions;
+using SharedKernel.Abstractions.Data;
 using WebApi.Domain.Categories;
 using WebApi.Domain.Expenses;
 using WebApi.Features.Categories.Common;
@@ -34,14 +35,17 @@ internal class CreateExpenseUseCase : ICreateExpenseUseCase
 {
     private readonly ICategoryCheckRepository _categoryCheckRepo;
     private readonly IExpenseWriterRepository _expenseWriterRepo;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateExpenseUseCase(
         ICategoryCheckRepository categoryCheckRepo,
-        IExpenseWriterRepository expenseWriterRepo
+        IExpenseWriterRepository expenseWriterRepo,
+        IUnitOfWork unitOfWork
     )
     {
         _categoryCheckRepo = categoryCheckRepo;
         _expenseWriterRepo = expenseWriterRepo;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<bool>> Perform(
@@ -57,7 +61,7 @@ internal class CreateExpenseUseCase : ICreateExpenseUseCase
             idCategory: input.IdCategory
         );
 
-        bool categoryExists = await _categoryCheckRepo.CategoryExists(
+        bool categoryExists = await _categoryCheckRepo.CategoryExistsAsync(
             input.IdCategory,
             cancellationToken
         );
@@ -67,7 +71,7 @@ internal class CreateExpenseUseCase : ICreateExpenseUseCase
         }
 
         await _expenseWriterRepo.AddAsync(expense, cancellationToken);
-
+        await _unitOfWork.CommitAsync(cancellationToken);
         return true;
     }
 }
