@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Domain.Categories;
-using WebApi.Features.Categories.Delete;
 using WebApi.Infrastructure.Persistence.Repositories;
-using WebApi.Tests.Features.Categories.Delete;
 using WebApi.Tests.Infrastructure.Helpers;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
