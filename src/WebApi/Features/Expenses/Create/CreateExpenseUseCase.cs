@@ -65,6 +65,6 @@ internal class CreateExpenseUseCase : ICreateExpenseUseCase
             id: expense.Id,
             cancellationToken
         );
-        return created;
+        return created is null ? ExpenseErrors.NotFound(expense.Id) : created;
     }
 }

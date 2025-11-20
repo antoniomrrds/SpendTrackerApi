@@ -43,16 +43,17 @@ public class UpdateCategoryController : CategoryBaseController
         }
 
         Result<CategoryDto> result = await _useCase.Perform(input);
-        return result.IsSuccess
-            ? Ok(ApiResult.Success(result.Value))
-            : result.Error.Code switch
-            {
-                CategoryErrorCodes.NameAlreadyExists => Conflict(
-                    ApiResult.Conflict(HttpContext, result.Error.Description)
-                ),
-                _ => NotFound(ApiResult.NotFound(HttpContext, result.Error.Description)),
-            };
+        return result.IsSuccess ? Ok(ApiResult.Success(result.Value)) : ToErrorResponse(result);
     }
+
+    private IActionResult ToErrorResponse(Result result) =>
+        result.Error.Code switch
+        {
+            CategoryErrorCodes.NameAlreadyExists => Conflict(
+                ApiResult.Conflict(HttpContext, result.Error.Description)
+            ),
+            _ => NotFound(ApiResult.NotFound(HttpContext, result.Error.Description)),
+        };
 }
 
 public record UpdateCategoryRequest
