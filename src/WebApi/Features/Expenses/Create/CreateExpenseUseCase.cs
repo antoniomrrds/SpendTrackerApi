@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using SharedKernel.Abstractions;
+﻿using SharedKernel.Abstractions;
 using SharedKernel.Abstractions.Data;
 using WebApi.Domain.Categories;
 using WebApi.Domain.Expenses;
@@ -8,7 +7,7 @@ using WebApi.Features.Expenses.Common;
 
 namespace WebApi.Features.Expenses.Create;
 
-public interface ICreateExpenseUseCase : IUseCase<CreateExpenseInput, Task<Result<bool>>>;
+public interface ICreateExpenseUseCase : IUseCase<CreateExpenseInput, Task<Result<ExpenseDto>>>;
 
 public record CreateExpenseInput
 {
@@ -18,37 +17,27 @@ public record CreateExpenseInput
     public Guid IdCategory { get; init; }
 }
 
-internal record ExpenseResponse
-{
-    public Guid Id { get; init; }
-    public string Description { get; init; } = string.Empty;
-    public DateTime Date { get; init; }
-    public string DateFormatted =>
-        Date.ToString("dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-    public decimal Amount { get; init; }
-    public Guid CategoryId { get; init; }
-    public string CategoryName { get; init; } = string.Empty;
-    public string FormattedValue => Amount.ToString("C", CultureInfo.InvariantCulture);
-}
-
 internal class CreateExpenseUseCase : ICreateExpenseUseCase
 {
     private readonly ICategoryCheckRepository _categoryCheckRepo;
     private readonly IExpenseWriterRepository _expenseWriterRepo;
+    private readonly IExpenseReaderRepository _expenseReaderRepo;
     private readonly IUnitOfWork _unitOfWork;
 
     public CreateExpenseUseCase(
         ICategoryCheckRepository categoryCheckRepo,
         IExpenseWriterRepository expenseWriterRepo,
-        IUnitOfWork unitOfWork
+        IUnitOfWork unitOfWork,
+        IExpenseReaderRepository expenseReaderRepo
     )
     {
         _categoryCheckRepo = categoryCheckRepo;
         _expenseWriterRepo = expenseWriterRepo;
         _unitOfWork = unitOfWork;
+        _expenseReaderRepo = expenseReaderRepo;
     }
 
-    public async Task<Result<bool>> Perform(
+    public async Task<Result<ExpenseDto>> Perform(
         CreateExpenseInput input,
         CancellationToken cancellationToken = default
     )
@@ -72,6 +61,10 @@ internal class CreateExpenseUseCase : ICreateExpenseUseCase
 
         await _expenseWriterRepo.AddAsync(expense, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
-        return true;
+        ExpenseDto? created = await _expenseReaderRepo.GetByIdAsync(
+            id: expense.Id,
+            cancellationToken
+        );
+        return created;
     }
 }
