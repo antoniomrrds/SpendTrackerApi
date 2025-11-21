@@ -14,7 +14,7 @@ public abstract class CommonExpenseValidator<T> : AbstractValidator<T>
             .WithMessage(ValidationMessages.RequiredField.FormatInvariant("Description"))
             .Length(4, 500)
             .WithMessage(
-                ValidationMessages.StringLengthRangeMessage.FormatInvariant("Description", 4, 150)
+                ValidationMessages.StringLengthRangeMessage.FormatInvariant("Description", 4, 500)
             );
     }
 }
