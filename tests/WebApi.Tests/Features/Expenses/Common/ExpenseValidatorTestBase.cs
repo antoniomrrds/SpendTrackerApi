@@ -20,11 +20,13 @@ public abstract class ExpenseValidatorTestBase<TValidator, TInput>
         return input;
     }
 
-    [Fact]
-    public void Validator_WhenDescriptionIsEmpty_ShouldReturnError()
+    [Theory]
+    [MemberData(nameof(InvalidInputData.InvalidValues), MemberType = typeof(InvalidInputData))]
+    public void Validator_WhenDescriptionIsInvalid_ShouldReturnError(string? invalidDescription)
     {
         // Arrange
-        TInput input = BuildCommand(c => c.Description = string.Empty);
+        TInput input = BuildCommand(c => c.Description = invalidDescription!);
+
         // Act
         TestValidationResult<TInput>? result = Sut.TestValidate(input);
 
@@ -32,5 +34,24 @@ public abstract class ExpenseValidatorTestBase<TValidator, TInput>
         result
             .ShouldHaveValidationErrorFor(c => c.Description)
             .WithErrorMessage(ValidationMessages.RequiredField.FormatInvariant("Description"));
+    }
+
+    [Theory]
+    [InlineData("a")]
+    [InlineData("abc")]
+    public void Validator_WhenDescriptionIsTooShort_ShouldReturnError(string shortDescription)
+    {
+        // Arrange
+        TInput input = BuildCommand(c => c.Description = shortDescription);
+
+        // Act
+        TestValidationResult<TInput>? result = Sut.TestValidate(input);
+
+        // Assert
+        result
+            .ShouldHaveValidationErrorFor(c => c.Description)
+            .WithErrorMessage(
+                ValidationMessages.StringLengthRangeMessage.FormatInvariant("Description", 4, 500)
+            );
     }
 }
