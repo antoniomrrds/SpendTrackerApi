@@ -9,13 +9,7 @@ namespace WebApi.Features.Expenses.Create;
 
 public interface ICreateExpenseUseCase : IUseCase<CreateExpenseInput, Task<Result<ExpenseDto>>>;
 
-public record CreateExpenseInput
-{
-    public string Description { get; init; } = string.Empty;
-    public decimal Amount { get; init; }
-    public DateTime Date { get; init; }
-    public Guid IdCategory { get; init; }
-}
+public record CreateExpenseInput : CommonExpenseProperties;
 
 internal class CreateExpenseUseCase : ICreateExpenseUseCase
 {

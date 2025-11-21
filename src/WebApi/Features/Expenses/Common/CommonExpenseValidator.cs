@@ -1,0 +1,20 @@
+﻿using FluentValidation;
+using WebApi.Domain.Extensions;
+using WebApi.Domain.Resources;
+
+namespace WebApi.Features.Expenses.Common;
+
+public abstract class CommonExpenseValidator<T> : AbstractValidator<T>
+    where T : CommonExpenseProperties
+{
+    protected CommonExpenseValidator()
+    {
+        RuleFor(x => x.Description)
+            .NotEmpty()
+            .WithMessage(ValidationMessages.RequiredField.FormatInvariant("Description"))
+            .Length(4, 500)
+            .WithMessage(
+                ValidationMessages.StringLengthRangeMessage.FormatInvariant("Description", 4, 150)
+            );
+    }
+}
