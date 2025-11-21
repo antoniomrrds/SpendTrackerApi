@@ -54,4 +54,22 @@ public abstract class ExpenseValidatorTestBase<TValidator, TInput>
                 ValidationMessages.StringLengthRangeMessage.FormatInvariant("Description", 4, 500)
             );
     }
+
+    [Fact]
+    public void Validator_WhenDescriptionIsTooLong_ShouldReturnError()
+    {
+        //Arrange
+        string longDescription = new('a', 501);
+        TInput input = BuildCommand(c => c.Description = longDescription);
+
+        //Act
+        TestValidationResult<TInput>? result = Sut.TestValidate(input);
+
+        //Assert
+        result
+            .ShouldHaveValidationErrorFor(c => c.Description)
+            .WithErrorMessage(
+                ValidationMessages.StringLengthRangeMessage.FormatInvariant("Description", 4, 500)
+            );
+    }
 }
