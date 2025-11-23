@@ -16,5 +16,9 @@ public abstract class CommonExpenseValidator<T> : AbstractValidator<T>
             .WithMessage(
                 ValidationMessages.StringLengthRangeMessage.FormatInvariant("Description", 4, 500)
             );
+
+        RuleFor(x => x.Amount)
+            .GreaterThan(0)
+            .WithMessage(ValidationMessages.GreaterThan.FormatInvariant("Amount", 0));
     }
 }
