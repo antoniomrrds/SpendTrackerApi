@@ -74,15 +74,19 @@ public abstract class ExpenseValidatorTestBase<TValidator, TInput>
     }
 
     [Fact]
-    public void Validator_WhenDescriptionIsValid_ShouldPassValidation()
+    public void Validator_WhenAmountLessThanOrEqualToMinimum_ShouldReturnError()
     {
         // Arrange
-        TInput input = BuildCommand();
+        const decimal minValue = 0;
+
+        TInput input = BuildCommand(c => c.Amount = minValue);
 
         // Act
         TestValidationResult<TInput>? result = Sut.TestValidate(input);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(c => c.Description);
+        result
+            .ShouldHaveValidationErrorFor(c => c.Amount)
+            .WithErrorMessage(ValidationMessages.GreaterThan.FormatInvariant("Amount", minValue));
     }
 }
