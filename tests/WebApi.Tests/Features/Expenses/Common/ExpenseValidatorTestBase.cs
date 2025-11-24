@@ -1,5 +1,7 @@
-﻿using FluentValidation;
+﻿using System.Globalization;
+using FluentValidation;
 using FluentValidation.TestHelper;
+using SharedKernel.Extensions;
 using WebApi.Domain.Extensions;
 using WebApi.Domain.Resources;
 using WebApi.Features.Expenses.Common;
@@ -88,5 +90,21 @@ public abstract class ExpenseValidatorTestBase<TValidator, TInput>
         result
             .ShouldHaveValidationErrorFor(c => c.Amount)
             .WithErrorMessage(ValidationMessages.GreaterThan.FormatInvariant("Amount", minValue));
+    }
+
+    [Fact]
+    public void Validator_WhenDateIsFuture_ShouldReturnError()
+    {
+        //Arrange
+        DateTime futureDate = DateTime.Today.AddDays(1);
+        TInput input = BuildCommand(c => c.Date = futureDate);
+        //Act
+        TestValidationResult<TInput>? result = Sut.TestValidate(input);
+        //Assert
+        result
+            .ShouldHaveValidationErrorFor(c => c.Date)
+            .WithErrorMessage(
+                ValidationMessages.DateIsFuture.FormatInvariant(futureDate.ToPtBrDateTime())
+            );
     }
 }
