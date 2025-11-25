@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SharedKernel.Abstractions.Data;
 using WebApi.Features.Categories.Common;
 using WebApi.Infrastructure.Persistence.Data;
-using WebApi.Infrastructure.Persistence.Repositories;
+using WebApi.Infrastructure.Persistence.Repositories.Categories;
 
 namespace WebApi.Infrastructure;
 

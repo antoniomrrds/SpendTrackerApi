@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+
 using WebApi.Domain.Categories;
 using WebApi.Features.Categories.Common;
 using WebApi.Infrastructure.Persistence.Data;
 
-namespace WebApi.Infrastructure.Persistence.Repositories;
+namespace WebApi.Infrastructure.Persistence.Repositories.Categories;
 
 public class CategoryCheckRepository(AppDbContext context)
     : BaseRepository(context),
