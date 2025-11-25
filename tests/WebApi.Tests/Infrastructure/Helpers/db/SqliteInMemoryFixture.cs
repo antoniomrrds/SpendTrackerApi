@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Infrastructure.Persistence.Data;
 
-namespace WebApi.Tests.Infrastructure.Helpers;
+namespace WebApi.Tests.Infrastructure.Helpers.db;
 
 public class SqliteInMemoryFixture
 {

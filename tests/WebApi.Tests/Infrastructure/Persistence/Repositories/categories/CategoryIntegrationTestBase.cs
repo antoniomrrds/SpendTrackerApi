@@ -1,6 +1,7 @@
 ﻿using WebApi.Domain.Categories;
 using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Infrastructure.Helpers;
+using WebApi.Tests.Infrastructure.Helpers.db;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 

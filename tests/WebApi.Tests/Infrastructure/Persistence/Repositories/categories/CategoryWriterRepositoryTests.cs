@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Domain.Categories;
-using WebApi.Infrastructure.Persistence.Repositories;
-using WebApi.Tests.Infrastructure.Helpers;
+using WebApi.Infrastructure.Persistence.Repositories.Categories;
+using WebApi.Tests.Infrastructure.Helpers.db;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 
@@ -9,7 +9,6 @@ namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
 {
     private readonly CategoryWriterRepository _sut;
-    private readonly CancellationToken _ct = CancellationToken.None;
 
     public CategoryWriterRepositoryTests(SqliteInMemoryFixture fixture)
         : base(fixture)
@@ -21,12 +20,12 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
     public async Task AddAsync_WhenCategoryIsValid_ShouldPersistCategory()
     {
         //Arrange
-        await _sut.AddAsync(Category, _ct);
-        await DbContext.SaveChangesAsync(_ct);
+        await _sut.AddAsync(Category, Ct);
+        await DbContext.SaveChangesAsync(Ct);
         //Act
         Category? saved = await DbContext.Categories.FirstOrDefaultAsync(
             c => c.Id == Category.Id,
-            _ct
+            Ct
         );
         //Assert
         saved.ShouldNotBeNull();
@@ -37,7 +36,7 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
     public async Task UpdateAsync_WhenCategoryDoesNotExist_ShouldReturnFalse()
     {
         //Act
-        bool isUpdated = await _sut.UpdateAsync(Category, _ct);
+        bool isUpdated = await _sut.UpdateAsync(Category, Ct);
         //Assert
         isUpdated.ShouldBeFalse();
     }
@@ -51,10 +50,10 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
         string originalName = Category.Name;
 
         //Act
-        bool isUpdated = await _sut.UpdateAsync(updatedCategory, _ct);
+        bool isUpdated = await _sut.UpdateAsync(updatedCategory, Ct);
         Category categoryFromDb = await DbContext
             .Categories.AsNoTracking()
-            .FirstAsync(c => c.Id == Category.Id, _ct);
+            .FirstAsync(c => c.Id == Category.Id, Ct);
         //Assert
         isUpdated.ShouldBeTrue();
         categoryFromDb.Name.ShouldBe("Novo Nome Atualizado");
@@ -66,7 +65,7 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
     public async Task DeleteAsync_WhenCategoryToDeleteIsNotFound_ShouldReturnFalse()
     {
         //Act
-        bool isDeleted = await _sut.DeleteAsync(Category.Id, _ct);
+        bool isDeleted = await _sut.DeleteAsync(Category.Id, Ct);
         //Assert
         isDeleted.ShouldBeFalse();
     }
@@ -77,12 +76,12 @@ public class CategoryWriterRepositoryTests : CategoryIntegrationTestBase
         //Arrange
         await MakeCreateCategoryAsync();
         //Act
-        bool isDeleted = await _sut.DeleteAsync(Category.Id, _ct);
+        bool isDeleted = await _sut.DeleteAsync(Category.Id, Ct);
         //Assert
         isDeleted.ShouldBeTrue();
         Category? categoryFromDb = await DbContext
             .Categories.AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == Category.Id, _ct);
+            .FirstOrDefaultAsync(c => c.Id == Category.Id, Ct);
         categoryFromDb.ShouldBeNull();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using TestUtilities.Common;
 using WebApi.Infrastructure.Persistence.Data;
+using WebApi.Tests.Infrastructure.Helpers.db;
 
 namespace WebApi.Tests.Infrastructure.Helpers;
 

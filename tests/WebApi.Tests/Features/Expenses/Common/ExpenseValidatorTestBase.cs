@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.TestHelper;
 using SharedKernel.Extensions;
 using WebApi.Domain.Extensions;

@@ -1,5 +1,5 @@
-using WebApi.Infrastructure.Persistence.Repositories;
-using WebApi.Tests.Infrastructure.Helpers;
+using WebApi.Infrastructure.Persistence.Repositories.Categories;
+using WebApi.Tests.Infrastructure.Helpers.db;
 
 namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 

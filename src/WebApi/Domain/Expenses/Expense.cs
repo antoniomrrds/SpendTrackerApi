@@ -8,7 +8,7 @@ public sealed class Expense
     public string Description { get; private set; } = string.Empty;
     public decimal Amount { get; private set; }
     public DateTime Date { get; private set; }
-    public Guid IdCategory { get; private set; }
+    public Guid IdCategory { get; set; }
 
     public Expense(Guid id, string description, decimal amount, DateTime date, Guid idCategory)
     {
