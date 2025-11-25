@@ -6,7 +6,7 @@ namespace WebApi.Features.Expenses.Common;
 
 internal static class ExpenseMappers
 {
-    public static ExpenseDto ToDto(this Expense expense, Category category)
+    private static ExpenseDto MapToBaseDto(Expense expense, Category category)
     {
         return new ExpenseDto
         {
@@ -16,8 +16,21 @@ internal static class ExpenseMappers
             Date = expense.Date,
             CategoryId = expense.IdCategory,
             CategoryName = category.Name,
-            DateFormatted = BaseMappers.FormatDate(expense.Date),
-            AmountFormatted = BaseMappers.FormatCurrency(expense.Amount),
         };
     }
+
+    private static ExpenseDto ApplyFormatting(ExpenseDto dto)
+    {
+        dto.DateFormatted = BaseMappers.FormatDate(dto.Date);
+        dto.AmountFormatted = BaseMappers.FormatCurrency(dto.Amount);
+        return dto;
+    }
+
+    public static ExpenseDto ToQueryDto(this Expense expense, Category category) =>
+        MapToBaseDto(expense, category);
+
+    public static ExpenseDto ToFormattedDto(this ExpenseDto queryDto) => ApplyFormatting(queryDto);
+
+    public static ExpenseDto ToDto(this Expense expense, Category category) =>
+        ApplyFormatting(MapToBaseDto(expense, category));
 }
