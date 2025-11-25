@@ -7,7 +7,6 @@ namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 public class CategoryCheckRepositoryTests : CategoryIntegrationTestBase
 {
     private readonly CategoryCheckRepository _sut;
-    private readonly CancellationToken _ct = CancellationToken.None;
 
     public CategoryCheckRepositoryTests(SqliteInMemoryFixture fixture)
         : base(fixture)
@@ -21,7 +20,7 @@ public class CategoryCheckRepositoryTests : CategoryIntegrationTestBase
         //Arrange
         await MakeCreateCategoryAsync();
         //Act
-        bool saved = await _sut.HasCategoryWithNameAsync(Category.Name, cancellationToken: _ct);
+        bool saved = await _sut.HasCategoryWithNameAsync(Category.Name, cancellationToken: Ct);
         //Assert
         saved.ShouldBeTrue();
     }
@@ -30,10 +29,7 @@ public class CategoryCheckRepositoryTests : CategoryIntegrationTestBase
     public async Task HasCategoryWithNameAsync_WhenCategoryNameDoesNotExist_ShouldReturnFalse()
     {
         //Act
-        bool exists = await _sut.HasCategoryWithNameAsync(
-            "NameDoesNotExit",
-            cancellationToken: _ct
-        );
+        bool exists = await _sut.HasCategoryWithNameAsync("NameDoesNotExit", cancellationToken: Ct);
         //Assert
         exists.ShouldBeFalse();
     }
@@ -47,8 +43,28 @@ public class CategoryCheckRepositoryTests : CategoryIntegrationTestBase
         bool exists = await _sut.HasCategoryWithNameAsync(
             Category.Name,
             excludeId: Category.Id,
-            cancellationToken: _ct
+            cancellationToken: Ct
         );
+        //Assert
+        exists.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task CategoryExistsAsync_WhenCategoryIdExists_ShouldReturnTrue()
+    {
+        //Arrange
+        await MakeCreateCategoryAsync();
+        //Act
+        bool exists = await _sut.CategoryExistsAsync(Category.Id, cancellationToken: Ct);
+        //Assert
+        exists.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task CategoryExistsAsync_WhenCategoryIdDoesNotExist_ShouldReturnFalse()
+    {
+        //Act
+        bool exists = await _sut.CategoryExistsAsync(Category.Id, cancellationToken: Ct);
         //Assert
         exists.ShouldBeFalse();
     }
