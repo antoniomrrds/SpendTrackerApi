@@ -1,4 +1,6 @@
-﻿using WebApi.Domain.Expenses;
+﻿using WebApi.Domain.Categories;
+using WebApi.Domain.Expenses;
+using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Domain.Expenses;
 using WebApi.Tests.Infrastructure.Helpers;
 using WebApi.Tests.Infrastructure.Helpers.db;
@@ -8,11 +10,13 @@ namespace WebApi.Tests.Infrastructure.Persistence.Repositories.Expenses;
 public abstract class ExpenseIntegrationTestBase : BaseSqliteIntegrationTest, IAsyncLifetime
 {
     protected Expense Expense { get; set; }
+    protected Category Category { get; set; }
     protected IEnumerable<Expense> Expenses { get; set; }
 
     protected ExpenseIntegrationTestBase(SqliteInMemoryFixture fixture)
         : base(fixture)
     {
+        Category = CategoryFixture.GetCategory(true);
         Expense = ExpenseFixture.GetExpense(true);
         Expenses = ExpenseFixture.GetExpenses(3, true);
     }
@@ -31,7 +35,7 @@ public abstract class ExpenseIntegrationTestBase : BaseSqliteIntegrationTest, IA
 
     protected async Task<Expense> MakeCreateExpenseAsync()
     {
-        await ExpenseSeeder.AddAsync(DbContext, Expense);
+        await ExpenseSeeder.AddAsync(DbContext, Expense, Category);
         return Expense;
     }
 }

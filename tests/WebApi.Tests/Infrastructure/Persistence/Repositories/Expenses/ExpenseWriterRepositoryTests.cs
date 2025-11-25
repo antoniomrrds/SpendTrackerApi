@@ -12,13 +12,10 @@ namespace WebApi.Tests.Infrastructure.Persistence.Repositories.Expenses;
 public class ExpenseWriterRepositoryTests : ExpenseIntegrationTestBase
 {
     private readonly ExpenseWriterRepository _sut;
-    private readonly Category _category;
 
     public ExpenseWriterRepositoryTests(SqliteInMemoryFixture fixture)
         : base(fixture)
     {
-        _category = CategoryFixture.GetCategory(true);
-
         _sut = new ExpenseWriterRepository(DbContext);
     }
 
@@ -26,8 +23,8 @@ public class ExpenseWriterRepositoryTests : ExpenseIntegrationTestBase
     public async Task AddAsync_WhenExpenseIsValid_ShouldPersistExpense()
     {
         //Arrange
-        await CategorySeeder.AddAsync(DbContext, _category);
-        Expense.IdCategory = _category.Id;
+        await CategorySeeder.AddAsync(DbContext, Category);
+        Expense.IdCategory = Category.Id;
         await _sut.AddAsync(Expense, Ct);
 
         await DbContext.SaveChangesAsync(Ct);

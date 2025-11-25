@@ -8,7 +8,6 @@ namespace WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
 {
     private readonly CategoryReaderRepository _sut;
-    private readonly CancellationToken _ct = CancellationToken.None;
 
     public CategoryReaderRepositoryTests(SqliteInMemoryFixture fixture)
         : base(fixture)
@@ -22,7 +21,7 @@ public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
         //Arrange
         await MakeCreateCategoryAsync();
         //Act
-        CategoryDto? categoryResponse = await _sut.GetByIdAsync(Category.Id, _ct);
+        CategoryDto? categoryResponse = await _sut.GetByIdAsync(Category.Id, Ct);
         //Assert
         categoryResponse.ShouldNotBeNull();
         categoryResponse.ShouldSatisfyAllConditions(
@@ -37,7 +36,7 @@ public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
     public async Task GetByIdAsync_WhenCategoryDoesNotExist_ShouldReturnNull()
     {
         //Act
-        CategoryDto? categoryResponse = await _sut.GetByIdAsync(Category.Id, _ct);
+        CategoryDto? categoryResponse = await _sut.GetByIdAsync(Category.Id, Ct);
         //Assert
         categoryResponse.ShouldBeNull();
     }
@@ -46,7 +45,7 @@ public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
     public async Task GetAllAsync_WhenCategoriesDoesNotExist_ShouldReturnEmptyList()
     {
         //Act
-        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(_ct);
+        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(Ct);
         //Assert
         categories.ShouldBeEmpty();
     }
@@ -57,7 +56,7 @@ public class CategoryReaderRepositoryTests : CategoryIntegrationTestBase
         //Arrange
         await MakeCreateCategoriesAsync();
         //Act
-        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(_ct);
+        IEnumerable<CategoryDto> categories = await _sut.GetAllAsync(Ct);
         //Assert
         List<CategoryDto> categoryList = [.. categories];
         categoryList.Count.ShouldBe(Categories.Count());
