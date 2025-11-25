@@ -25,8 +25,11 @@ public class CategoryCheckRepository(AppDbContext context)
         return await query.AnyAsync(cancellationToken);
     }
 
-    public Task<bool> CategoryExistsAsync(Guid categoryId, CancellationToken cancellationToken)
+    public async Task<bool> CategoryExistsAsync(
+        Guid categoryId,
+        CancellationToken cancellationToken
+    )
     {
-        throw new NotImplementedException();
+        return await Context.Categories.Where(c => c.Id == categoryId).AnyAsync(cancellationToken);
     }
 }
