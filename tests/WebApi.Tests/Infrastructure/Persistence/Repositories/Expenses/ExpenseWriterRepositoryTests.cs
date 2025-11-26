@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WebApi.Domain.Categories;
 using WebApi.Domain.Expenses;
 using WebApi.Infrastructure.Persistence.Repositories.Expenses;
-using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Infrastructure.Helpers.db;
 using WebApi.Tests.Infrastructure.Persistence.Repositories.categories;
 

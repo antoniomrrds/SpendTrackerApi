@@ -1,4 +1,5 @@
 using System.Globalization;
+using SharedKernel.Common;
 using WebApi.Domain.Errors;
 using WebApi.Domain.Extensions;
 using WebApi.Domain.Resources;
@@ -85,7 +86,7 @@ public class DomainValidationTests
     public void DateIsFuture_GivenDateIsFuture_ThenShouldThrow()
     {
         DateTime expectedDate = DateTime.Today.AddDays(1);
-        string formattedDate = expectedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+        string formattedDate = expectedDate.ToFormattedDate();
 
         string expectedMessage = ValidationMessages.DateIsFuture.FormatInvariant(formattedDate);
         Action callDateIsFuture = () => DomainValidation.DateIsFuture(expectedDate);
