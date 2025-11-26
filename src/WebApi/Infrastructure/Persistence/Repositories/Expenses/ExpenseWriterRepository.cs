@@ -1,7 +1,6 @@
 ﻿using WebApi.Domain.Expenses;
 using WebApi.Features.Expenses.Common;
 using WebApi.Infrastructure.Persistence.Data;
-using WebApi.Infrastructure.Persistence.Repositories.Categories;
 
 namespace WebApi.Infrastructure.Persistence.Repositories.Expenses;
 

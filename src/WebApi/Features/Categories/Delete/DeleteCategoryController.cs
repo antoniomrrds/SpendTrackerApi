@@ -1,5 +1,4 @@
 ﻿using WebApi.Common.Web.Controllers;
-using WebApi.Common.Web.Factories;
 using WebApi.Common.Web.Filters;
 using WebApi.Features.Categories.Common;
 
@@ -20,8 +19,6 @@ public class DeleteCategoryController : CategoryBaseController
     {
         DeleteCategoryInput input = new() { Id = id };
         Result<bool> result = await _useCase.Perform(input: input, cancellationToken: ct);
-        return result.IsFailure
-            ? NotFound(ApiResult.NotFound(HttpContext, result.Error.Description))
-            : NoContent();
+        return result.IsSuccess ? NoContent() : ToErrorResponse(result);
     }
 }

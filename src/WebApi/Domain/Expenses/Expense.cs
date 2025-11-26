@@ -10,7 +10,7 @@ public sealed class Expense
     public DateTime Date { get; private set; }
     public Guid IdCategory { get; set; }
 
-    public Expense(Guid id, string description, decimal amount, DateTime date, Guid idCategory)
+    public Expense(Guid id, string description, decimal amount, DateTime? date, Guid idCategory)
     {
         Id = id;
         Description = ValidateDescription(description);
@@ -36,9 +36,10 @@ public sealed class Expense
         Date = ValidateDate(newDate);
     }
 
-    private static DateTime ValidateDate(DateTime date)
+    private static DateTime ValidateDate(DateTime? date)
     {
-        return DomainValidation.DateIsFuture(date);
+        DateTime actualDate = date ?? DateTime.Now;
+        return DomainValidation.DateIsFuture(actualDate);
     }
 
     private static string ValidateDescription(string description)

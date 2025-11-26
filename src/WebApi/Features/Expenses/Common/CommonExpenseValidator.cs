@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SharedKernel.Extensions;
+using SharedKernel.Common;
 using WebApi.Domain.Extensions;
 using WebApi.Domain.Resources;
 
@@ -25,7 +25,7 @@ public abstract class CommonExpenseValidator<T> : AbstractValidator<T>
         RuleFor(e => e.Date)
             .LessThanOrEqualTo(DateTime.Today)
             .WithMessage(e =>
-                ValidationMessages.DateIsFuture.FormatInvariant(e.Date.ToPtBrDateTime())
+                ValidationMessages.DateIsFuture.FormatInvariant(e.Date.ToFormattedDate())
             );
     }
 }

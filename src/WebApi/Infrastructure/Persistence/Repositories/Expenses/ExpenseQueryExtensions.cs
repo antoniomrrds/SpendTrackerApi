@@ -15,7 +15,7 @@ public static class ExpenseQueryExtensions
             categories,
             expense => expense.IdCategory,
             category => category.Id,
-            (expense, category) => expense.ToQueryDto(category)
+            (expense, category) => expense.ToDto(category)
         );
     }
 }

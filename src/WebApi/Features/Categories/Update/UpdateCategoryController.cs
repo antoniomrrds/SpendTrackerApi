@@ -1,9 +1,7 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using WebApi.Common.Web.Controllers;
 using WebApi.Common.Web.Factories;
 using WebApi.Common.Web.Filters;
-using WebApi.Domain.Categories;
 using WebApi.Features.Categories.Common;
 
 namespace WebApi.Features.Categories.Update;
@@ -26,7 +24,8 @@ public class UpdateCategoryController : CategoryBaseController
     [ServiceFilter(typeof(ModelBindingEnvelopeFilter))]
     public async Task<IActionResult> Update(
         [FromRoute] SafeGuid id,
-        [FromBody] UpdateCategoryRequest request
+        [FromBody] UpdateCategoryRequest request,
+        CancellationToken ct
     )
     {
         UpdateCategoryInput input = new()
@@ -36,24 +35,12 @@ public class UpdateCategoryController : CategoryBaseController
             Description = request.Description,
         };
 
-        ValidationResult? validation = await _validator.ValidateAsync(input);
-        if (!validation.IsValid)
-        {
-            return BadRequest(ApiResult.ValidationError(HttpContext, validation));
-        }
+        if (await ValidateAsync(input, _validator, ct) is { } error)
+            return error;
 
-        Result<CategoryDto> result = await _useCase.Perform(input);
+        Result<CategoryDto> result = await _useCase.Perform(input, ct);
         return result.IsSuccess ? Ok(ApiResult.Success(result.Value)) : ToErrorResponse(result);
     }
-
-    private IActionResult ToErrorResponse(Result result) =>
-        result.Error.Code switch
-        {
-            CategoryErrorCodes.NameAlreadyExists => Conflict(
-                ApiResult.Conflict(HttpContext, result.Error.Description)
-            ),
-            _ => NotFound(ApiResult.NotFound(HttpContext, result.Error.Description)),
-        };
 }
 
 public record UpdateCategoryRequest

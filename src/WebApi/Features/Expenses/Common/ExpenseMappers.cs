@@ -21,15 +21,10 @@ internal static class ExpenseMappers
 
     private static ExpenseDto ApplyFormatting(ExpenseDto dto)
     {
-        dto.DateFormatted = BaseMappers.FormatDate(dto.Date);
-        dto.AmountFormatted = BaseMappers.FormatCurrency(dto.Amount);
+        dto.DateFormatted = dto.Date.ToFormattedDate();
+        dto.AmountFormatted = dto.Amount.ToFormattedCurrency();
         return dto;
     }
-
-    public static ExpenseDto ToQueryDto(this Expense expense, Category category) =>
-        MapToBaseDto(expense, category);
-
-    public static ExpenseDto ToFormattedDto(this ExpenseDto queryDto) => ApplyFormatting(queryDto);
 
     public static ExpenseDto ToDto(this Expense expense, Category category) =>
         ApplyFormatting(MapToBaseDto(expense, category));

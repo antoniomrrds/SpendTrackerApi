@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Abstractions.Data;
 using WebApi.Features.Categories.Common;
+using WebApi.Features.Expenses.Common;
 using WebApi.Infrastructure.Persistence.Data;
 using WebApi.Infrastructure.Persistence.Repositories.Categories;
+using WebApi.Infrastructure.Persistence.Repositories.Expenses;
 
 namespace WebApi.Infrastructure;
 
@@ -28,6 +30,8 @@ public static class DependencyInjection
         services.AddScoped<ICategoryCheckRepository, CategoryCheckRepository>();
         services.AddScoped<ICategoryWriterRepository, CategoryWriterRepository>();
         services.AddScoped<ICategoryReaderRepository, CategoryReaderRepository>();
+        services.AddScoped<IExpenseReaderRepository, ExpenseReaderRepository>();
+        services.AddScoped<IExpenseWriterRepository, ExpenseWriterRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }

@@ -4,6 +4,7 @@ using WebApi.Features.Categories.Delete;
 using WebApi.Features.Categories.GetAll;
 using WebApi.Features.Categories.GetById;
 using WebApi.Features.Categories.Update;
+using WebApi.Features.Expenses.Create;
 
 namespace WebApi.Features;
 
@@ -18,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IDeleteCategoryUseCase, DeleteCategoryUseCase>();
         services.AddScoped<IUpdateCategoryUseCase, UpdateCategoryUseCase>();
         services.AddScoped<IGetAllCategoriesUseCase, GetAllCategoriesUseCase>();
+        services.AddScoped<ICreateExpenseUseCase, CreateExpenseUseCase>();
 
         return services;
     }

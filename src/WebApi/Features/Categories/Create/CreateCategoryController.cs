@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using WebApi.Common.Web.Factories;
 using WebApi.Features.Categories.Common;
-using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace WebApi.Features.Categories.Create;
 
@@ -31,16 +30,13 @@ public class CreateCategoryController : CategoryBaseController
             Description = request.Description,
         };
 
-        ValidationResult? validation = await _validator.ValidateAsync(input, ct);
-        if (!validation.IsValid)
-        {
-            return BadRequest(ApiResult.ValidationError(HttpContext, validation));
-        }
+        if (await ValidateAsync(input, _validator, ct) is { } error)
+            return error;
 
         Result<CategoryDto> result = await _useCase.Perform(input, ct);
         return result.IsSuccess
             ? Ok(ApiResult.SuccessWithMessage(result.Value, "Categoria criada com sucesso"))
-            : Conflict(ApiResult.Conflict(HttpContext, result.Error.Description));
+            : ToErrorResponse(result);
     }
 }
 

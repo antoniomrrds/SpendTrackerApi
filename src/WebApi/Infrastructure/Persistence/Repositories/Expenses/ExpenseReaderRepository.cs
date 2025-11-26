@@ -18,6 +18,6 @@ internal class ExpenseReaderRepository(AppDbContext context)
             .Where(e => e.Id == id)
             .SelectExpenseWithCategory(Context.Categories)
             .FirstOrDefaultAsync(cancellationToken);
-        return queryDto?.ToFormattedDto();
+        return queryDto;
     }
 }

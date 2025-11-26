@@ -24,8 +24,6 @@ public class GetByIdCategoryController : CategoryBaseController
         GetCategoryByIdInput input = new(id);
         Result<CategoryDto?> result = await _useCase.Perform(input, ct);
 
-        return result.IsSuccess
-            ? Ok(ApiResult.Success(result.Value))
-            : NotFound(ApiResult.NotFound(HttpContext, result.Error.Description));
+        return result.IsSuccess ? Ok(ApiResult.Success(result.Value)) : ToErrorResponse(result);
     }
 }
