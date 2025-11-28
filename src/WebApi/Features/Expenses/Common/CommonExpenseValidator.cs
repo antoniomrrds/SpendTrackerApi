@@ -23,7 +23,7 @@ public abstract class CommonExpenseValidator<T> : AbstractValidator<T>
             .WithMessage(ValidationMessages.GreaterThan.FormatInvariant("Amount", 0));
 
         RuleFor(e => e.Date)
-            .LessThanOrEqualTo(DateTime.Today)
+            .Must(date => date == null || date.Value.Date <= DateTime.Today)
             .WithMessage(e =>
                 ValidationMessages.DateIsFuture.FormatInvariant(e.Date.ToFormattedDate())
             );
