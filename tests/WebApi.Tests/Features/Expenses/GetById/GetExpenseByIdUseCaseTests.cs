@@ -1,6 +1,8 @@
 ﻿using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using SharedKernel;
 using TestUtilities.Common;
+using WebApi.Domain.Expenses;
 using WebApi.Features.Expenses.Common;
 using WebApi.Features.Expenses.GetById;
 using WebApi.Tests.Features.Expenses.Common;
@@ -41,5 +43,22 @@ public class GetExpenseByIdUseCaseTests : TestCommon
             r => r.Value.DateFormatted.ShouldBe(_getExpenseDto.DateFormatted),
             r => r.Value.AmountFormatted.ShouldBe(_getExpenseDto.AmountFormatted)
         );
+    }
+
+    [Fact]
+    public async Task Perform_WhenExpenseDoesNotExist_ShouldReturnFailure()
+    {
+        //Arrange
+        Guid? capturedExpenseId = null;
+        _expenseReaderRepo
+            .GetByIdAsync(Arg.Do<Guid>(id => capturedExpenseId = id), Ct)
+            .ReturnsNull();
+        //Act
+        Result<ExpenseDto?> result = await _sut.Perform(_input, cancellationToken: Ct);
+        //Assert
+        await _expenseReaderRepo.Received(1).GetByIdAsync(AnyParameterForMock<Guid>(), Ct);
+        result.IsFailure.ShouldBeTrue();
+        capturedExpenseId.ShouldNotBeNull();
+        result.Error.ShouldBe(ExpenseErrors.NotFound(capturedExpenseId.Value));
     }
 }
