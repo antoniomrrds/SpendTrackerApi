@@ -1,4 +1,5 @@
 ﻿using SharedKernel.Abstractions;
+using WebApi.Domain.Expenses;
 using WebApi.Features.Expenses.Common;
 
 namespace WebApi.Features.Expenses.GetById;
@@ -7,20 +8,14 @@ public interface IGetExpenseByIdUseCase : IUseCase<GetExpenseByIdInput, Task<Res
 
 public record GetExpenseByIdInput(Guid Id);
 
-internal class GetExpenseByIdUseCase : IGetExpenseByIdUseCase
+internal class GetExpenseByIdUseCase(IExpenseReaderRepository repo) : IGetExpenseByIdUseCase
 {
-    private readonly IExpenseReaderRepository _expenseReaderRepo;
-
-    public GetExpenseByIdUseCase(IExpenseReaderRepository expenseReaderRepo)
-    {
-        _expenseReaderRepo = expenseReaderRepo;
-    }
-
     public async Task<Result<ExpenseDto?>> Perform(
         GetExpenseByIdInput input,
         CancellationToken cancellationToken = default
     )
     {
-        return await _expenseReaderRepo.GetByIdAsync(input.Id, cancellationToken);
+        ExpenseDto? result = await repo.GetByIdAsync(input.Id, cancellationToken);
+        return result is null ? ExpenseErrors.NotFound(id: input.Id) : result;
     }
 }
