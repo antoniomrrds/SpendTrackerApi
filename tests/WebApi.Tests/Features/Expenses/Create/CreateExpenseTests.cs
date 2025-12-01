@@ -1,13 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WebApi.Common.Web.Responses.Errors;
+﻿using WebApi.Common.Web.Responses.Errors;
 using WebApi.Domain.Categories;
 using WebApi.Domain.Expenses;
-using WebApi.Features.Categories.Create;
 using WebApi.Features.Expenses.Common;
 using WebApi.Features.Expenses.Create;
 using WebApi.Tests.Domain.Categories;
 using WebApi.Tests.Domain.Expenses;
-using WebApi.Tests.Features.Categories.Create;
 using WebApi.Tests.Helpers.Extensions;
 using WebApi.Tests.Helpers.Factories;
 using WebApi.Tests.Infrastructure.Helpers;

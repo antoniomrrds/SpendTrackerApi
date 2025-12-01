@@ -1,4 +1,3 @@
-using System.Globalization;
 using SharedKernel.Common;
 using WebApi.Domain.Errors;
 using WebApi.Domain.Extensions;

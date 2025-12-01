@@ -1,5 +1,4 @@
 ﻿using WebApi.Common.Web.Responses.Success;
-using WebApi.Features.Categories.Common;
 using WebApi.Features.Expenses.Common;
 using WebApi.Features.Expenses.Create;
 using WebApi.Tests.Helpers.Extensions;
@@ -33,7 +32,7 @@ public static class ExpenseAddHelper
         {
             string errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
             throw new HttpRequestException(
-                $"Category creation failed with status {response.StatusCode}. Content: {errorContent}"
+                $"Expense creation failed with status {response.StatusCode}. Content: {errorContent}"
             );
         }
 
