@@ -48,5 +48,5 @@ await app.RunAsync();
 
 namespace WebApi
 {
-    public abstract class Program;
+    public partial class Program;
 }

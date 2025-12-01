@@ -1,18 +1,12 @@
 using SharedKernel.Abstractions.Data;
+using WebApi.Infrastructure.Persistence.Repositories;
 
 namespace WebApi.Infrastructure.Persistence.Data;
 
-internal class UnitOfWork : IUnitOfWork
+internal class UnitOfWork(AppDbContext context) : BaseRepository(context), IUnitOfWork
 {
-    private readonly AppDbContext _context;
-
-    public UnitOfWork(AppDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
-        await _context.SaveChangesAsync(cancellationToken);
+        await Context.SaveChangesAsync(cancellationToken);
     }
 }
